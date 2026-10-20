@@ -45,11 +45,17 @@ function json(res, status, payload) {
 }
 function fail(res, status, code, message) { json(res, status, { error: { code, message } }); }
 async function body(req) {
-  let input = '';
+  const chunks = [];
+  let bytes = 0;
   for await (const chunk of req) {
-    input += chunk;
-    if (input.length > 16_384) throw Object.assign(new Error('Request body is too large.'), { status: 413 });
+    bytes += chunk.length;
+    // Drain oversized requests without keeping their contents. Breaking the
+    // iterator destroys the socket before the client can receive the 413.
+    if (bytes <= 16_384) chunks.push(chunk);
   }
+  if (bytes > 16_384) throw Object.assign(new Error('Request body is too large.'), { status: 413 });
+  // Decode once: a UTF-8 character may span multiple network chunks.
+  const input = Buffer.concat(chunks).toString('utf8');
   try {
     const value = JSON.parse(input || '{}');
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
@@ -148,7 +154,7 @@ const server = http.createServer(async (req, res) => {
     const pathname = decodeURIComponent(url.pathname);
     let base = 'portal';
     let relative = pathname.slice(1);
-    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions']) {
+    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions', 'skills']) {
       if (pathname === `/${mount}` || pathname.startsWith(`/${mount}/`)) { base = mount; relative = pathname.slice(mount.length + 2); break; }
     }
     const basePath = path.resolve(root, base);

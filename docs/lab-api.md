@@ -98,7 +98,7 @@ IDs increment within a session. Creating an order snapshots the cart and empties
 - `GET /api/health` → `200 { "status": "ok", "service": "forge-lab" }`.
 - `GET /api/forge-health` is an equivalent app-specific health endpoint used by Playwright.
 - Error envelope: `{ "error": { "code": "STABLE_MACHINE_CODE", "message": "Human-readable explanation." } }`.
-- Malformed JSON, non-object JSON → `400 INVALID_BODY`; request bodies above 16 KiB → `413 INVALID_BODY`.
+- Malformed JSON, non-object JSON → `400 INVALID_BODY`; request bodies above 16 KiB of UTF-8 bytes → `413 INVALID_BODY`.
 - Unknown endpoints → `404 NOT_FOUND`. Unsupported API methods currently follow this same 404 contract.
 
 ## UI locator contract
@@ -112,3 +112,9 @@ Sign-in dialog is `Your workspace awaits.` with `Email`, `Password`, `Sign in`. 
 ## Scope of the reference suite
 
 The suite demonstrates Chromium UI behavior, API contracts, validation, error recovery, session isolation, downloads, mobile viewport and keyboard focus. It is not a full accessibility audit, load test, penetration test, or cross-browser certification. Install the other browsers and add projects when you reach those lessons.
+
+## Browser update ordering
+
+The shop serializes session reads and mutations with their UI updates. Rapid quantity changes therefore preserve user intent even when an earlier response is delayed. This is application behavior, not a replacement for Playwright assertions. Test visible and persisted state after the queue settles.
+
+The separate `/skills/` harness provides timer, upload, frame, popup, and native-dialog exercises. See [Browser Skills](BROWSER-SKILLS.md); those fixtures are not shop API features.

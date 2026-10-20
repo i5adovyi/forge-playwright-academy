@@ -56,7 +56,7 @@ Stop after two unsuccessful repair hypotheses and present the evidence.
 4. **Generate a small batch.** Two or three cases are easier to review than a hundred. Give the agent one example test and the exact fixture contract.
 5. **Read before running.** Check selectors, assertions, session ownership, mocks, and access boundaries.
 6. **Run and diagnose.** Collect the actual command, exit status, report, and relevant trace. A statement saying “should pass” is not evidence.
-7. **Challenge the assertions.** Intentionally make the expected business result wrong, verify a failure, restore the expectation, and run again.
+7. **Challenge the assertions.** First change an expected value deliberately and confirm the assertion is executed; restore it. This is an assertion smoke check, not proof of defect detection. Next, keep the correct expectation unchanged and introduce one reversible controlled defect or mocked wrong response. Confirm failure at the intended observation, restore the behavior, and rerun.
 8. **Review the patch.** Explain each changed assertion. Keep unresolved defects visible and record remaining gaps.
 
 ## Prompt pack
@@ -157,7 +157,7 @@ Explain why the second assertion admits incorrect totals. A satisfactory review 
 
 ### Exercise B · distinguish UI and backend failure
 
-Mock a cart API error for a UI exercise. Ask the agent for one test that verifies the visible error and one test that calls the real API with invalid input. Review whether it kept the two claims separate. Demonstrate a failure in each by changing the relevant expected result, then restore both. Deliver the plan, diff, two red runs, two green runs, and a one-paragraph review.
+Mock a cart API error for a UI exercise. Ask the agent for one test that verifies the visible error and one test that calls the real API with invalid input. Review whether it kept the two claims separate. Use a wrong expectation as an initial assertion smoke check, then restore it. For the UI test, keep the correct oracle unchanged and substitute a controlled response that omits the expected error feedback; confirm that the unchanged oracle rejects it. For the API test, explain which real contract mutation would make it fail and distinguish that proposal from defects actually injected. Deliver the plan, diff, two red runs, two green runs, and a one-paragraph review.
 
 ## Access and data boundaries
 

@@ -120,7 +120,7 @@ Forge Shop uses a `lab_session` cookie or `x-lab-session` header to separate pra
 import { randomUUID } from 'node:crypto';
 const sessionId = randomUUID();
 const api = await playwright.request.newContext({
-  baseURL: 'http://127.0.0.1:4173',
+  baseURL, // destructure baseURL from the test's fixtures; honors configured PORT
   extraHTTPHeaders: { 'x-lab-session': sessionId },
 });
 try {
@@ -196,3 +196,7 @@ For a second challenge, use a different session in the browser. Predict the cart
 ## Sources and continued reading
 
 Checked 20 October 2026: [Locators](https://playwright.dev/docs/locators), [Assertions](https://playwright.dev/docs/test-assertions), [API testing](https://playwright.dev/docs/api-testing), [Fixtures](https://playwright.dev/docs/test-fixtures), [Network](https://playwright.dev/docs/network), [TypeScript](https://playwright.dev/docs/test-typescript). The examples and review exercises here are original, not copied course content.
+
+## Browser features you can practice directly
+
+Use [Browser Skills](BROWSER-SKILLS.md) for six complete starter/solution pairs covering timer boundaries, cookie authentication state, uploads, iframe scoping, popups, and native confirmations. Run `npm run test:skills` for the worked examples. Every lesson now links related executable drills by ID. Use `npm run test:matrix` after installing all engines for the optional real browser matrix.

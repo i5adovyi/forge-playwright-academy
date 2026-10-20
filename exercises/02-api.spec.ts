@@ -40,5 +40,7 @@ test.skip('EX-16 · Malformed and missing data', async ({ request }) => {
   // TODO: malformed JSON => 400 INVALID_BODY; unknown product => 404;
   // signed-in order missing city => 422 INVALID_ADDRESS.
   // Assert error shape and unchanged state, not just status.
+  // Seed a nonempty cart BEFORE the invalid requests, snapshot it, then compare
+  // the whole cart after EACH rejection. A later setup call can hide corruption.
   expect(false, 'Implement every acceptance criterion before removing this sentinel').toBe(true);
 });

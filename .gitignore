@@ -11,3 +11,7 @@ playwright-report/
 .openai/deploy*
 portal/downloads/
 portal/docs/
+
+# Real authentication snapshots must never enter source control.
+playwright/.auth/
+.auth/

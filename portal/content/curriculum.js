@@ -33,7 +33,8 @@ E('01-01-b','Disprove a green check','Design a test that would pass despite a br
 L('01-02','foundations','Set up a reproducible workshop','Understand the runner, the browser binaries, and your local practice target.',40,['setup','CLI'],
 ['Run one local test and find its report','Explain package versus browser installation','Record enough environment detail for another learner'],[
 S('Know the moving parts','This repository contains a learning portal, a practice shop, and a Playwright test suite. Its Chromium browser project is named ui; chromium is the browser installation name. The Node server serves the target application; Playwright drives browsers and sends HTTP requests. Installing the JavaScript package does not guarantee that the matching browser binaries are installed. Use the repository scripts and lockfile as the starting point. If port 4173 is occupied, use the same PORT value for the server and test command, for example PORT=14827 npm run dev and PORT=14827 npm test.'),
-S('Use a small feedback loop','Start with Chromium and one test file. Read the command output before opening the HTML report. A connection-refused error points to the target server, a missing-executable error points to browser installation, and a locator timeout usually means the browser reached the app but the expected state did not appear.',`npm install
+S('Prerequisites you can verify','Use Node 22 or newer and run commands from the folder containing package.json. Check node --version, npm --version, and git status before changing files. JavaScript objects, functions, and arrays are enough to start; lessons 01-03 and 01-04 supply the test-specific TypeScript and promise concepts. Run npm run typecheck separately: Playwright transforms TypeScript but does not replace compiler validation.'),
+S('Use a small feedback loop','Start with Chromium and one test file. Read the command output before opening the HTML report. A connection-refused error points to the target server, a missing-executable error points to browser installation, and a locator timeout usually means the browser reached the app but the expected state did not appear.',`npm ci
 npx playwright install chromium
 npm run dev
 # In a second terminal, inspect the scripts in package.json.
@@ -43,22 +44,24 @@ npx playwright show-report`),
 S('Capture a baseline','Record Node version, Playwright version, operating system, commit, and the exact command. Baseline evidence makes later debugging much easier. Never use a global Playwright installation to bypass an unknown local version; use the project dependency.')
 ],[
 E('01-02-a','First reproducible run','Run one existing reference test and retain its command and result.',['Install dependencies and Chromium.','Start the app or let webServer start it.','Run one listed test and open its report.'],['One real test passes.','You can identify the spec path and project.'],'Use --list to discover names instead of guessing.','Run npx playwright test --list; choose a returned spec and run npx playwright test path/to/spec --project=ui. Record the command and the report summary.'),
-E('01-02-b','Classify setup failures','Practice diagnosing setup without changing assertions.',['Stop a manually started server if your config does not launch one.','Observe a connection error.','Restore the server and document the difference from a missing browser error.'],['Root cause and corrective action are documented.','Test expectations remain unchanged.'],'Read the first actionable error, not just the final timeout.','Connection refused: start the configured target. Executable missing: run npx playwright install chromium. Unknown project: inspect config or --list; do not rename projects blindly.')
+E('01-02-b','Classify setup failures','Produce and diagnose a harmless configuration error.',['Run npx playwright test --list --project=does-not-exist.','Read the unknown-project error and available names.','Run npx playwright test --list --project=ui and explain why the correction works.'],['The failed and corrected commands are recorded.','No assertion, dependency, or browser installation is changed.'],'The supplied webServer starts the app automatically; stopping a manual server is not a reliable way to cause connection refusal.','Unknown project: correct the CLI name to ui, which selects Chromium in this repository. Distinguish this from connection refused (target unavailable) and executable missing (browser binary absent). Do not delete browser binaries or break shared configuration to manufacture these errors.')
 ],Q('What does npx playwright install chromium install?',['Your app dependencies','The browser build expected by the local Playwright version','A production Chrome extension'],1,'Browser binaries are distinct from the JavaScript package and your target app.'),[R('Installation','intro'),R('Running tests','running-tests')]),
 L('01-03','foundations','TypeScript for people who test','Model useful inputs and let types expose mistakes before a browser starts.',45,['TypeScript','data'],
 ['Use unions and typed objects for test data','Distinguish compile-time checks from runtime validation','Avoid accidental mutation of shared data'],[
 S('Types are executable documentation','A quantity should be a number, and a product identifier should have a deliberate representation. Types catch passing "two" into a number parameter while you edit. They do not prove that a server response matches the declared shape: a TypeScript assertion disappears at runtime. Inspect JSON before trusting it.'),
-S('Model scenarios, not every implementation detail','Start with the fields the test needs. A small typed scenario table is easier to review than an elaborate domain hierarchy. Use literal unions for expected categories or outcome labels, and return fresh objects from builders so tests cannot mutate one another’s data.',`type QuantityCase = { label: string; quantity: number; valid: boolean };
+S('Model scenarios, not every implementation detail','Start with the fields the test needs. A small typed scenario table is easier to review than an elaborate domain hierarchy. Use literal unions for expected categories or outcome labels, and return fresh objects from builders so tests cannot mutate one another’s data.',`type QuantityCase = { label: string; quantity: number; schemaValid: boolean };
 const cases: QuantityCase[] = [
-  { label: 'minimum', quantity: 1, valid: true },
-  { label: 'zero', quantity: 0, valid: false },
-  { label: 'fraction', quantity: 1.5, valid: false },
+  { label: 'minimum', quantity: 1, schemaValid: true },
+  { label: 'zero', quantity: 0, schemaValid: false },
+  { label: 'fraction', quantity: 1.5, schemaValid: false },
 ];
 const makeCase = (quantity = 1): QuantityCase =>
-  ({ label: 'custom', quantity, valid: Number.isInteger(quantity) && quantity > 0 });`),
+  ({ label: 'custom', quantity, schemaValid:
+    Number.isInteger(quantity) && quantity >= 1 && quantity <= 99 });
+// Schema validity is not purchase success: p1 stock is only 12.`),
 S('Keep negative data possible','A strongly typed API helper can make malformed requests impossible to express. That is useful for happy-path setup but inconvenient for contract testing. Send intentionally malformed payloads directly through the request fixture, with a clear test title. Do not weaken every helper to any just to accommodate one negative case.')
 ],[
-E('01-03-a','Build a quantity matrix','Create a typed table for 1, 0, -1, 1.5 and a documented upper boundary.',['Define a case type.','Name each boundary.','Write expected validity separately from the value.'],['Cases are readable without execution.','The upper boundary is taken from docs/lab-api.md.'],'A type cannot encode every server rule.','Use {label,quantity,expectedStatus} entries. Include values just below, at, and above the documented upper limit; do not invent a limit from one successful request.'),
+E('01-03-a','Build a quantity matrix','Create a typed table for 1, 0, -1, 1.5 and a documented upper boundary.',['Define a case type.','Name each boundary.','Write expected validity separately from the value.'],['Cases are readable without execution.','The upper boundary is taken from docs/lab-api.md.'],'Separate the quantity schema ceiling from product stock.','Use {label,quantity,expectedStatus,expectedCode} entries for p1. Quantities 1 and 12 succeed; 13 and 99 satisfy the 1–99 schema but return 409 INSUFFICIENT_STOCK; 100, 0, -1 and 1.5 return 400 INVALID_QUANTITY. The schema ceiling is not an available purchase quantity in this catalog.'),
 E('01-03-b','Expose a false type promise','Show why casting JSON is not validation.',['Create an object with price as a string.','Cast it through unknown to a price-bearing type.','Add a runtime assertion that catches the mismatch.'],['The example explains why compilation can pass.','The runtime check rejects the malformed value.'],'typeof is enough for the first exercise.','const raw: unknown = { price: "49" }; const typed = raw as {price:number}; expect(typeof typed.price).toBe("number"); // fails: the cast did not convert the data.')
 ],Q('What does response as Product do at runtime?',['Validates every field','Converts field values','Nothing; it only changes TypeScript’s view'],2,'Use runtime assertions or a schema validator when you need to validate untrusted JSON.'),[R('TypeScript support','test-typescript'),R('TypeScript handbook','https://www.typescriptlang.org/docs/handbook/intro.html')]),
 L('01-04','foundations','Async without superstition','Understand promises, sequencing, and the failures caused by missing await.',45,['async','JavaScript'],
@@ -69,7 +72,10 @@ for (const term of ['keyboard', 'mouse']) {
   await page.getByRole('searchbox', { name: 'Search products' }).fill(term);
   await expect(page.getByRole('searchbox', { name: 'Search products' })).toHaveValue(term);
 }
-// Independent reads may run together:
+// Bootstrap cookie-only sessions before concurrent first requests.
+// With the supplied fixture, a unique x-lab-session also fixes identity.
+expect((await request.get('/api/session')).status()).toBe(200);
+// Independent reads may now run together:
 const [products, cart] = await Promise.all([
   request.get('/api/products'), request.get('/api/cart')
 ]);`),
@@ -89,7 +95,7 @@ S('Write small, falsifiable cases','A good case includes its precondition, opera
 // And: GET /api/cart is still empty
 // Counterexample caught: server returns 400 after mutating state`)
 ],[
-E('01-05-a','Boundary card deck','Write eight cart cases without opening an editor.',['Read the quantity rule.','Cover valid, invalid, and missing values.','Include a post-request state assertion for each rejection.'],['Every case has a distinct reason to exist.','Boundary values match the actual contract.'],'Treat missing quantity separately from explicit zero.','Use minimum valid, maximum valid, below minimum, above maximum, fractional, string, missing field, and unknown product. If a missing field has a default, assert that documented default rather than expecting rejection.'),
+E('01-05-a','Boundary card deck','Write eight cart cases without opening an editor.',['Read the quantity rule.','Cover valid, invalid, and missing values.','Include a post-request state assertion for each rejection.'],['Every case has a distinct reason to exist.','Boundary values match the actual contract.'],'Treat missing quantity separately from explicit zero.','For p1 use 1 and 12 as valid purchases; 13 and 99 return 409 INSUFFICIENT_STOCK, while 100 is 400 INVALID_QUANTITY. Add zero, fractional, string, missing quantity, and unknown product as distinct cases; missing quantity is 400 and unknown product is 404 here. Choose at least eight and assert the exact error code plus unchanged cart after every rejection.'),
 E('01-05-b','Draw the checkout machine','Create a four-state diagram and choose the smallest useful suite.',['List guest/authenticated and empty/filled states.','Mark legal and rejected order transitions.','Select one UI journey and API checks for rejected transitions.'],['Every state has at least one tested transition.','Success and rejection both verify persisted state.'],'Ask which state is required before order creation.','Cover guest+filled rejection, authenticated+empty rejection, authenticated+filled success, then inspect empty cart and persisted order. Use API setup to avoid repeating login UI in every scenario.')
 ],Q('Which negative test is most complete?',['Assert 400 only','Assert rejection and unchanged cart','Catch any exception and pass'],1,'A rejected status does not prove that the server avoided partial mutation.'),[R('Best practices','best-practices')]),
 L('02-01','first-ui','Your first meaningful browser test','Prove the catalog is useful, then deliberately make the test fail.',40,['UI','assertions'],
@@ -128,6 +134,8 @@ await page.getByLabel('Email', { exact: true }).fill('demo@forge.test');
 await page.getByLabel('Password', { exact: true }).fill('Playwright123!');
 // Scope this button to the visible login dialog when two Sign in buttons exist.
 await page.getByRole('dialog').getByRole('button', { name: 'Sign in', exact: true }).click();
+// click() finishes before the form's asynchronous request necessarily does.
+await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
 const session = await page.request.get('/api/session');
 expect((await session.json()).user.email).toBe('demo@forge.test');`),
 S('Keep rejection evidence honest','After an invalid password, assert both the visible error and an unauthenticated session. A message alone can coexist with a mistakenly authenticated backend. For empty required fields, inspect validity or focus without assuming the browser’s localized native message text.')
@@ -192,16 +200,19 @@ S('Preserve the contract shape','Forge Shop expects an object with products and 
   });
 });
 await page.goto('/lab/');
+// Zero cards also holds BEFORE the first response: prove loading finished.
+await expect(page.getByRole('heading', { name: 'No products found' })).toBeVisible();
 await expect(page.getByRole('article')).toHaveCount(0);`),
 S('Pair controlled tests with integration evidence','Keep a real API catalog check alongside the mocked UI cases. If a route pattern matches too broadly, it can intercept unrelated endpoints and hide regressions. Limit it to the intended resource and describe the mocked dependency in the test name.')
 ],[
 E('03-02-a','Empty catalog experiment','Mock a valid empty catalog and assert useful UI feedback.',['Route /api/products before navigation.','Return the documented wrapper with an empty array.','Assert no cards and the empty-state message.'],['The response is contract-shaped.','The test title identifies the mock.'],'Do not confuse zero results with a server error.','Return {products:[],total:0} with 200 and application/json, then assert the app’s no-results message and zero articles.'),
-E('03-02-b','Service failure experiment','Simulate a catalog 503 and inspect recovery behavior.',['Fulfill the catalog request with 503 and a JSON error.','Assert visible failure feedback.','Remove the route and retry the user flow.'],['The test reports actual error behavior.','Recovery is verified or a reproducible product defect is recorded.'],'A missing error state is a finding; do not replace the assertion with a weaker one.','Use route.fulfill({status:503,json:{error:"Catalog unavailable"}}). If the app offers no retry control, reload after unroute and document that recovery path explicitly.')
+E('03-02-b','Service failure experiment','Simulate a catalog 503 and inspect recovery behavior.',['Fulfill the catalog request with 503 and a JSON error.','Assert visible failure feedback.','Remove the route and retry the user flow.'],['The test reports actual error behavior.','Recovery is verified or a reproducible product defect is recorded.'],'A missing error state is a finding; do not replace the assertion with a weaker one.','Use route.fulfill({status:503,json:{error:{code:"UNAVAILABLE",message:"Catalog unavailable."}}}). Assert the visible alert includes that message, then unroute the same pattern, change Category to Desk, and assert all three Desk product identities. The lab explicitly offers filter changes as its retry path.')
 ],Q('What does a mocked 503 UI test establish?',['The production service returns 503 correctly','The UI handles the supplied failure response','The whole system is healthy'],1,'A mock isolates client behavior. A real integration check covers the server boundary.'),[R('Mock APIs','mock'),R('Network','network')]),
 L('03-03','resilient-ui','Browser isolation, sessions, and storage','Keep one customer’s state from becoming another test’s hidden dependency.',55,['isolation','cookies'],
 ['Distinguish browser isolation from server isolation','Share the correct cookie jar for hybrid tests','Inspect storage without leaking authentication artifacts'],[
 S('A new context is not a new database','Playwright’s page fixture gets a fresh browser context. That isolates cookies and local storage, but two contexts can still mutate the same server-side account. Forge Shop isolates practice state using a lab_session cookie or x-lab-session header. Use a unique session per independent test.'),
-S('Choose the request context deliberately','page.request and context.request share the browser context’s cookies. The built-in request fixture has its own cookie storage. If setup data appears to vanish in the UI, inspect whether setup and browser requests use different session identities.',`// Browser navigation establishes the lab session cookie.
+S('Choose the request context deliberately','page.request and context.request share the browser context’s cookies. The built-in request fixture has separate cookie storage, but this repository’s extended fixture intentionally gives request and page the same x-lab-session header. Header identity takes precedence over cookies. In a cookie-only example, establish identity before navigation: page.goto does not wait for the application’s asynchronous session initialization.',`// Establish a browser-owned cookie before app initialization can race it.
+expect((await page.request.get('/api/session')).status()).toBe(200);
 await page.goto('/lab/');
 const added = await page.request.post('/api/cart', {
   data: { productId: 'p1', quantity: 1 }
@@ -210,10 +221,14 @@ expect(added.status()).toBe(200);
 await page.reload();
 await page.getByRole('button', { name: /Cart \\(/ }).click();
 await expect(page.getByLabel('Quantity for Studio Headphones')).toHaveValue('1');`),
-S('Treat saved state as account access','Storage state may contain usable authentication cookies. Keep it out of version control and avoid attaching it to reports. Saving browser state is useful for expensive login flows, but reusing a single mutable session across parallel tests reintroduces interference.')
+S('Treat saved state as account access','Storage state may contain usable authentication cookies. Keep it out of version control and avoid attaching it to reports. Saving browser state is useful for expensive login flows, but reusing a single mutable session across parallel tests reintroduces interference.'),
+S('Practice real storage-state reuse','Complete SK-02 in the supplemental browser-skills track described in docs/BROWSER-SKILLS.md. Log in through a cookie-only context, capture its storageState in memory, create another context from that state, and prove the restored context is signed in while a fresh context remains guest. Use browser.newContext({baseURL, extraHTTPHeaders:{}}), adding storageState for the restored context. Explicitly clear inherited headers: a configured x-lab-session overrides the restored cookie and can make the experiment test a different identity. State reuse preserves a session; it does not clone the server cart.',`# Run the worked browser-skill examples:
+npm run test:skills
+# Implement only SK-02 in its skipped practice starter, then:
+npm run test:skills:practice -- --grep SK-02`)
 ],[
-E('03-03-a','Two customers, two carts','Create two browser contexts and prove their carts differ.',['Open /lab/ in each context.','Add p1 through the first page’s request context.','Inspect both carts and close both contexts.'],['First cart has p1.','Second cart remains empty.'],'Use each page.request, not one shared standalone request.','Create contexts with browser.newContext(), visit the lab separately, mutate A with a.request, inspect A and B through their own page.request, then close in finally.'),
-E('03-03-b','Diagnose invisible setup','Explain a test that seeds request but opens a different browser session.',['Seed a standalone request context.','Observe the fresh browser cart.','Repair by using page.request or an explicit shared session header.'],['The explanation identifies cookie jars.','The repaired setup is visible in the browser.'],'A successful POST can belong to the wrong customer.','Navigate first, then seed with page.request. Alternatively configure the same unique x-lab-session header on browser and API contexts.')
+E('03-03-a','Two customers, two carts','Create two browser contexts and prove their carts differ.',['Open /lab/ in each context.','Add p1 through the first page’s request context.','Inspect both carts and close both contexts.'],['First cart has p1.','Second cart remains empty.'],'Use each page.request, not one shared standalone request.','Create two browser.newContext({baseURL, extraHTTPHeaders:{}}) contexts. Explicitly clear inherited headers; omitting extraHTTPHeaders may retain the configured x-lab-session. Bootstrap each via its own context.request.get("/api/session") before navigation. Visit /lab/, mutate A with a.request, inspect both through their own page.request, then close both in finally. Use the baseURL test fixture so a custom PORT is honored.'),
+E('03-03-b','Diagnose invisible setup','Explain a test that seeds request but opens a different browser session.',['Seed a standalone request context.','Observe the fresh browser cart.','Repair by using page.request or an explicit shared session header.'],['The explanation identifies cookie jars.','The repaired setup is visible in the browser.'],'A successful POST can belong to the wrong customer.','For the broken case create browser.newContext({baseURL, extraHTTPHeaders:{}}) and playwright.request.newContext({baseURL, extraHTTPHeaders:{}}). Explicitly clear inherited headers in both; simply omitting the option may retain the repository fixture’s shared x-lab-session. For the repair bootstrap page.request.get("/api/session") before navigation, seed with page.request, then navigate. Alternatively use the supplied fixture, which deliberately shares a unique header between browser and API.')
 ],Q('Which context shares cookies with the active page?',['A separately created request.newContext()','page.request','Any request fixture automatically'],1,'page.request is associated with its BrowserContext and shares its cookie storage.'),[R('Isolation','browser-contexts'),R('API testing','api-testing'),R('Authentication','auth')]),
 L('03-04','resilient-ui','Events, downloads, and deterministic time','Handle asynchronous browser events without missing them.',60,['events','downloads','clock'],
 ['Register download listeners before triggering downloads','Use saved artifacts as evidence','Control time in an isolated teaching fixture'],[
@@ -229,7 +244,11 @@ S('Use synthetic fixtures for time concepts','The shop does not need a countdown
 await page.setContent('<button disabled>Ready</button><script>setTimeout(() => document.querySelector("button").disabled = false, 5000)</script>');
 await expect(page.getByRole('button', { name: 'Ready' })).toBeDisabled();
 await page.clock.fastForward(5000);
-await expect(page.getByRole('button', { name: 'Ready' })).toBeEnabled();`)
+await expect(page.getByRole('button', { name: 'Ready' })).toBeEnabled();`),
+S('Transfer the event pattern to other controls','The dedicated /skills/ page and docs/BROWSER-SKILLS.md add executable drills without pretending the shop implements every browser feature. SK-01 tests the precise timer boundary; SK-03 uses setInputFiles and verifies file content; SK-04 scopes a control inside frameLocator; SK-05 registers the popup listener before opening a tab and checks the new page; SK-06 accepts and dismisses native dialogs and verifies the parent page result. A native JavaScript dialog uses the dialog event; a rendered HTML dialog uses ordinary locators. Complete the drills with their actual fixture labels and close manually created pages or contexts.',`# Select a worked drill:
+npm run test:skills -- --grep SK-05
+# Remove skip from just the matching practice starter and implement it:
+npm run test:skills:practice -- --grep SK-05`)
 ],[
 E('03-04-a','Inspect a real receipt','Download a completed order’s receipt and validate its contents.',['Create an order in your isolated session.','Arm the download event, then trigger receipt download.','Read the saved file and compare order ID and total.'],['The download succeeds.','The content matches this test’s order.'],'Use testInfo.outputPath, never a shared receipt.txt.','Await download.saveAs(testInfo.outputPath(...)); read the file with node:fs/promises; assert the exact order ID and expected amount using the receipt’s documented format.'),
 E('03-04-b','Advance a controlled timer','Use the synthetic timer fixture to avoid a five-second wait.',['Install page.clock.','Create the disabled button and timeout.','Advance time and assert enabled state.'],['The button begins disabled.','No real-time sleep is used.'],'Install the clock before creating timers.','Use the clock example in this lesson; add an assertion before fastForward so an always-enabled button cannot pass.')
@@ -326,22 +345,26 @@ try {
 }`),
 S('Authorization checks need an unchanged-state oracle','For an unauthenticated order attempt, verify rejection and no order creation. If a filled cart is required to reach the authentication branch, seed one first. Otherwise the request may fail for the wrong reason and never exercise the access rule.')
 ],[
-E('04-04-a','Guest checkout rejection','Attempt order creation with a filled guest cart.',['Create a fresh guest session.','Add p1, then POST valid shipping data to /api/orders.','Assert unauthorized status and preserved cart.'],['Failure is authentication-related.','No order was created and the cart remains intact.'],'Provide otherwise valid input so auth is the variable.','Seed p1, post valid name/address/city/postalCode, assert the documented 401 response, then verify the cart still has p1 and the session remains guest.'),
+E('04-04-a','Guest checkout rejection','Attempt order creation with a filled guest cart.',['Create a fresh guest session.','Add p1, then POST valid shipping data to /api/orders.','Assert unauthorized status and preserved cart.'],['Failure is authentication-related.','No order was created and the cart remains intact.'],'Provide otherwise valid input so auth is the variable.','Seed p1, post valid name/address/city/postalCode, assert 401 AUTH_REQUIRED, then verify the cart still has p1 and the session remains guest. Finally log in to the same session and assert GET /api/orders returns an empty list: a 401 alone cannot prove no order was accidentally created.'),
 E('04-04-b','Cross-session independence','Authenticate A, leave B guest, and prove cart separation.',['Create contexts with unique session headers.','Log in and mutate A.','Inspect B’s session and cart, then dispose both.'],['B remains guest.','B cannot see A’s cart contents.'],'Use a different random identifier for each context.','A /api/session returns the demo user; B returns user:null. A cart has p1; B items is empty. Cleanup belongs in finally even when an assertion fails.')
 ],Q('Why give a guest order test valid shipping data?',['To bypass authentication','To ensure rejection tests the access rule rather than unrelated validation','To create a real shipment'],1,'Control other variables so the failure has the intended cause.'),[R('Authentication','auth'),R('APIRequest.newContext','api/class-apirequest#api-request-new-context')]),
 L('04-05','api','Hybrid testing and order invariants','Set up quickly through the API, then verify the customer-facing result.',65,['hybrid','orders','money'],
 ['Use API setup without losing UI coverage','Verify order snapshots and cart clearing','Test discounts with an independent calculation'],[
 S('Spend UI time on the claim','If your test is about the order confirmation, repeating login and product browsing through the UI adds unrelated failure points. Establish those preconditions through the API in the browser’s session, then use the UI for the behavior under test. Retain a separate full journey to cover the wiring.'),
 S('Treat an order as a snapshot','An order should preserve the items and totals at purchase time. The cart can be cleared or rebuilt afterward without changing that order. This is a more valuable invariant than asserting only that the order list has one extra element.'),
-S('Compute the discount yourself','SAVE10 applies the lab’s documented ten-percent rule. For one p1, subtotal is 12900, discount is 1290, total is 11610 cents. Check the API and UI agree with those independent numbers. Read the contract for rounding before testing prices that produce fractional cents.',`await page.goto('/lab/');
-await page.request.post('/api/login', { data: {
+S('Compute the discount yourself','SAVE10 applies the lab’s documented ten-percent rule. For one p1, subtotal is 12900, discount is 1290, total is 11610 cents. Check the API and UI agree with those independent numbers. Read the contract for rounding before testing prices that produce fractional cents.',`// Set up through the browser-owned request context before navigation.
+const login = await page.request.post('/api/login', { data: {
   email: 'demo@forge.test', password: 'Playwright123!'
 }});
-await page.request.post('/api/cart', { data: { productId: 'p1', quantity: 1 } });
-await page.request.post('/api/cart/promo', { data: { code: 'SAVE10' } });
+expect(login.status()).toBe(200);
+const added = await page.request.post('/api/cart', { data: { productId: 'p1', quantity: 1 } });
+expect(added.status()).toBe(200);
+const promo = await page.request.post('/api/cart/promo', { data: { code: 'SAVE10' } });
+expect(promo.status()).toBe(200);
 const cart = await (await page.request.get('/api/cart')).json();
 expect(cart).toMatchObject({ subtotal: 12900, discount: 1290, total: 11610 });
-await page.reload(); // Let the UI read the prepared state.`)
+await page.goto('/lab/'); // Let the UI read the prepared state.
+await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();`)
 ],[
 E('04-05-a','Discounted order evidence','Create a discounted order and verify its monetary snapshot.',['Log in, add p1, and apply SAVE10 in one session.','Submit valid shipping data.','Verify order subtotal/discount/total and empty cart.'],['Total is exactly 11610 cents.','The order retains its purchased item after cart clearing.'],'Use the returned order ID to identify the record.','Assert POST /api/orders succeeds with order fields matching 12900/1290/11610; GET orders contains the same ID; GET cart has no items.'),
 E('04-05-b','Order immutability probe','Show that a later cart change does not rewrite an existing order.',['Create an order and capture its relevant fields.','Add p2 to the now-empty cart.','Read the original order again and compare its snapshot.'],['The existing order is unchanged.','The new cart independently contains p2.'],'Compare business fields, not volatile response metadata.','Store original order ID, items and totals. After adding p2, locate the same order and assert those fields are identical; assert cart total 8900.')
@@ -413,13 +436,14 @@ L('05-04','architecture','Parallel-safe by construction','Make state ownership e
 ['Identify shared mutable state','Use unique session ownership','Compare serial and parallel results without hiding races'],[
 S('Concurrency exposes dependencies you already had','A suite that passes with one worker but fails with four often shares mutable state. Examples include one cart, one output filename, or a reset endpoint that clears everyone’s data. Parallelism is not the underlying bug; hidden ownership is.'),
 S('Use identity, not timing, for separation','A UUID-backed lab session is stronger than a timestamp alone. Include test names in diagnostics, but use a unique identifier for storage ownership. Output artifacts should use testInfo.outputPath. Avoid relying on test execution order even within a file.',`import { randomUUID } from 'node:crypto';
-test('owns its cart', async ({ playwright }) => {
+test('owns its cart', async ({ playwright, baseURL }) => {
   const api = await playwright.request.newContext({
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL,
     extraHTTPHeaders: { 'x-lab-session': randomUUID() }
   });
   try {
-    await api.post('/api/cart', { data: { productId: 'p2', quantity: 1 } });
+    const added = await api.post('/api/cart', { data: { productId: 'p2', quantity: 1 } });
+    expect(added.status()).toBe(200);
     const cart = await (await api.get('/api/cart')).json();
     expect(cart.total).toBe(8900);
   } finally { await api.dispose(); }
@@ -431,13 +455,14 @@ E('05-04-b','Shared-state autopsy','Explain why two tests using the same saved m
 ],Q('What is the strongest fix for two tests resetting the same cart?',['Longer waits','Unique server-side session ownership','Five retries'],1,'State separation removes the interference instead of reducing its visibility.'),[R('Parallelism','test-parallel'),R('Fixtures','test-fixtures')]),
 L('05-05','architecture','Projects, configuration, and suite boundaries','Build a test matrix that answers distinct questions without wasting runs.',55,['config','projects'],
 ['Define browser and API projects deliberately','Use a managed local webServer','Keep timeout and retry policy understandable'],[
-S('Projects are execution contexts','A project can select a browser, device, environment, or subset of tests. API-only tests usually do not need to run once per browser engine. UI behavior may need Chromium, Firefox, and WebKit coverage. Split matching rules so your matrix represents real questions.'),
+S('Projects are execution contexts','A project can select a browser, device, environment, or subset of tests. API-only tests usually do not need to run once per browser engine. UI behavior may need Chromium, Firefox, and WebKit coverage. Split matching rules so your matrix represents real questions. This repository keeps the main config for daily practice and an optional playwright.matrix.config.ts for three-engine UI checks; inspect both with their --list commands before changing matching rules.'),
 S('Let the runner manage the target','The webServer option can launch the local app and wait for readiness. Use a stable baseURL, a command that exists in package.json, and a readiness URL. Avoid accidentally testing an unrelated server already running on the same port in CI.',`import { defineConfig, devices } from '@playwright/test';
+const baseURL = 'http://127.0.0.1:' + (process.env.PORT || '4173');
 export default defineConfig({
   testDir: './tests',
-  use: { baseURL: 'http://127.0.0.1:4173', trace: 'on-first-retry' },
+  use: { baseURL, trace: 'retain-on-failure' },
   webServer: {
-    command: 'npm run dev', url: 'http://127.0.0.1:4173/lab/',
+    command: 'npm run dev', url: baseURL + '/api/forge-health',
     reuseExistingServer: !process.env.CI
   },
   projects: [
@@ -465,8 +490,8 @@ E('06-01-b','Follow a backend rejection','Create a failure where an invalid API 
 L('06-02','delivery','Flakiness, retries, and false confidence','Measure unstable signals and repair their causes.',55,['flakiness','retries'],
 ['Differentiate deterministic failure from intermittent behavior','Use repetitions to investigate a hypothesis','Report flaky passes separately'],[
 S('A retry is another observation','A test that fails then passes is flaky, not equivalent to a clean pass. Retries can preserve useful diagnostics and reduce transient pipeline blockage, but they do not remove the underlying race or dependency. Record first-run failures and their causes.'),
-S('Classify before editing','Common classes are timing, shared state, external dependencies, selector ambiguity, environment variance, and real intermittent product bugs. For each suspect, propose a discriminating experiment. Compare one worker with several, mocked dependency with real dependency, or a precise assertion with a fixed sleep.',`npx playwright test tests/ui/cart.spec.ts --project=ui --retries=0 --repeat-each=10
-npx playwright test tests/ui/cart.spec.ts --project=ui --retries=0 --workers=1
+S('Classify before editing','Common classes are timing, shared state, external dependencies, selector ambiguity, environment variance, and real intermittent product bugs. For each suspect, propose a discriminating experiment. Compare one worker with several, mocked dependency with real dependency, or a precise assertion with a fixed sleep.',`npx playwright test tests/ui/shop.spec.ts --project=ui --grep "cart survives a page reload" --retries=0 --repeat-each=10
+npx playwright test tests/ui/shop.spec.ts --project=ui --grep "cart survives a page reload" --retries=0 --workers=1
 # Use actual discovered spec paths from --list.
 # Keep repetitions targeted to a live hypothesis.`),
 S('Track failure economics','Record failure count, run count, duration, and investigation time. A flaky check that runs hundreds of times can consume more engineering time than its execution cost suggests. Quarantine requires an owner, reason, and expiry; silently skipping a critical check creates a coverage hole.')
@@ -505,6 +530,11 @@ npx playwright test --shard=1/2 --reporter=blob
 npx playwright test --shard=2/2 --reporter=blob
 # Download both jobs' blob reports into one directory, then:
 npx playwright merge-reports --reporter=html ./all-blob-reports`),
+S('Run a real browser matrix deliberately','A policy is not execution evidence. The optional playwright.matrix.config.ts supplies ui-chromium, ui-firefox and ui-webkit projects selecting only tests/ui. API checks remain in the normal configuration and are not multiplied across engines. Inspect the matrix, install the matching browsers, and run it using the commands below. Record the projects actually executed and any platform limitation. The default npm test still selects the smaller Chromium and API suite.',`npm run browsers:all
+npm run test:matrix -- --list
+npm run test:matrix
+# Focus one engine during diagnosis:
+npm run test:matrix -- --project=ui-firefox` ),
 S('Measure before expanding','Compare total wall time, install time, test time, and flake rate. A reasonable small-project policy is a fast Chromium/API pull-request gate plus a broader browser run on a schedule or release candidate. This is a starting decision, not a universal rule.')
 ],[
 E('06-04-a','Propose a browser policy','Design a pull-request and release matrix for the shop.',['Identify the most important customer journeys.','Assign fast and broad execution tiers.','Estimate total runs and explain each browser’s purpose.'],['The policy covers real browser risk.','API tests are not pointlessly multiplied.'],'Separate server contract coverage from rendering coverage.','Example: API + Chromium critical journeys on every change; all UI journeys on Firefox/WebKit before release. Record why mobile viewport coverage matters and what physical-device testing remains manual.'),
@@ -545,14 +575,16 @@ E('07-01-b','Review a convincing weak test','Critique an AI-generated checkout t
 L('07-02','agents','Planner: turn exploration into an executable plan','Use official Playwright agents to make scenarios precise before code exists.',60,['AI','planner','test-plan'],
 ['Initialize the supported agent definitions','Provide a seed test and local target','Review plans for preconditions, outcomes, and blind spots'],[
 S('Know the official agent roles','Playwright documents planner, generator, and healer agents. The planner explores and writes a human-readable plan; the generator turns a plan into tests; the healer investigates and repairs failures. Their generated definitions should be refreshed after upgrading Playwright so tooling and instructions remain aligned.'),
-S('Start with a seed that reflects your suite','A seed test imports the fixture layer you actually use. That gives the planner the right environment and initialization. The setup command depends on the agent client. Verify your installed version supports the command, and use the client you have configured.',`# Official setup for a Codex agent client:
+S('Initialize the client definitions','Verify support in your installed package, run the setup matching your agent client, and inspect generated files. Agent definitions are optional; the same planning and review exercises work manually. Definitions do not automatically change the repository’s project discovery rules.',`npx playwright init-agents --help
 npx playwright init-agents --loop=codex
-# Other documented clients include vscode, claude, and opencode.
-
-// tests/seed.spec.ts — use your real fixture import path
-import { test } from './support/fixtures';
+# After saving the seed below, verify discovery and execute it:
+npx playwright test tests/ui/seed.spec.ts --project=ui --list
+npx playwright test tests/ui/seed.spec.ts --project=ui`),
+S('Start with a discovered, runnable seed','Save this as tests/ui/seed.spec.ts so the existing ui project discovers it. A file at tests/seed.spec.ts is outside the configured project patterns. Use the actual fixture import and a readiness assertion; a planner must start from known state, not merely a completed navigation. If init-agents generated a different seed path, move or adapt it to the discovered location and pass that path to the planner.',`// tests/ui/seed.spec.ts
+import { test, expect } from '../support/fixtures';
 test('seed', async ({ page }) => {
   await page.goto('/lab/');
+  await expect(page.getByRole('article')).toHaveCount(6);
 });`),
 S('Review the plan as a specification','A good plan includes the starting session state, concrete data, precise actions, expected UI and server results, and cleanup. Ask it to distinguish observed behavior from assumed requirements. A planner can describe an existing bug as normal behavior unless you supply the intended rule.')
 ],[
@@ -579,7 +611,8 @@ L('07-04','agents','Healer: repair tests without erasing defects','Protect the o
 S('A red test can be correct','If a checkout total is wrong, the right output is a defect report and a failing test. If a button’s accessible name intentionally changed, updating the locator may be appropriate. The healer’s job must be constrained by the requirement; green is not the only acceptable outcome.'),
 S('Use a repair contract','Supply the failing test, trace, relevant requirement, allowed files, and forbidden shortcuts. Require a causal explanation before accepting a patch. Official agent behavior can include skipping a test when functionality appears broken; treat any such skip as an explicit review item rather than restored coverage.'),
 S('Compare the before and after oracle','A locator repair preserves the assertion’s meaning. Replacing exact total equality with visibility does not. Increasing timeout may be justified by measured latency, but adding force, retries, or catch-and-ignore can hide an actual defect.',`Repair brief:
-Investigate tests/ui/checkout.spec.ts using its trace.
+Investigate the discounted checkout test you wrote in lesson 04-05.
+Supply its actual spec path, failing command, and trace path.
 Preserve: order total equals 11610 cents after SAVE10 on p1.
 Allowed: test locators/helpers supported by observed UI changes.
 Do not: skip, delete assertions, change expected totals, modify the app,

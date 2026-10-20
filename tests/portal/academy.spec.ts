@@ -129,3 +129,120 @@ test('mobile navigation works without horizontal overflow', async ({ page }) => 
   await expect(page.getByRole('button', { name: 'Toggle navigation' })).toHaveAttribute('aria-expanded','false');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+test('skip to content preserves the lesson route and survives reload', async ({ page }) => {
+  await page.goto('/#/lesson/02-01');
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+  await expect(page).toHaveURL(/#\/lesson\/02-01$/);
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Your first meaningful browser test', exact: true })).toBeVisible();
+});
+
+test('invalid encoded routes recover and legacy content fragments still render', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/#/lesson/%E0%A4%A');
+  await expect(page.getByRole('heading', { name: 'That page is not in the workshop.' })).toBeVisible();
+  await page.getByRole('link', { name: 'Open the learning path' }).click();
+  await expect(page.locator('.lesson-row')).toHaveCount(40);
+  await page.goto('/#main');
+  await expect(page.getByRole('heading', { name: 'Ship confidence. Not just tests.' })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('continue learning resumes the last unfinished lesson', async ({ page }) => {
+  await page.goto('/#/lesson/03-02');
+  await page.getByRole('link', { name: 'Overview', exact: false }).click();
+  await expect(page.getByRole('link', { name: 'Continue learning' })).toHaveAttribute('href', '#/lesson/03-02');
+  await page.reload();
+  await page.getByRole('link', { name: 'Continue learning' }).click();
+  await expect(page.getByRole('heading', { name: 'Control the network, expose the edge cases', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await page.getByRole('link', { name: 'My progress' }).click();
+  await expect(page.getByRole('link', { name: 'Continue learning' })).toHaveAttribute('href', '#/lesson/01-01');
+});
+
+test('an old failed manual request cannot replace the newly opened page', async ({ page }) => {
+  let release!: () => void;
+  let requested!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  const intercepted = new Promise<void>(resolve => { requested = resolve; });
+  await page.route('**/docs/START-HERE.md', async route => {
+    requested();
+    await pending;
+    await route.fulfill({ status: 503, body: 'Temporarily unavailable' });
+  });
+  await page.goto('/#/manual/START-HERE');
+  await intercepted;
+  await page.getByRole('link', { name: 'Learning path' }).click();
+  const failedResponse = page.waitForResponse(response => response.url().endsWith('/docs/START-HERE.md'));
+  release();
+  await (await failedResponse).finished();
+  // Let the browser render the fetch completion before checking the active route.
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
+  await expect(page.getByRole('heading', { name: 'From curious to capable.' })).toBeVisible();
+  await expect(page.locator('.lesson-row')).toHaveCount(40);
+});
+
+test('import discards unknown exercise checks and impossible quiz choices', async ({ page }) => {
+  await page.goto('/#/progress');
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('#progress-file').setInputFiles({
+    name: 'progress.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({
+      completed: ['01-01', '01-01', 'fake-lesson'],
+      checks: { 'nonexistent/check/0': true },
+      quizzes: { '01-01': 9, '02-01': -1 },
+      notes: {}, lastLesson: 'missing',
+    })),
+  });
+  await expect(page.getByRole('status')).toContainText('restored');
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('forge-academy-v1')!));
+  expect(stored.completed).toEqual(['01-01']);
+  expect(stored.checks).toEqual({});
+  expect(stored.quizzes).toEqual({});
+  expect(stored.lastLesson).toBeNull();
+});
+
+test('closed mobile navigation is outside the keyboard path and restores focus after Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(0);
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+  await page.keyboard.press('Tab');
+  const menu = page.getByRole('button', { name: 'Toggle navigation' });
+  await expect(menu).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', { name: 'Close navigation' })).toBeFocused();
+  await expect(page.getByRole('dialog', { name: 'Navigation', exact: true })).toBeVisible();
+  // The background cannot steal focus while the mobile navigation is open.
+  await page.getByRole('button', { name: 'Search academy' }).evaluate((button: HTMLButtonElement) => button.focus());
+  await expect(page.getByRole('button', { name: 'Close navigation' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeFocused();
+  await expect(menu).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('lesson and lab practice maps connect learners to runnable starter commands', async ({ page }) => {
+  await page.goto('/#/lesson/02-01');
+  const exercise = page.locator('[data-practice-id="EX-01"]');
+  await exercise.locator('summary').first().click();
+  await expect(exercise).toContainText('exercises/01-foundations.spec.ts');
+  await expect(exercise.locator('pre')).toHaveText('npm run test:exercises -- --grep "EX-01"');
+  await exercise.getByText('Where to compare your solution').click();
+  await expect(exercise).toContainText('solutions/01-foundations.spec.ts');
+  await page.goto('/#/lab');
+  await expect(page.locator('[data-practice-id^="EX-"]')).toHaveCount(24);
+  await expect(page.locator('[data-practice-id^="SK-"]')).toHaveCount(6);
+  await expect(page.getByRole('link', { name: 'Open browser skills lab' })).toHaveAttribute('href', '/skills/');
+  const skill = page.locator('[data-practice-id="SK-03"]');
+  await skill.locator('summary').first().click();
+  await expect(skill.locator('pre')).toHaveText('npm run test:skills:practice -- --grep SK-03');
+  await skill.getByRole('link', { name: /03-04 · Events/ }).click();
+  await expect(page).toHaveURL(/#\/lesson\/03-04$/);
+  await expect(page.locator('[data-practice-id="SK-03"]')).toBeVisible();
+});

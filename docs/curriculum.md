@@ -14,7 +14,90 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **80 written exercises** are separate from the **24 executable starter challenges** in `exercises/`; the starter challenges have corresponding runnable worked examples in `solutions/`. Those counts describe different practice formats and should not be conflated.
+The **80 written exercises** are separate from the **24 executable shop starter challenges** in `exercises/` and **6 supplemental browser-skills drills** in `skills/`. Shop starters have worked examples in `solutions/`; browser-skills starters and worked examples live together in `skills/`. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+
+## Before lesson 01-02
+
+Use Node **22 or newer**, npm, a terminal opened at this repository, and enough disk space for the selected browser binaries. Run `node --version`, `npm --version`, and `git status` to establish your environment. Install the lockfile dependencies with `npm ci`, then install Chromium with `npx playwright install chromium`. Run `npm run typecheck` separately from Playwright; executing a TypeScript test does not guarantee its types are correct.
+
+The supplied `webServer` starts the target automatically when running tests. You only need `npm run dev` to browse the academy independently or keep a manual target open. Stopping a manually started server will not reliably produce a connection-refused exercise because the runner can start another one.
+
+Save additional learner tests under `exercises/*.spec.ts` and run them with `npm run test:exercises`. The configured project patterns do not discover a new file at `tests/seed.spec.ts`; the AI seed in lesson 07-02 belongs at `tests/ui/seed.spec.ts`. Always confirm discovery with `--list` before diagnosing a test that appears never to run.
+
+## Choose the right session experiment
+
+- The repository fixture in `tests/support/fixtures.ts` intentionally shares a unique **x-lab-session** header between `request` and `page`. API setup will be visible in the browser even though their cookie jars are separate.
+- To study cookie isolation or `storageState`, explicitly clear inherited headers with `browser.newContext({baseURL, extraHTTPHeaders:{}})` and, for a standalone API client, `playwright.request.newContext({baseURL, extraHTTPHeaders:{}})`. Omitting the header option can retain the configured identity. Add `storageState` only when deliberately restoring a session. Establish a cookie through the context's request client before navigation; `page.goto('/lab/')` does not itself wait for the app's asynchronous session initialization.
+- Restoring storage state restores access to the same server session. It does not duplicate server-side data. Give separate tests independent identities; use two contexts within one test when intentionally proving state reuse.
+- A schema-valid quantity can still exceed stock. For p1, 12 succeeds, 13 and 99 return `409 INSUFFICIENT_STOCK`, and 100 returns `400 INVALID_QUANTITY`. Separate these boundaries in your cases.
+
+## Find an executable drill
+
+The portal includes matching practice links inside each relevant lesson. This table records the same mapping as `portal/content/practice.js`; a drill may reinforce several lessons. Choose one starter, remove only its skip, and implement all acceptance criteria before opening the solution.
+
+```sh
+# One shop assignment and its worked example
+npm run test:exercises -- --grep EX-12
+npm run test:solutions -- --grep EX-12
+
+# One browser-skills assignment and its worked example
+npm run test:skills:practice -- --grep SK-02
+npm run test:skills -- --grep SK-02
+```
+
+A skipped result means unfinished work. A passing solution run demonstrates the reference implementation; it does not establish that you completed the assignment yourself.
+
+| Drill | Practice | Lessons | Starter |
+|---|---|---|---|
+| EX-01 | Your first observable outcome | 01-02, 02-01 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-02 | Search like a user | 02-02, 02-04 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-03 | Empty results and recovery | 01-05, 02-04 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-04 | Category + sort | 02-04 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-05 | Unavailable products | 02-02 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-06 | Cart lifecycle | 02-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-07 | Discount arithmetic | 02-05, 04-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-08 | Keyboard-only dialog | 03-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-09 | Catalog contract | 01-03, 04-01 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-10 | Query parameters | 04-02 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-11 | Create then update | 04-03 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-12 | Boundary table | 01-05, 04-03, 05-03 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-13 | Authentication contract | 02-03, 04-04 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-14 | Order lifecycle | 04-05 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-15 | Session isolation | 03-03, 04-04, 05-01, 05-04 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-16 | Malformed and missing data | 04-01, 04-03 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
+| EX-17 | Hybrid checkout | 02-05, 04-05, 05-02, 08-02 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-18 | Service outage | 03-02, 08-03 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-19 | Deterministic empty state | 03-02 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-20 | Receipt download | 03-04 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-21 | Mobile commerce | 03-05, 05-05, 06-04 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-22 | Stock error preserves state | 02-05, 04-03, 08-03 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-23 | Observe network without racing | 01-04, 03-01, 06-02 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| EX-24 | Reset and recovery | 03-03, 05-01, 08-02 | [exercises/03-advanced.spec.ts](../exercises/03-advanced.spec.ts) |
+| SK-01 | Timer boundary | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| SK-02 | Reuse cookie authentication | 03-03, 04-04, 05-01 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| SK-03 | Upload and inspect a file | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| SK-04 | Scope an iframe locator | 02-02, 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| SK-05 | Capture a popup | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| SK-06 | Accept and dismiss a dialog | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+
+The [browser-skills manual](BROWSER-SKILLS.md) explains the local `/skills/` harness and six additional drills. Uploads, frames, popups, and native dialogs have explicit teaching fixtures there; they are not invented shop features. Clock and authentication drills exercise observable timer boundaries and real session cookies.
+
+## Evidence gates before advancing
+
+| After stage | Demonstrate before marking the stage complete |
+|---|---|
+| Foundations | Run one discovered test, explain one boundary distinction, and show a deliberate assertion failure. |
+| First UI suite | Complete a persisted purchase and demonstrate a visible rejection, using scoped role/label locators. |
+| Resilient UI | Produce a controlled outage and recovery, prove session separation, inspect a receipt, and complete the browser-skills drills with no fixed sleeps. |
+| API | Assert exact status/error codes, independent monetary expectations, and unchanged state for rejected mutations. |
+| Architecture | Explain fixture setup/use/teardown, then run selected tests alone and with multiple workers without shared-state interference. |
+| Delivery | Diagnose one failure from a trace and retain actual CI or local equivalent evidence. Distinguish configured browsers from browsers actually tested. |
+| AI agents | Map a reviewed plan to assertions, inspect the generated diff, and reject a repair that removes the protected rule. Manual planning/review works without paid agent access. |
+| Capstone | Demonstrate critical-risk coverage, a controlled defect detected by the intended oracle, a reproducible run, and explicit limitations. |
+
+No stage requires a perfect quiz score before experimenting; knowledge checks guide review. Completion remains a self-assessment based on your evidence. Supplemental drills add practice time beyond the lesson estimates.
+
+For the optional three-engine UI run in lesson 06-04, use `npm run browsers:all`, inspect `npm run test:matrix -- --list`, then run `npm run test:matrix`. The separate `playwright.matrix.config.ts` selects UI checks for Chromium, Firefox, and WebKit; API checks run once in the main configuration. A declared project is not proof it was executed: retain your actual results and platform details.
 
 ## Learning stages
 

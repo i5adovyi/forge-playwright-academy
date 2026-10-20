@@ -64,15 +64,19 @@ test('EX-15 solution · explicit independent contexts', async ({ request, playwr
   } finally { await other.dispose(); }
 });
 test('EX-16 solution · negative contracts preserve state', async ({ request }) => {
+  await addProduct(request, 'p1', 2);
+  const before = await (await request.get('/api/cart')).json();
   const malformed = await request.post('/api/cart', { data: '{broken' });
   expect(malformed.status()).toBe(400); expect((await malformed.json()).error.code).toBe('INVALID_BODY');
+  expect(await (await request.get('/api/cart')).json()).toEqual(before);
   const missing = await request.post('/api/cart', { data: { productId: 'missing', quantity: 1 } });
   expect(missing.status()).toBe(404);
   expect((await missing.json()).error.code).toBe('PRODUCT_NOT_FOUND');
-  await login(request); await addProduct(request);
+  expect(await (await request.get('/api/cart')).json()).toEqual(before);
+  await login(request);
   const invalid = await request.post('/api/orders', { data: { ...shipping, city: '' } });
   expect(invalid.status()).toBe(422);
   expect((await invalid.json()).error.code).toBe('INVALID_ADDRESS');
-  expect((await (await request.get('/api/cart')).json()).total).toBe(12900);
+  expect(await (await request.get('/api/cart')).json()).toEqual(before);
   expect((await (await request.get('/api/orders')).json()).orders).toEqual([]);
 });

@@ -5,6 +5,14 @@ let user = null;
 let toastTimer;
 let searchTimer;
 let catalogVersion = 0;
+let stateQueue = Promise.resolve();
+// The API returns complete session snapshots. Keep reads and mutations ordered,
+// including their UI updates, so a slow older response cannot replace newer state.
+function withState(action) {
+  const pending = stateQueue.then(action);
+  stateQueue = pending.catch(() => {});
+  return pending;
+}
 const paths = {
   headphones: '<path d="M35 88V70a45 45 0 0 1 90 0v18" fill="none" stroke="#3e513e" stroke-width="14"/><rect x="24" y="76" width="29" height="54" rx="12" fill="#334833"/><rect x="107" y="76" width="29" height="54" rx="12" fill="#334833"/><path d="M35 78v43M125 78v43" stroke="#8b9a81" stroke-width="4"/>',
   keyboard: '<g transform="rotate(-8 80 80)"><rect x="12" y="49" width="136" height="72" rx="8" fill="#58604e"/><rect x="17" y="53" width="126" height="61" rx="5" fill="#aab09b"/><path d="M25 66h111M25 79h111M25 92h111" stroke="#d9ddc9" stroke-width="10" stroke-dasharray="8 4"/><rect x="51" y="102" width="57" height="7" rx="2" fill="#d9ddc9"/></g>',
@@ -22,8 +30,23 @@ async function api(path, options = {}) {
 }
 function toast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 3500); }
 function errorAt(id, message = '') { $(id).textContent = message; $(id).hidden = !message; }
-function showDialog(id) { $(id).showModal(); }
+const dialogReturnFocus = new WeakMap();
+function showDialog(id, trigger) {
+  const dialog = $(id);
+  dialogReturnFocus.set(dialog, trigger);
+  dialog.showModal();
+}
+document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('close', () => {
+  // A checkout transition closes one modal and immediately opens another.
+  // Only restore focus when the modal workflow has actually ended.
+  if ($('dialog[open]')) return;
+  const trigger = dialogReturnFocus.get(dialog);
+  if (trigger?.isConnected) trigger.focus();
+}));
 function updateCart(next) {
+  const focused = document.activeElement;
+  const quantityId = focused?.dataset?.quantity;
+  const removeId = focused?.dataset?.remove;
   cart = next;
   $('#cart-open').textContent = `Cart (${cart.items.reduce((sum, item) => sum + item.quantity, 0)})`;
   $('#cart-items').innerHTML = cart.items.length ? cart.items.map(item => `<article class="cart-item" aria-label="${escapeHTML(item.name)} in cart"><div><h3>${escapeHTML(item.name)}</h3><p>${money(item.price)} each</p><label>Qty <input aria-label="Quantity for ${escapeHTML(item.name)}" type="number" min="1" max="99" value="${item.quantity}" data-quantity="${item.productId}"></label></div><div class="cart-item-right"><strong>${money(item.lineTotal)}</strong><p><button class="remove-button" data-remove="${item.productId}" aria-label="Remove ${escapeHTML(item.name)}">Remove</button></p></div></article>`).join('') : '<div class="empty-state"><h3>Your cart is empty</h3><p>Good things are waiting in the collection.</p></div>';
@@ -31,6 +54,8 @@ function updateCart(next) {
   $('[data-testid="cart-subtotal"]').textContent = money(cart.subtotal || 0);
   $('[data-testid="cart-discount"]').textContent = `−${money(cart.discount || 0)}${cart.promoCode ? ' · SAVE10' : ''}`;
   $('[data-testid="cart-total"]').textContent = money(cart.total || 0);
+  if (quantityId) $(`[data-quantity="${CSS.escape(quantityId)}"]`)?.focus();
+  if (removeId) ($(`[data-remove="${CSS.escape(removeId)}"]`) || $('#cart-items [data-remove]') || $('[data-close="cart-dialog"]')).focus();
 }
 function updateUser(next) { user = next; $('#login-open').textContent = user ? 'Sign out' : 'Sign in'; }
 async function loadProducts() {
@@ -59,68 +84,86 @@ $('#products').addEventListener('click', async event => {
   const button = event.target.closest('[data-add]');
   if (!button) return;
   button.disabled = true;
-  const quantity = (cart.items.find(i => i.productId === button.dataset.add)?.quantity || 0) + 1;
-  try { updateCart(await api('/cart', { method: 'POST', body: { productId: button.dataset.add, quantity } })); toast('Added to your cart.'); }
+  try {
+    await withState(async () => {
+      const quantity = (cart.items.find(i => i.productId === button.dataset.add)?.quantity || 0) + 1;
+      updateCart(await api('/cart', { method: 'POST', body: { productId: button.dataset.add, quantity } }));
+      toast('Added to your cart.');
+    });
+  }
   catch (error) { toast(error.message); }
   finally { button.disabled = false; }
 });
 $('#cart-open').addEventListener('click', async () => {
-  errorAt('#cart-error'); showDialog('#cart-dialog');
-  try { updateCart(await api('/cart')); } catch (error) { errorAt('#cart-error', error.message); }
+  errorAt('#cart-error');
+  // Render the refreshed snapshot before inputs become editable. Otherwise the
+  // read can replace an input between clearing its old value and typing a new one.
+  try { await withState(async () => { updateCart(await api('/cart')); showDialog('#cart-dialog', $('#cart-open')); }); }
+  catch (error) { showDialog('#cart-dialog', $('#cart-open')); errorAt('#cart-error', error.message); }
 });
 document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => $(`#${button.dataset.close}`).close()));
 $('#cart-items').addEventListener('change', async event => {
   if (!event.target.matches('[data-quantity]')) return;
   errorAt('#cart-error');
-  try { updateCart(await api('/cart', { method: 'POST', body: { productId: event.target.dataset.quantity, quantity: Number(event.target.value) } })); }
+  const data = { productId: event.target.dataset.quantity, quantity: Number(event.target.value) };
+  try { await withState(async () => updateCart(await api('/cart', { method: 'POST', body: data }))); }
   catch (error) { updateCart(cart); errorAt('#cart-error', error.message); }
 });
 $('#cart-items').addEventListener('click', async event => {
   const button = event.target.closest('[data-remove]'); if (!button) return;
   errorAt('#cart-error');
-  try { updateCart(await api(`/cart/${button.dataset.remove}`, { method: 'DELETE' })); }
+  try { await withState(async () => updateCart(await api(`/cart/${button.dataset.remove}`, { method: 'DELETE' }))); }
   catch (error) { errorAt('#cart-error', error.message); }
 });
 $('#promo-form').addEventListener('submit', async event => {
   event.preventDefault(); errorAt('#cart-error');
-  try { updateCart(await api('/cart/promo', { method: 'POST', body: { code: new FormData(event.target).get('code') } })); toast('SAVE10 applied. Enjoy 10% off.'); }
+  const code = new FormData(event.target).get('code');
+  try { await withState(async () => { updateCart(await api('/cart/promo', { method: 'POST', body: { code } })); toast('SAVE10 applied. Enjoy 10% off.'); }); }
   catch (error) { errorAt('#cart-error', error.message); }
 });
 $('#login-open').addEventListener('click', async () => {
-  if (user) {
-    try { await api('/logout', { method: 'POST' }); updateUser(null); toast('You have signed out.'); }
-    catch (error) { toast(error.message); }
-  } else { errorAt('#login-error'); showDialog('#login-dialog'); }
+  try {
+    await withState(async () => {
+      if (user) { await api('/logout', { method: 'POST' }); updateUser(null); toast('You have signed out.'); }
+      else { errorAt('#login-error'); showDialog('#login-dialog', $('#login-open')); }
+    });
+  } catch (error) { toast(error.message); }
 });
 $('#login-form').addEventListener('submit', async event => {
   event.preventDefault(); errorAt('#login-error');
   const button = event.target.querySelector('button[type="submit"]'); button.disabled = true;
-  try { const result = await api('/login', { method: 'POST', body: Object.fromEntries(new FormData(event.target)) }); updateUser(result.user); $('#login-dialog').close(); toast('Welcome back, Alex.'); event.target.reset(); }
+  const data = Object.fromEntries(new FormData(event.target));
+  try { await withState(async () => { const result = await api('/login', { method: 'POST', body: data }); updateUser(result.user); $('#login-dialog').close(); toast('Welcome back, Alex.'); event.target.reset(); }); }
   catch (error) { errorAt('#login-error', error.message); }
   finally { button.disabled = false; }
 });
-$('#checkout-open').addEventListener('click', () => {
-  if (!user) { errorAt('#cart-error', 'Sign in before checkout. Close this cart and choose Sign in.'); return; }
-  $('#cart-dialog').close(); errorAt('#checkout-error'); showDialog('#checkout-dialog');
+$('#checkout-open').addEventListener('click', async () => {
+  await withState(() => {
+    if (!user) { errorAt('#cart-error', 'Sign in before checkout. Close this cart and choose Sign in.'); return; }
+    $('#cart-dialog').close(); errorAt('#checkout-error'); showDialog('#checkout-dialog', $('#cart-open'));
+  });
 });
 $('#checkout-form').addEventListener('submit', async event => {
   event.preventDefault(); errorAt('#checkout-error');
   const button = event.target.querySelector('button[type="submit"]'); button.disabled = true;
+  const data = Object.fromEntries(new FormData(event.target));
   try {
-    const { order } = await api('/orders', { method: 'POST', body: Object.fromEntries(new FormData(event.target)) });
-    $('#checkout-dialog').close(); $('#order-id').textContent = order.id; $('#receipt').href = `/api/orders/${order.id}/receipt`;
-    updateCart({ items: [], subtotal: 0, discount: 0, total: 0, promoCode: null }); event.target.reset(); showDialog('#success-dialog');
+    await withState(async () => {
+      const { order } = await api('/orders', { method: 'POST', body: data });
+      $('#checkout-dialog').close(); $('#order-id').textContent = order.id; $('#receipt').href = `/api/orders/${order.id}/receipt`;
+      updateCart({ items: [], subtotal: 0, discount: 0, total: 0, promoCode: null }); event.target.reset(); showDialog('#success-dialog', $('#cart-open'));
+    });
   } catch (error) { errorAt('#checkout-error', error.message); }
   finally { button.disabled = false; }
 });
 $('#reset').addEventListener('click', async () => {
-  try { await api('/reset', { method: 'POST' }); updateUser(null); updateCart({ items: [] }); toast('Sandbox reset. A fresh start.'); }
+  try { await withState(async () => { await api('/reset', { method: 'POST' }); updateUser(null); updateCart({ items: [] }); toast('Sandbox reset. A fresh start.'); }); }
   catch (error) { toast(error.message); }
 });
 async function init() {
   // Establish one cookie before starting parallel requests; otherwise first requests
   // could each create a different server session.
-  try { updateUser((await api('/session')).user); updateCart(await api('/cart')); }
+  try { await withState(async () => { updateUser((await api('/session')).user); updateCart(await api('/cart')); }); }
   catch (error) { toast(error.message); }
   await loadProducts();
 }

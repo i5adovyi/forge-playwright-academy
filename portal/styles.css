@@ -8,3 +8,16 @@
 @media print{.sidebar,.topbar,footer,.reading-rail,.button-row,.copy-code,.lesson-bottom,.toolbar,.notes-box,.search-trigger{display:none!important}.shell{margin:0}main{padding:0;max-width:100%}.reading-layout{display:block}.code-block{break-inside:avoid}.exercise{break-inside:avoid}body{background:white;color:black;font-size:11pt}.code-block pre{white-space:pre-wrap}a[href^=http]:after{content:' (' attr(href) ')';font-size:8pt}h1{font-size:28pt}.prose{font-size:11pt}}
 
 .sidebar-close{display:none;position:absolute;right:9px;top:8px;color:var(--muted)}@media(max-width:720px){.sidebar-close{display:block}}
+
+/* Practice paths are deliberately visible text: files live in the downloaded checkout. */
+.practice-panel{margin:32px 0;padding-top:24px;border-top:1px solid var(--line)}
+.practice-drill{margin:12px 0;border:1px solid var(--line);border-radius:6px;background:var(--white)}
+.practice-drill>summary{cursor:pointer;padding:16px;font-size:13px;font-weight:600}
+.practice-drill>summary .pill{margin-right:8px}
+.practice-drill-body{padding:0 18px 18px;font-size:12px;color:var(--muted)}
+.practice-drill-body p{margin:12px 0;overflow-wrap:anywhere}
+.practice-drill-body a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.practice-drill-body details>summary{cursor:pointer}
+.practice-drill-body .code-block{margin:15px 0}
+@media(max-width:720px){.sidebar:not(.open){visibility:hidden}}
+@media print{.practice-drill{break-inside:avoid}}

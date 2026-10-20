@@ -23,9 +23,12 @@
     "test:debug": "playwright test --project=ui --debug",
     "test:interactive": "playwright test --ui",
     "test:report": "playwright show-report",
-    "check": "node --check server.mjs && node --check lab/app.js && playwright test --list",
+    "check": "node --check server.mjs && node --check lab/app.js && node --check portal/app.js && node --check skills/app.js && playwright test --list",
     "browsers": "playwright install chromium",
-    "browsers:all": "playwright install"
+    "browsers:all": "playwright install",
+    "test:skills": "playwright test --project=skills",
+    "test:skills:practice": "playwright test --project=skills-practice",
+    "test:matrix": "playwright test --config=playwright.matrix.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

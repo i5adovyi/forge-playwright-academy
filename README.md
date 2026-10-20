@@ -22,6 +22,7 @@ In a second terminal:
 npm test                 # UI and API reference tests
 npm run test:solutions   # Worked exercise solutions
 npm run test:portal      # Learning portal integration tests
+npm run test:skills      # Six browser-feature worked examples
 npm run test:interactive # Playwright UI mode
 ```
 
@@ -33,7 +34,7 @@ The test runner starts the local server automatically if it is not already runni
 - **80 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
 - **40 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **Reference tests**, separate starter exercises, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **30 executable starter exercises** (24 shop drills + 6 browser-skills drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -64,7 +65,10 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:ui` | Run browser UI reference tests |
 | `npm run test:api` | Run HTTP API reference tests |
 | `npm run test:portal` | Verify portal navigation and learning tools |
-| `npm run test:solutions` | Run executable worked solutions |
+| `npm run test:solutions` | Run executable shop worked solutions |
+| `npm run test:skills` | Run timer, auth-state, upload, iframe, popup, and dialog examples |
+| `npm run test:skills:practice` | Run the browser-skills starters you implement |
+| `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
 | `npm run test:all` | All configured projects; unimplemented starters stay skipped |
 | `npm run test:interactive` | Open Playwright UI mode |
@@ -83,6 +87,7 @@ portal/                 Learning portal and content modules
   content/curriculum.js 40 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
+skills/                 Six browser-feature drills, harness, starters, solutions
 server.mjs              Local HTTP server and session-isolated API
 tests/                  UI, API, and portal verification
 exercises/              Starter assignments; remove test.skip as you work
@@ -91,13 +96,14 @@ docs/                   Setup, field manual, API contract, AI guide, rubric
 scripts/                Content validation and download/build packaging
 .github/workflows/      CI workflow and test artifacts
 playwright.config.ts    Projects, timeouts, reports, and web server
+playwright.matrix.config.ts  Optional three-engine UI matrix
 ```
 
 ## Your practice environment
 
 Demo login: **demo@forge.test / Playwright123!**. Discount code: **SAVE10**.
 
-Read `docs/lab-api.md` for the exact endpoint and data contract. Sessions are isolated with a `lab_session` cookie or `x-lab-session` header. Use unique session IDs per API test. Browser tests get a fresh context. Data is in memory and resets when the server restarts. The demo credentials, reset endpoint, and simplified state are for local training; this is not a production commerce service.
+Read `docs/lab-api.md` for the exact endpoint and data contract. The lesson pages and practice lab map each EX/SK ID to its starter, solution, and run command. Read `docs/BROWSER-SKILLS.md` for the supplemental browser features and optional cross-browser matrix. Sessions are isolated with a `lab_session` cookie or `x-lab-session` header. Use unique session IDs per API test. Browser tests get a fresh context. Data is in memory and resets when the server restarts. The demo credentials, reset endpoint, and simplified state are for local training; this is not a production commerce service.
 
 The server binds to `127.0.0.1`. To choose another port, set `PORT` and use the same setting for the tests. Avoid pointing destructive reset tests at any external environment.
 

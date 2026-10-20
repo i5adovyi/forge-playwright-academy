@@ -23,6 +23,8 @@ export default defineConfig({
     { name: 'api', testMatch: /tests\/api\/.*\.spec\.ts/ },
     { name: 'solutions', testMatch: /solutions\/.*\.spec\.ts/ },
     { name: 'exercises', testMatch: /exercises\/.*\.spec\.ts/ },
+    { name: 'skills', testMatch: /skills\/worked\.spec\.ts/ },
+    { name: 'skills-practice', testMatch: /skills\/practice\.spec\.ts/ },
     { name: 'portal', testMatch: /tests\/portal\/.*\.spec\.ts/ },
   ],
   webServer: {

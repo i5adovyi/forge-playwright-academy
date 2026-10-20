@@ -78,3 +78,7 @@ Progress in the portal is a local study tracker. Back it up using the available 
 ## Resource discipline
 
 Pick one primary course and the official docs. Watching five introductions rarely helps as much as implementing one complete scenario. Use books for deeper test-design thinking, videos for demonstrations, and the official docs for current API details. Paid resources are optional and the academy has no affiliate or certification relationship with the linked providers.
+
+## Place the browser skills in your schedule
+
+During Stage 3, attempt SK-01 and SK-03–06 from [Browser Skills](BROWSER-SKILLS.md). Complete SK-02 when comparing cookie and header session isolation in Stages 3–5. Budget an additional two to four hours for these six drills if the browser APIs are new to you. During Stage 6, run the optional browser matrix and explain any engine-specific result.

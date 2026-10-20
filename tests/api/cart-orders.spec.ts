@@ -1,3 +1,4 @@
+import { request as httpRequest } from 'node:http';
 import { test, expect, addProduct, login, credentials, shipping } from '../support/fixtures';
 
 test('new sessions begin with an empty cart', async ({ request }) => {
@@ -93,6 +94,89 @@ test('malformed JSON is a controlled 400', async ({ request }) => {
   const response = await request.post('/api/cart', { data: '{"productId":', headers: { 'Content-Type': 'application/json' } });
   expect(response.status()).toBe(400);
   expect((await response.json()).error.code).toBe('INVALID_BODY');
+});
+test('JSON must be an object and rejected bodies preserve an existing cart', async ({ request }) => {
+  await addProduct(request, 'p2', 2);
+  const before = await (await request.get('/api/cart')).json();
+  for (const data of ['null', '[]', 'false', '42', '"hello"', '{"productId":']) {
+    const response = await request.post('/api/cart', { data, headers: { 'Content-Type': 'application/json' } });
+    expect(response.status(), data).toBe(400);
+    expect((await response.json()).error.code).toBe('INVALID_BODY');
+    expect(await (await request.get('/api/cart')).json()).toEqual(before);
+  }
+});
+test('the body limit is 16 KiB of UTF-8 bytes, including the exact boundary', async ({ request }) => {
+  const payload = { productId: 'p1', quantity: 1, padding: '' };
+  payload.padding = 'a'.repeat(16_384 - Buffer.byteLength(JSON.stringify(payload)));
+  const exact = JSON.stringify(payload);
+  expect(Buffer.byteLength(exact)).toBe(16_384);
+  const accepted = await request.post('/api/cart', { data: exact, headers: { 'Content-Type': 'application/json' } });
+  expect(accepted.status()).toBe(200);
+  const before = await accepted.json();
+
+  // Each character needs three UTF-8 bytes: a character-count limit misses this.
+  const oversized = JSON.stringify({ productId: 'p2', quantity: 2, padding: '界'.repeat(6000) });
+  expect(oversized.length).toBeLessThan(16_384);
+  expect(Buffer.byteLength(oversized)).toBeGreaterThan(16_384);
+  for (const data of [exact + ' ', oversized]) {
+    const response = await request.post('/api/cart', { data, headers: { 'Content-Type': 'application/json' } });
+    expect(response.status()).toBe(413);
+    expect((await response.json()).error.code).toBe('INVALID_BODY');
+    expect(await (await request.get('/api/cart')).json()).toEqual(before);
+  }
+});
+test('shipping survives a UTF-8 character split across network chunks', async ({ request, baseURL, sessionId }) => {
+  await login(request); await addProduct(request);
+  const unicodeShipping = { ...shipping, name: 'Łukasz Tester', city: 'Łódź' };
+  const bytes = Buffer.from(JSON.stringify(unicodeShipping));
+  const split = bytes.indexOf(Buffer.from('Ł')) + 1;
+  const result = await new Promise<{ status: number | undefined; body: string }>((resolve, reject) => {
+    const client = httpRequest(new URL('/api/orders', baseURL), {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-lab-session': sessionId },
+    }, response => {
+      const chunks: Buffer[] = [];
+      response.on('data', chunk => chunks.push(chunk));
+      response.on('end', () => resolve({ status: response.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+      response.on('error', reject);
+    });
+    client.on('error', reject);
+    client.setTimeout(5_000, () => client.destroy(new Error('Timed out sending fragmented JSON')));
+    client.write(bytes.subarray(0, split));
+    // Intentional transport fragmentation, not a wait for application readiness.
+    setTimeout(() => client.end(bytes.subarray(split)), 30);
+  });
+  expect(result.status).toBe(201);
+  expect(JSON.parse(result.body).order.shipping).toEqual(unicodeShipping);
+});
+test('receipt authorization is session-local even when order IDs overlap', async ({ request, playwright, baseURL }) => {
+  await login(request); await addProduct(request, 'p1');
+  const created = await request.post('/api/orders', { data: shipping });
+  expect(created.status()).toBe(201);
+  const { order } = await created.json();
+  const receiptPath = `/api/orders/${order.id}/receipt`;
+  // Playwright inherits configured context defaults: clear the shared test
+  // session header so this context exercises an independent cookie session.
+  const other = await playwright.request.newContext({ baseURL, extraHTTPHeaders: {} });
+  try {
+    const guest = await other.get(receiptPath);
+    expect(guest.status()).toBe(401);
+    expect((await guest.json()).error.code).toBe('AUTH_REQUIRED');
+    await login(other);
+    const missing = await other.get(receiptPath);
+    expect(missing.status()).toBe(404);
+    expect((await missing.json()).error.code).toBe('ORDER_NOT_FOUND');
+    await addProduct(other, 'p4');
+    const own = await other.post('/api/orders', { data: shipping });
+    expect(own.status()).toBe(201);
+    expect((await own.json()).order.id).toBe(order.id);
+    expect(await (await other.get(receiptPath)).text()).toContain('Total: $59.00');
+    const receipt = await request.get(receiptPath);
+    expect(receipt.status()).toBe(200);
+    expect(receipt.headers()['content-disposition']).toBe('attachment; filename="ORD-0001.txt"');
+    expect(await receipt.text()).toContain('Total: $129.00');
+    await request.post('/api/logout');
+    expect((await request.get(receiptPath)).status()).toBe(401);
+  } finally { await other.dispose(); }
 });
 test('session reset clears only its own state', async ({ request, playwright, baseURL }) => {
   await login(request); await addProduct(request);
