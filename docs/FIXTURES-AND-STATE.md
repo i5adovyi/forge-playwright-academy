@@ -36,8 +36,11 @@ exercises target the local academy server, not public documentation websites.
 
 ## Eight-lesson reading route
 
-Work through these lessons in order. Revisit 03-03, 04-04 and 05-01 first if you
-need the introductory context, authentication and fixture material.
+Work through these lessons in order. Start the context section after 03-03; use
+04-04 when API authentication is unfamiliar. Before 05-06, complete the fixture
+introduction (05-01) and parallel-state lesson (05-04). The portal's **Next in this
+track** link follows this focused order; the separate **Next lesson** link follows
+the full academy sequence.
 
 | Order | Academy lesson | Read in the official docs | Produce before moving on |
 | --- | --- | --- | --- |
@@ -85,8 +88,13 @@ npm run test:state:practice -- --grep FS-04
 ```
 
 Starters are in `state/practice.spec.ts`; examples are in `state/worked.spec.ts`.
-The shared implementation is in `state/support/fixtures.ts` and
-`state/support/helpers.ts`. A skipped starter is an unfinished assignment, not a
+The worked implementation is in `state/support/fixtures.ts` and
+`state/support/helpers.ts`. Fixture declarations belong at module scope, outside
+test callbacks: declare an extended `test`, then register a test with it. The
+learner module `state/support/practice-fixtures.ts` supplies typed scaffolds:
+`lifecyclePractice`, `scopedPractice`, `optionPractice`, and `authenticatedPractice`.
+The starter already registers the matching extended tests; never
+import the worked fixture merely to make an unfinished assignment pass. A skipped starter is an unfinished assignment, not a
 passing test. Keep the expected failure sentinel until you have replaced it
 with assertions that prove every criterion.
 
@@ -95,24 +103,46 @@ For another port on macOS/Linux, use `PORT=14827 npm run dev` and
 command in its terminal. Use one hostname consistently: `localhost` and
 `127.0.0.1` are different origins.
 
+### Choose an order that matches the skill
+
+For contexts and storage, attempt **FS-04 → FS-05 → FS-06 → FS-07 → FS-08 → FS-09**.
+Then build fixtures with **FS-01 → FS-02 → FS-03 → FS-10**. The identifiers group
+concepts; their numeric order is not a prerequisite chain. The ordinary worked
+command still runs all ten drills.
+
+A fixture assignment has two parts: implement its provider at file scope, then
+write the consuming assertions in `practice.spec.ts`. A fixture is requested by
+its parameter name; importing it or describing it in a comment does not execute
+it. Keep the starter's throwing TODO or failing sentinel until that part is
+implemented. Removing a skip without doing the work must produce a failure.
+
 ## The ten executable investigations
 
 | Drill | Assignment | Evidence you must explain |
 | --- | --- | --- |
-| FS-01 | Dependency setup and reverse teardown | The observed event sequence follows the dependency edges, including cleanup |
+| FS-01 | Dependency setup and reverse teardown | The complete event sequence follows dependency edges on success, a real setup failure, and a real consumer failure |
 | FS-02 | Worker identity, fresh test resources | Worker ownership can be reused while each case receives its own test resource; the two cases remain independently runnable |
-| FS-03 | Typed options, automatic evidence, lazy fixtures | An option changes the scenario, automatic evidence runs, and an unused fixture is not created |
-| FS-04 | Two tabs, one context | Shared preference crosses tabs while a tab draft remains isolated in the independently created second page |
-| FS-05 | Independent context boundaries | A second context starts clean even though the first has local state |
+| FS-03 | Typed options, automatic evidence, lazy fixtures | The override changes the locale, a separate control retains its own locale, the complete teardown order holds, and an unused fixture is not created |
+| FS-04 | Two tabs, one context | Preferences cross tabs; drafts survive reload, stay absent from a page without an opener, and are copied once rather than synchronized into a popup |
+| FS-05 | Independent context boundaries | A second context with explicitly empty state and headers starts clean even though the first has local state |
 | FS-06 | storageState and IndexedDB opt-in | Restored default state and explicit IndexedDB state have the expected differences; session storage is not silently transferred |
-| FS-07 | Restore sessionStorage before application code | Exact-origin initialization restores the intended draft; a clean control remains empty |
+| FS-07 | Restore sessionStorage before application code | First-render UI observes the restored draft, an edit survives reload, and a clean control remains empty |
 | FS-08 | Context request sharing and standalone isolation | Browser-associated API calls share cookies, while a standalone request context has its own jar |
-| FS-09 | Copied authentication is a shared server session | A copied credential authenticates, but logout invalidates the same server session observed by the copy |
-| FS-10 | Own an authenticated context per test | The fixture prepares a usable authenticated context and owns its cleanup without persisting a real credential file |
+| FS-09 | Copied authentication is a shared server session | Logout invalidates the copied session; an independently authenticated, populated control stays intact |
+| FS-10 | Own an authenticated context per test | An outer observer proves context closure, anonymous server state, and empty owned cart after success and real consumer failure; an unrelated cart remains intact |
 
 For each drill, write a prediction before running it. Afterward record the exact
 command, observation, owner of the changed state, negative control, cleanup,
 and one thing the experiment does not prove.
+
+FS-01 has three worked cases; FS-02 has two; FS-10 has two. The other seven
+drills have one each, for **14 worked cases and 10 skipped starters**. Failure
+cases run isolated child tests from `state/support/failure-probe.spec.ts`.
+Their parent requires exit 1, exactly the intended error, no additional runner
+or teardown error, and the correct after-teardown evidence. A broken cleanup
+therefore fails the parent. This is a test of failure handling; an arbitrary
+red test is never accepted as proof. Child artifacts live under the parent's
+test output path. The main runner does not discover the probe file directly.
 
 ## Ownership: choose the object before writing the action
 
@@ -256,11 +286,14 @@ npm run test:state -- --grep FS-02 --workers=1
 npm run test:state -- --grep FS-02 --workers=2 --repeat-each=3
 ```
 
-Do not make the second case depend on the first having run. Compare the
-attachment's owner and resource identities. More workers may put the cases in
-different processes, so “both worker IDs must match” is an incorrect general
-oracle. The property you care about is that concurrently used resources cannot
-collide, and a test resource is never accidentally reused.
+Do not make the second case depend on the first having run. The worked group
+uses default mode so compatible cases reuse one worker; its `beforeAll`
+captures that worker's identity and each case checks it. A replacement worker
+runs `beforeAll` again. The fixture also records `workerIndex`, `parallelIndex`,
+`retry`, `repeatEachIndex`, issued resources, and observed item counts.
+Compare those attachments across repeats and attempts. Worker IDs need not
+match across repeats, replacements, or independently parallel groups. The
+properties are reuse within a live worker and a fresh resource for every case.
 
 A retry probe is a separate controlled investigation: introduce a temporary
 failure in one local assertion, run with `--retries=1`, inspect both attempts'
@@ -359,6 +392,29 @@ including virtual authentication credentials and origin-private files. That is
 outside these ten drills; consult the current API rather than assuming this
 matrix lists every possible storage mechanism.
 
+## Reset is not one operation
+
+Before choosing a reset, name the state you intend to remove and the state your
+test must preserve. A reset that is too broad can erase the very persistence bug
+you are trying to detect.
+
+| Action | What changes | What it does not prove or remove |
+| --- | --- | --- |
+| `page.reload()` | The document and application code run again | Cookies, localStorage, IndexedDB and this tab's sessionStorage normally remain; an init script also runs again |
+| `context.clearCookies()` | Cookies in that context are removed | localStorage, sessionStorage, IndexedDB and server records are not cleared; a subsequent request may create a new session |
+| `localStorage.removeItem('forge-state-theme')` | This workbench's one preference at the current origin | Other keys, other stores and server state remain; an already rendered value may be stale until a new read/reload |
+| `sessionStorage.removeItem('forge-state-draft')` | The draft in this tab and origin is removed | Another tab's draft is unaffected; a retained initialization script might recreate the key on navigation |
+| POST `/api/reset` in the owning session | This synthetic shop's server cart, orders and login are reset | Browser preferences, tab drafts and IndexedDB are not cleared; it is not a global database reset |
+| New context with explicit empty `storageState` and cleared identity headers | Independent client storage and an independently established shop session | Shared account-level data in another product is not automatically isolated |
+| Close an owned context | Its pages and client resources are released | A copied login cookie in another context is not revoked; server-side logout/reset is a separate operation |
+
+For a small experiment, save all three notes, call `/api/reset` through the same
+context's request client, then reload the bench. Expect **Guest session** and the
+three saved note values. Next remove only the workbench's theme key and reload;
+expect **system** while the draft and notebook remain. This is a written transfer
+exercise, not another FS starter. Avoid clearing all localStorage on the academy
+origin: your portal progress also lives there.
+
 ## Snapshot, restore, and prove the boundary
 
 A snapshot copies selected client state at a moment in time. Omitting `path`
@@ -396,12 +452,13 @@ initialization script before the new page navigates:
 const expectedOrigin = new URL(baseURL!).origin;
 const draft = 'Boundary note for this test';
 await restored.addInitScript(({ origin, value }) => {
-  if (location.origin === origin) {
+  if (location.origin === origin && sessionStorage.getItem('forge-state-draft') === null) {
     sessionStorage.setItem('forge-state-draft', value);
   }
 }, { origin: expectedOrigin, value: draft });
 const restoredPage = await restored.newPage();
 await restoredPage.goto('/state/');
+await expect(restoredPage.getByTestId('draft-value')).toHaveText(draft);
 ```
 
 This is a setup fragment: `restored` is the owned fresh context from your fixture
@@ -410,7 +467,12 @@ hostname would seed every matching port. Keep related initialization in one
 script if its statements depend on order. The
 [addInitScript reference](https://playwright.dev/docs/api/class-browsercontext#browser-context-add-init-script)
 describes when it runs; do not replace it with an evaluate call after the app
-has already read its startup state.
+has already read its startup state. The missing-key guard matters because an
+initialization script runs on later navigations too. Edit the draft through the
+UI and reload: the edit must survive, rather than being overwritten by the
+original seed. For this experiment, deliberately clearing the key allows a
+later navigation to seed it again. That is a restoration policy you must name,
+not a production logout implementation.
 
 FS-06/07 decision exercise: restore the same snapshot twice. Change one
 restored context's local preference and predict whether the other changes. Then
@@ -480,9 +542,81 @@ logout tests. Name the server record each owns and the cleanup owner. The local
 FS examples intentionally avoid requiring a real account-management API; this
 exercise is architecture work, not a hidden executable endpoint.
 
+### Run the project-dependency reference
+
+FS-10 demonstrates **per-test** authentication. The separate reference in
+`state/project-auth/` demonstrates **project setup dependencies** for an otherwise
+read-only member workload. It is a runnable comparison for written exercise
+05-09-b, not an eleventh skipped FS assignment.
+
+```bash
+# Complete reference: four passing cases (setup, member, guest, cleanup).
+npm run test:state:auth
+
+# Machine-checked controlled failure: the inner run must fail for the right reason.
+npm run test:state:auth:gate
+
+# Inspect just the dependency graph without running it.
+npm run test:state:auth -- --list
+```
+
+`playwright.state-auth.config.ts` declares this graph:
+
+```text
+auth-setup (prepare.setup.ts)
+    -> auth-reader (member.spec.ts)
+    -> auth-cleanup (cleanup.teardown.ts)
+
+auth-guest (guest.spec.ts): independent, explicit empty storage and headers
+```
+
+The setup verifies the demo login, then saves a temporary snapshot. The member
+checks the visible identity and authenticated `/api/orders` response. The guest
+checks `401 AUTH_REQUIRED` and an empty cart. The cleanup project resets only the
+owned server session, verifies guest state and an empty cart, and removes the
+snapshot. These consumers intentionally avoid shared cart mutations; the pattern
+is not suitable for competing checkout/logout scenarios without further ownership.
+
+The launcher gives every invocation a unique directory under
+`quality-results/state-auth/` and passes the same location to its workers. It
+prints the report path. The snapshot is inside that run's `.auth/` directory;
+it is never a committed fixture, download asset, or diagnostic attachment. The
+launcher also deletes it on exit as a last-resort safeguard. The gate proof checks
+that **project teardown** removed it before that safeguard runs.
+
+The gate command injects `CONTROLLED_AUTH_SETUP_FAILURE` after state capture. It
+requires the underlying runner to exit 1 for that exact assertion, the member to
+remain unexecuted, the independent guest and cleanup to pass, and the snapshot to
+be absent. The wrapper returns success only when all those observations match.
+The inner report intentionally remains red. This is proof of dependency gating,
+not a retry or a suppressed product failure.
+
+To see the raw deliberate failure on macOS/Linux:
+
+```bash
+FORGE_AUTH_SETUP_FAIL=1 npm run test:state:auth
+# Expected exit 1: setup fails, member does not run, guest and cleanup pass.
+# Run again without the variable to restore an ordinary green reference.
+npm run test:state:auth
+```
+
+In PowerShell, set `$env:FORGE_AUTH_SETUP_FAIL='1'`, run the command, then use
+`Remove-Item Env:FORGE_AUTH_SETUP_FAIL` before the clean run. The ordinary gate
+wrapper is cross-platform and needs no shell environment syntax.
+
+For your own exercise, sketch the graph first, inspect the reference only after
+an attempt, then build a separate config and modules with different names. Do not
+overwrite the main config. Acceptance: discover only the intended projects,
+identify the member in the UI and API, preserve an independent guest, prove setup
+failure blocks only its dependents, and verify both server cleanup and file
+removal. Avoid `--no-deps` for the normal experiment: it deliberately bypasses setup
+and teardown, so a missing state file is expected rather than a mystery.
+
 ## Keep the state lifecycle explicit and private
 
-For these labs, use synthetic accounts and in-memory snapshots. If a real
+The ten FS drills use synthetic accounts and in-memory snapshots. The optional
+project-dependency reference deliberately uses a temporary file to demonstrate
+cross-worker handoff, then verifies its removal. If a real
 project needs state files, treat the files as credentials: some can authorize a
 session without the user's password.
 

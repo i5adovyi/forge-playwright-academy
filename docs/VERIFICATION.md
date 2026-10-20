@@ -2,7 +2,29 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
-## Fixtures, contexts, and state extension
+## Fixtures and browser state: second review
+
+- `npm run validate`, `npm run typecheck`, `npm run check`, and `git diff --check`: passed. Inventory remains **52 lessons, 104 written challenges, 48 executable starters**, including ten FS starters.
+- `PORT=14827 npm run test:all`: **117 passed, 44 intentionally skipped**, 161 discovered, zero failures, 15.2 seconds. This includes **14 state worked cases** and 21 portal integration cases.
+- `PORT=14829 npm run test:visual`: **4 passed**, 2.1 seconds, against the existing reviewed macOS references without updates.
+- `PORT=14827 npm run test:state:auth`: **4 passed**, 1.0 second: setup, read-only member, independent guest, and teardown.
+- `PORT=14827 npm run test:state:auth:gate`: the child deliberately reports **one setup failure, one blocked member, and two passing guest/cleanup cases**. The verifier returns zero only after checking the exact single error, no runner errors, the expected dependency outcome, and removal of the temporary auth snapshot. This is evidence for failure handling, not four passing application tests.
+- Three isolated lifecycle probes exercise real setup/body failures. They reject additional errors and inspect after-teardown observations. Their parent checks are included in the 117 passing cases.
+- In a separate scratch copy, **five controlled regressions were rejected**: worker scope changed to test, automatic teardown omitted, reset replaced with an unrelated HTTP 200 response, lease teardown omitted, and restored draft overwritten on reload. The working source retains no deliberate defects.
+- Four complete lesson examples compiled; eight extracted examples/fragments passed headless. A separate documented retry experiment produced the intended first failure and passing retry. That flaky result is an investigation exercise, not clean-suite coverage.
+- Desktop and phone-width inspection covers the Docs route, all eight revised lessons, the workbench, and all 17 manuals. The focused-navigation regression verifies that lesson 03-10 continues to 05-06 within this track while the main curriculum retains its own order.
+- The rebuilt source download includes typed learner scaffolds, isolated failure probes, and the optional project-auth configuration and runner. Archive contents are compared with source files and the extracted content validator is run.
+
+The FS drills use in-memory snapshots. Only the optional setup-project reference
+creates a transient synthetic auth file inside its ignored, unique run
+directory. Teardown verifies server reset and file removal; a launcher cleanup
+is a separate last resort. Reports omit raw snapshots. The CI workflow runs both
+the normal authentication reference and its failure-gate proof.
+
+This review targets Chromium and preserves all 48 unfinished learner starters.
+It does not expand the historical cross-engine evidence below.
+
+## Previous fixtures, contexts, and state extension
 
 - `npm run validate`: **8 stages, 52 lessons, 104 written challenges, 39 resources, 8 articles, and 48 executable drill mappings**. Local documentation references validate.
 - `npm run typecheck`, `npm run check`, and `git diff --check`: passed after integration.

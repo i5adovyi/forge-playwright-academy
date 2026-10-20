@@ -35,3 +35,6 @@
 .docs-workshop .code-block { margin:20px 0; }
 .docs-source { text-decoration:none; color:inherit; }
 .docs-source:hover { border-color:var(--accent); }
+
+.docs-track-nav { display:flex; flex-direction:row; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:16px 0; margin-bottom:20px; border-block:1px solid var(--line); }
+.docs-track-nav>a { padding:4px 0; }

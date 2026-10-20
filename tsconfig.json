@@ -20,6 +20,7 @@
     "playwright.matrix.config.ts",
     "quality/**/*.ts",
     "playwright.visual.config.ts",
-    "state/**/*.ts"
+    "state/**/*.ts",
+    "playwright.state-auth.config.ts"
   ]
 }

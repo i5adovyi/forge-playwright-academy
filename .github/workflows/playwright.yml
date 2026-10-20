@@ -28,6 +28,20 @@ jobs:
       - run: npm run test:all
         env:
           CI: 'true'
+      - name: Verify authentication setup dependencies
+        run: npm run test:state:auth
+        env:
+          CI: 'true'
+      - name: Prove a failed setup blocks its consumer and still cleans up
+        run: npm run test:state:auth:gate
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: state-auth-reports
+          path: quality-results/state-auth/
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

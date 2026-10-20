@@ -43,6 +43,9 @@ $('#save-draft').addEventListener('click', () => {
   refreshDraft();
   ready('Ready to inspect.');
 });
+// Deliberately keep an opener for the sessionStorage copy exercise.
+// A real application should choose its opener policy according to its needs.
+$('#copy-draft').addEventListener('click', () => window.open('/state/', '_blank'));
 $('#save-notebook').addEventListener('click', async () => {
   try { $('[data-testid="notebook-value"]').textContent = await notebook($('#notebook').value); ready(); }
   catch (error) { ready(`Notebook unavailable: ${error.message}`); }

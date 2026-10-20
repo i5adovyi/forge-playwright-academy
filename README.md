@@ -72,6 +72,8 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:solutions` | Run executable shop worked solutions |
 | `npm run test:state` | Run fixture lifecycle, context, storage, and authentication examples |
 | `npm run test:state:practice` | Run the fixtures-and-state starters you implement |
+| `npm run test:state:auth` | Run the optional authentication setup, member, guest, and cleanup projects |
+| `npm run test:state:auth:gate` | Verify that an intentional setup failure blocks its member consumer and still cleans up |
 | `npm run test:skills` | Run timer, auth-state, upload, iframe, popup, and dialog examples |
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
@@ -154,7 +156,11 @@ Open **PW Docs track** in the portal sidebar (`#/docs`). Eight added lessons—0
 
 ```sh
 npm run test:state
-npm run test:state:practice -- --grep FS-01
+npm run test:state:practice -- --grep FS-04
 ```
 
-The local `/state/` workbench makes browser storage observable. Compare same-context tabs with independent contexts; save and restore IndexedDB deliberately; prove that copied login cookies do not clone server data. Fixture examples expose lazy setup, reverse teardown, worker lifetime, options, and automatic evidence. Run the completed examples first, attempt the skipped starters, then compare your reasoning with the solutions. Authentication snapshots stay in memory in this track.
+The local `/state/` workbench makes browser storage observable. Compare same-context tabs with independent contexts; save and restore IndexedDB deliberately; prove that copied login cookies do not clone server data. Begin with FS-04–09 for browser boundaries, then FS-01–03 and FS-10 for fixtures. Implement TODOs and replace sentinels before removing `.skip`. Typed fixture scaffolds are in `state/support/practice-fixtures.ts`; worked examples are in `state/worked.spec.ts`.
+
+The 14 worked cases cover lazy setup, reverse teardown, worker reuse, options, popup copying, reload persistence, and independently observed cleanup. Controlled setup/body failure probes reject additional errors, so an unrelated failure cannot satisfy the exercise. The portal preserves a focused “Next in this track” route between all eight lessons.
+
+The FS drills keep snapshots in memory. Lesson 05-09 also provides an optional project-dependency reference in `state/project-auth/`: `npm run test:state:auth` runs setup, a read-only member, an independent guest, and cleanup. `npm run test:state:auth:gate` proves setup failure blocks the member while the guest and cleanup still pass. This separate example writes a transient synthetic auth file to its own ignored run directory, verifies its removal, and retains reports without raw snapshots. It is an extension of a written challenge, not an extra starter.

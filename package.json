@@ -23,7 +23,7 @@
     "test:debug": "playwright test --project=ui --debug",
     "test:interactive": "playwright test --ui",
     "test:report": "playwright show-report",
-    "check": "node --check server.mjs && node --check lab/app.js && node --check portal/app.js && node --check skills/app.js && node --check state/app.js && node --check quality/accessibility/app.js && node --check quality/visual/app.js && playwright test --list && playwright test --config=playwright.visual.config.ts --list",
+    "check": "node --check server.mjs && node --check lab/app.js && node --check portal/app.js && node --check skills/app.js && node --check state/app.js && node --check state/project-auth/run.mjs && node --check quality/accessibility/app.js && node --check quality/visual/app.js && playwright test --list && playwright test --config=playwright.visual.config.ts --list",
     "browsers": "playwright install chromium",
     "browsers:all": "playwright install",
     "test:skills": "playwright test --project=skills",
@@ -36,7 +36,9 @@
     "test:visual:update": "playwright test --config=playwright.visual.config.ts --project=visual --update-snapshots=all",
     "test:visual:defect": "playwright test --config=quality/visual/defect.config.ts",
     "test:state": "playwright test --project=state",
-    "test:state:practice": "playwright test --project=state-practice"
+    "test:state:practice": "playwright test --project=state-practice",
+    "test:state:auth": "node state/project-auth/run.mjs",
+    "test:state:auth:gate": "node state/project-auth/run.mjs --prove-gate"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

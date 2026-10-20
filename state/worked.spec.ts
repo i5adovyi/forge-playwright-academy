@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { lifecycleTest, scopedTest, optionTest, authenticatedTest } from './support/fixtures';
 import { assertGuest, attachEvidence, emptyStorage, freshContext, loginWithCookies, restoreDraftBeforeApp, seedBrowserNotes, visitBench } from './support/helpers';
+import { inspectFailureProbe } from './support/failure-probe';
 
 // These exercises intentionally use cookies, never the shop suite's session header.
 test.use({ storageState: { cookies: [], origins: [] }, extraHTTPHeaders: {} });
@@ -13,12 +14,30 @@ lifecycleTest('FS-01 · dependency setup and reverse teardown', async ({ lease, 
   // The outer lifecycleEvents fixture asserts the COMPLETE order after this test.
 });
 
+for (const phase of ['body', 'setup'] as const) {
+  test(`FS-01 · cleanup after a real ${phase} failure`, async ({}, testInfo) => {
+    await inspectFailureProbe(testInfo, `lifecycle-${phase}-failure`, `INTENTIONAL FS-01 ${phase} failure`);
+  });
+}
+
 scopedTest.describe('FS-02 · worker identity, fresh test resources', () => {
   // Group cases into the same worker when possible; either is valid on its own,
   // in a retry, or after a worker restart. No result depends on execution order.
   scopedTest.describe.configure({ mode: 'default' });
+  let observedWorker: string;
+  const observedResources = new Set<string>();
+  scopedTest.beforeAll(async ({ workerIdentity }) => {
+    // beforeAll may request WORKER fixtures, never test-scoped resources.
+    // A retry starts a new worker and runs this hook again with its own identity.
+    observedWorker = workerIdentity.id;
+    observedResources.clear();
+  });
   for (const label of ['alpha', 'beta']) {
     scopedTest(`FS-02 · ${label} begins with its own empty resource`, async ({ resource, workerIdentity }, testInfo) => {
+      expect(workerIdentity.id, 'Reuse the identity established by this worker’s beforeAll.').toBe(observedWorker);
+      expect(observedResources.has(resource.id), 'A test resource must not be reused by the next case.').toBe(false);
+      observedResources.add(resource.id);
+      expect(workerIdentity.issued.size).toBe(observedResources.size);
       expect(resource.owner).toBe(workerIdentity.id);
       expect(workerIdentity.workerIndex).toBe(testInfo.workerIndex);
       expect(resource.items).toEqual([]);
@@ -54,6 +73,8 @@ test('FS-04 · two tabs, one context', async ({ context, page }, testInfo) => {
   expect((await context.request.get('/api/session')).status()).toBe(200);
   await visitBench(page);
   await seedBrowserNotes(page);
+  await page.reload();
+  await expect(page.getByTestId('draft-value')).toHaveText('Only this tab');
   const second = await context.newPage(); // No opener, so no initial sessionStorage copy.
   try {
     await visitBench(second);
@@ -67,7 +88,22 @@ test('FS-04 · two tabs, one context', async ({ context, page }, testInfo) => {
     await expect(page.getByTestId('draft-value')).toHaveText('Only this tab');
     await loginWithCookies(second.request);
     expect((await (await page.request.get('/api/session')).json()).user.name).toBe('Alex Tester');
-    await attachEvidence(testInfo, 'FS-04-boundaries', { sharedCookieJar: true, sharedLocalStorage: true, sharedIndexedDB: true, separateSessionStorage: true, openerUsed: false });
+    // A page WITH an opener initially receives a copy of its opener's draft.
+    // Register the event before the action, then prove that copy stops syncing.
+    const popupPromise = page.waitForEvent('popup');
+    await page.getByRole('button', { name: 'Open a draft copy' }).click();
+    const popup = await popupPromise;
+    try {
+      await expect(popup.getByTestId('bench-ready')).toHaveText('Ready to inspect.');
+      await expect(popup.getByTestId('draft-value')).toHaveText('Only this tab');
+      await popup.getByLabel('Draft note', { exact: true }).fill('Popup owns this edit');
+      await popup.getByRole('button', { name: 'Save tab draft' }).click();
+      await expect(popup.getByTestId('draft-value')).toHaveText('Popup owns this edit');
+      expect(await page.evaluate(() => sessionStorage.getItem('forge-state-draft'))).toBe('Only this tab');
+      await popup.reload();
+      await expect(popup.getByTestId('draft-value')).toHaveText('Popup owns this edit');
+    } finally { await popup.close(); }
+    await attachEvidence(testInfo, 'FS-04-boundaries', { sharedCookieJar: true, sharedLocalStorage: true, sharedIndexedDB: true, separateSessionStorage: true, reloadRetainsDraft: true, openerCopiesButDoesNotSyncDraft: true });
   } finally { await second.close(); }
 });
 
@@ -89,6 +125,8 @@ test('FS-05 · independent context boundaries', async ({ context, page, browser,
     expect(Boolean(ownCookie && otherCookie && ownCookie.value !== otherCookie.value)).toBe(true);
     await otherPage.getByLabel('Theme', { exact: true }).selectOption('light');
     await otherPage.getByRole('button', { name: 'Save shared preference' }).click();
+    expect(await page.evaluate(() => localStorage.getItem('forge-state-theme'))).toBe('dark');
+    await page.reload();
     await expect(page.getByTestId('theme-value')).toHaveText('dark');
     await attachEvidence(testInfo, 'FS-05-isolation', { separateCookieIdentity: true, sourceTheme: 'dark', controlTheme: 'light', controlNotebook: 'empty', controlAuthenticated: false });
   } finally { await independent.close(); }
@@ -127,6 +165,10 @@ test('FS-06 · storageState and IndexedDB opt-in', async ({ context, page, brows
         // Restoring storage is a copy: later local-storage changes don't sync contexts.
         await fullPage.getByLabel('Theme', { exact: true }).selectOption('light');
         await fullPage.getByRole('button', { name: 'Save shared preference' }).click();
+        expect(await fullPage.evaluate(() => localStorage.getItem('forge-state-theme'))).toBe('light');
+        expect(await page.evaluate(() => localStorage.getItem('forge-state-theme'))).toBe('dark');
+        expect(await defaultPage.evaluate(() => localStorage.getItem('forge-state-theme'))).toBe('dark');
+        await page.reload();
         await expect(page.getByTestId('theme-value')).toHaveText('dark');
         await attachEvidence(testInfo, 'FS-06-export-matrix', { default: ['cookies', 'localStorage'], optIn: ['IndexedDB'], omitted: ['sessionStorage'], snapshotsWrittenToDisk: false });
       } finally { await fresh.close(); }
@@ -150,12 +192,16 @@ test('FS-07 · restore sessionStorage before application code', async ({ context
       await visitBench(controlPage); await visitBench(restoredPage);
       await expect(controlPage.getByTestId('draft-value')).toHaveText('No draft');
       await expect(restoredPage.getByTestId('draft-value')).toHaveText('Only this tab');
+      await restoredPage.getByLabel('Draft note', { exact: true }).fill('Edited after restoration');
+      await restoredPage.getByRole('button', { name: 'Save tab draft' }).click();
+      await restoredPage.reload();
+      await expect(restoredPage.getByTestId('draft-value')).toHaveText('Edited after restoration');
       // No external request is made: this route is an offline second-origin control.
       const outside = await restored.newPage();
       await outside.route('https://outside.example.test/**', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><html lang="en"><title>Origin control</title><body>Separate origin</body></html>' }));
       await outside.goto('https://outside.example.test/control');
       expect(await outside.evaluate(() => sessionStorage.getItem('forge-state-draft'))).toBeNull();
-      await attachEvidence(testInfo, 'FS-07-bootstrap', { sourceDraft: 'Only this tab', ordinaryRestore: 'No draft', guardedRestore: 'Only this tab', differentOriginReceivedDraft: false });
+      await attachEvidence(testInfo, 'FS-07-bootstrap', { sourceDraft: 'Only this tab', ordinaryRestore: 'No draft', guardedRestore: 'Only this tab', editedDraftAfterReload: 'Edited after restoration', differentOriginReceivedDraft: false });
     } finally { await restored.close(); }
   } finally { await control.close(); }
 });
@@ -192,11 +238,17 @@ test('FS-09 · copied authentication is a shared server session', async ({ conte
       expect((await copied.request.post('/api/cart', { data: { productId: 'p1', quantity: 2 } })).status()).toBe(200);
       expect((await (await context.request.get('/api/cart')).json()).total).toBe(25800);
       expect((await (await unrelated.request.get('/api/cart')).json()).items).toEqual([]);
+      await assertGuest(unrelated.request);
+      await loginWithCookies(unrelated.request);
+      expect((await unrelated.request.post('/api/cart', { data: { productId: 'p2', quantity: 1 } })).status()).toBe(200);
       expect((await copied.request.post('/api/logout')).status()).toBe(200);
       await assertGuest(context.request);
       await visitBench(page);
       await expect(page.getByTestId('identity')).toHaveText('Guest session');
-      await attachEvidence(testInfo, 'FS-09-server-session', { copiedCookieSharesCart: true, copiedLogoutInvalidatesSourceSession: true, unrelatedCartUntouched: true, accountCloned: false });
+      // A nonempty signed-in control detects an overly broad logout/reset.
+      expect((await (await unrelated.request.get('/api/session')).json()).user.email).toBe('demo@forge.test');
+      expect((await (await unrelated.request.get('/api/cart')).json()).total).toBe(8900);
+      await attachEvidence(testInfo, 'FS-09-server-session', { copiedCookieSharesCart: true, copiedLogoutInvalidatesSourceSession: true, unrelatedLoginPreserved: true, unrelatedCartTotal: 8900, accountCloned: false });
     } finally { await unrelated.close(); }
   } finally { await copied.close(); }
 });
@@ -213,4 +265,8 @@ authenticatedTest('FS-10 · own an authenticated context per test', async ({ mem
     expect((await (await guest.request.get('/api/cart')).json()).items).toEqual([]);
   } finally { await guest.close(); }
   // The member fixture resets its own server state and closes its owned context.
+});
+
+test('FS-10 · observe cleanup after a real test failure', async ({ baseURL }, testInfo) => {
+  await inspectFailureProbe(testInfo, 'member-body-failure', 'INTENTIONAL FS-10 body failure', baseURL);
 });

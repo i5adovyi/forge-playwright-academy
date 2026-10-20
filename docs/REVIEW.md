@@ -62,6 +62,30 @@ The fixtures/context/state gap now has a focused eight-lesson path and ten FS st
 - Lessons cover dependency graphs, lazy and automatic fixtures, reverse teardown, test/worker scope, typed options, context ownership, storage snapshots, and authentication strategy.
 - The `/state/` workbench makes localStorage, sessionStorage, IndexedDB, and guest/member state observable. Cookie values are not displayed.
 - FS experiments distinguish browser isolation from server-side state ownership, include independent guest controls, and keep authentication snapshots in memory.
+
+## Second review of the fixtures and state track
+
+Three focused reviews checked teaching accuracy, executable evidence, and the
+learner's route through the portal. The eight lessons were revised without
+changing their IDs, progress records, or the ten-starter inventory.
+
+| Gap found | Improvement |
+| --- | --- |
+| Fixture assignments assumed imports and declarations that starters lacked | Typed learner scaffolds now supply module-level registration and explicit TODO boundaries |
+| Cleanup examples mainly proved successful execution | FS-01 tests real setup/body failures; FS-10 observes cleanup after a real consumer failure; extra errors invalidate the proof |
+| Worker reuse and automatic teardown were described more strongly than asserted | Worker identity is checked against `beforeAll`, resources are tracked, attempt metadata is attached, and the complete automatic-fixture ledger is asserted |
+| Storage explanations missed opener copying and reload hazards | Tests separate independent tabs from popup copies and verify that restored drafts survive edits and reload |
+| A clean control could hide a broad logout/reset mistake | Populated, independently authenticated controls must remain signed in with their cart intact |
+| “Fresh context” could imply server reset or ignore inherited authentication | Lessons distinguish explicit empty client state, server session identity, and account-level data; the workbook adds a reset-versus-isolation matrix |
+| Authentication setup exercise stopped at a configuration fragment | A runnable setup/member/guest/cleanup reference includes a controlled failure gate and verified transient-file removal |
+| Focused navigation left the track after lesson 03-10 | Each of the eight lessons now has track navigation; the first starter is FS-04 with an adjacent implementation warning |
+
+Five deliberate regressions were introduced in an isolated scratch copy and
+rejected by the strengthened cases: test-scoping a worker fixture, omitting
+automatic teardown, replacing reset with an unrelated HTTP 200 response,
+omitting lease teardown, and overwriting an edited draft on reload. Extracted
+lesson examples were also compiled and executed. The
+[verification record](VERIFICATION.md) distinguishes these checks from unfinished learner work.
 - Download bundles and the default test suite include the new track. The study plans account for its additional guided time.
 
 This expansion concentrates on the requested documentation areas. It does not claim to replace every Playwright guide or establish production authentication security. See [Verification](VERIFICATION.md) for executed checks.

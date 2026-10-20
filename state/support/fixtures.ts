@@ -1,18 +1,22 @@
 import { randomUUID } from 'node:crypto';
-import { test as base, expect, type BrowserContext, type Page } from '@playwright/test';
-import { attachEvidence, freshContext, loginWithCookies, visitBench } from './helpers';
+import { test as base, expect, type APIRequestContext, type BrowserContext, type Page } from '@playwright/test';
+import { assertGuest, attachEvidence, emptyStorage, freshContext, loginWithCookies, visitBench } from './helpers';
 
 type Inventory = { open: boolean };
 type Lease = { inventory: Inventory; released: boolean };
-type LifecycleFixtures = { lifecycleEvents: string[]; inventory: Inventory; lease: Lease };
+type LifecycleFixtures = { lifecycleEvents: string[]; inventory: Inventory; lease: Lease; failLeaseSetup: boolean };
 
 export const lifecycleTest = base.extend<LifecycleFixtures>({
-  lifecycleEvents: async ({}, use, testInfo) => {
+  failLeaseSetup: [false, { option: true }],
+  lifecycleEvents: async ({ failLeaseSetup }, use, testInfo) => {
     const events: string[] = [];
     await use(events);
     // This outer fixture tears down AFTER both its dependents.
     await attachEvidence(testInfo, 'FS-01-complete-lifecycle', { events });
-    expect(events).toEqual(['inventory:setup', 'lease:setup', 'test:use', 'lease:teardown', 'inventory:teardown']);
+    expect(events).toEqual([
+      'inventory:setup', 'lease:setup', ...(failLeaseSetup ? [] : ['test:use']),
+      'lease:teardown', 'inventory:teardown',
+    ]);
   },
   inventory: async ({ lifecycleEvents }, use) => {
     const inventory = { open: true };
@@ -20,11 +24,14 @@ export const lifecycleTest = base.extend<LifecycleFixtures>({
     try { await use(inventory); }
     finally { inventory.open = false; lifecycleEvents.push('inventory:teardown'); }
   },
-  lease: async ({ inventory, lifecycleEvents }, use) => {
+  lease: async ({ inventory, lifecycleEvents, failLeaseSetup }, use) => {
     expect(inventory.open).toBe(true);
     const lease = { inventory, released: false };
     lifecycleEvents.push('lease:setup');
-    try { await use(lease); }
+    try {
+      if (failLeaseSetup) throw new Error('INTENTIONAL FS-01 setup failure');
+      await use(lease);
+    }
     finally {
       expect(inventory.open, 'Dependency must outlive the lease that uses it.').toBe(true);
       lease.released = true;
@@ -50,12 +57,15 @@ export const scopedTest = base.extend<ScopedFixtures, { workerIdentity: WorkerId
     workerIdentity.issued.add(id);
     workerIdentity.live.add(id);
     const resource = { id, owner: workerIdentity.id, items: [] as string[] };
+    const initialItemCount = resource.items.length;
     try { await use(resource); }
     finally {
       workerIdentity.live.delete(id);
       await attachEvidence(testInfo, 'FS-02-resource-lifetime', {
         workerIdentity: workerIdentity.id, workerIndex: workerIdentity.workerIndex,
-        resourceId: id, initialItemCount: 0, finalItemCount: resource.items.length,
+        parallelIndex: testInfo.parallelIndex, retry: testInfo.retry,
+        repeatEachIndex: testInfo.repeatEachIndex,
+        resourceId: id, initialItemCount, finalItemCount: resource.items.length,
         resourcesIssuedInThisWorker: workerIdentity.issued.size, released: !workerIdentity.live.has(id),
       });
     }
@@ -71,7 +81,17 @@ type OptionFixtures = {
 };
 export const optionTest = base.extend<OptionFixtures>({
   displayLocale: ['en-GB', { option: true }],
-  optionEvents: async ({}, use) => { await use([]); },
+  optionEvents: async ({}, use, testInfo) => {
+    const events: string[] = [];
+    await use(events);
+    // This dependency outlives both the automatic diagnostic and owned page.
+    // Logging the events alone would not detect an early diagnostic teardown.
+    await attachEvidence(testInfo, 'FS-03-complete-lifecycle', { events });
+    expect(events).toEqual([
+      'automatic:setup', 'locale:setup', 'test:use',
+      'locale:teardown', 'automatic:teardown',
+    ]);
+  },
   automaticEvidence: [async ({ optionEvents, displayLocale }, use, testInfo) => {
     optionEvents.push('automatic:setup');
     try { await use(); }
@@ -97,12 +117,50 @@ export const optionTest = base.extend<OptionFixtures>({
   },
 });
 
-export const authenticatedTest = base.extend<{ member: { context: BrowserContext; page: Page } }>({
-  member: async ({ browser, baseURL }, use, testInfo) => {
+type MemberAudit = { context?: BrowserContext; page?: Page; observer?: APIRequestContext };
+export const authenticatedTest = base.extend<{
+  member: { context: BrowserContext; page: Page };
+  memberAudit: MemberAudit;
+}>({
+  memberAudit: async ({ browser, playwright, baseURL }, use, testInfo) => {
+    const audit: MemberAudit = {};
+    const unrelated = await playwright.request.newContext({ baseURL, storageState: emptyStorage(), extraHTTPHeaders: {} });
+    try {
+      await loginWithCookies(unrelated);
+      expect((await unrelated.post('/api/cart', { data: { productId: 'p2', quantity: 1 } })).status()).toBe(200);
+      await use(audit);
+      // This outer fixture runs AFTER member teardown. The observer copied the
+      // session cookie before close, so it can inspect the actual server state.
+      expect(audit.context, 'The member context must be registered for observation.').toBeDefined();
+      expect(browser.contexts()).not.toContain(audit.context);
+      expect(audit.page?.isClosed()).toBe(true);
+      expect(audit.observer).toBeDefined();
+      await assertGuest(audit.observer!);
+      expect((await (await audit.observer!.get('/api/cart')).json()).items).toEqual([]);
+      expect((await (await unrelated.get('/api/session')).json()).user.email).toBe('demo@forge.test');
+      expect((await (await unrelated.get('/api/cart')).json()).total).toBe(8900);
+      await attachEvidence(testInfo, 'FS-10-observed-cleanup', {
+        ownedContextClosed: !browser.contexts().includes(audit.context!),
+        ownedPageClosed: audit.page!.isClosed(),
+        serverSessionAnonymous: true, ownedCartEmpty: true, unrelatedCartTotal: 8900,
+      });
+    } finally {
+      try { await audit.observer?.dispose(); }
+      finally {
+        try {
+          expect((await unrelated.post('/api/reset')).status()).toBe(200);
+        } finally { await unrelated.dispose(); }
+      }
+    }
+  },
+  member: async ({ browser, playwright, baseURL, memberAudit }, use) => {
     const context = await freshContext(browser, baseURL);
+    memberAudit.context = context;
     try {
       await loginWithCookies(context.request);
+      memberAudit.observer = await playwright.request.newContext({ baseURL, storageState: await context.storageState(), extraHTTPHeaders: {} });
       const page = await context.newPage();
+      memberAudit.page = page;
       await page.goto('/lab/');
       await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
       await use({ context, page });
@@ -112,7 +170,6 @@ export const authenticatedTest = base.extend<{ member: { context: BrowserContext
         expect(reset.status(), 'Release the server-side resources owned by this fixture.').toBe(200);
       } finally {
         await context.close();
-        await attachEvidence(testInfo, 'FS-10-fixture-cleanup', { ownedContextClosed: true, status: testInfo.status });
       }
     }
   },

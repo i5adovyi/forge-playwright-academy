@@ -269,10 +269,22 @@ test('PW Docs track connects shared lesson progress, the workbook, and all ten s
   await expect(page.locator('main h1')).toHaveText('Fixtures. Contexts. State.');
   await expect(page.locator('.docs-lessons .lesson-row')).toHaveCount(8);
   await expect(page.locator('.docs-source')).toHaveCount(6);
+  await expect(page.locator('main')).toContainText('npm run test:state:practice -- --grep FS-04');
+  await expect(page.locator('main')).toContainText('A skipped result is unfinished work.');
+  await expect(page.locator('main')).toContainText('npm run test:state:auth:gate');
   await expect(page.getByRole('link', { name: 'Open the state workbench' })).toHaveAttribute('href', '/state/');
   await page.getByRole('link', { name: 'Begin the track' }).click();
   await expect(page).toHaveURL(/#\/lesson\/03-08$/);
   await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await page.goto('/#/lesson/03-10');
+  const trackNavigation = page.getByRole('navigation', { name: 'PW Docs lesson navigation' });
+  await expect(trackNavigation.getByRole('link', { name: 'PW Docs overview' })).toHaveAttribute('href', '#/docs');
+  await expect(page.getByRole('link', { name: 'Next lesson', exact: false })).toHaveAttribute('href', '#/lesson/04-01');
+  await trackNavigation.getByRole('link', { name: 'Next in this track' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/05-06$/);
+  await page.goto('/#/lesson/05-10');
+  await expect(page.getByRole('navigation', { name: 'PW Docs lesson navigation' })
+    .getByRole('link', { name: 'Review your evidence' })).toHaveAttribute('href', '#/manual/FIXTURES-AND-STATE');
   await page.goto('/#/docs');
   await expect(page.locator('.docs-lessons .lesson-row[href="#/lesson/03-08"] .lesson-status')).toHaveClass(/done/);
   await page.getByRole('link', { name: 'Read the complete workbook' }).click();

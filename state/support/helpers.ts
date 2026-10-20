@@ -35,7 +35,9 @@ export async function seedBrowserNotes(page: Page) {
 }
 export async function restoreDraftBeforeApp(context: BrowserContext, origin: string, value: string) {
   await context.addInitScript(({ expectedOrigin, draft }) => {
-    if (window.location.origin === expectedOrigin) sessionStorage.setItem('forge-state-draft', draft);
+    if (window.location.origin === expectedOrigin && sessionStorage.getItem('forge-state-draft') === null) {
+      sessionStorage.setItem('forge-state-draft', draft);
+    }
   }, { expectedOrigin: origin, draft: value });
 }
 /** Attach only chosen observations. Never pass storageState or cookie values here. */
