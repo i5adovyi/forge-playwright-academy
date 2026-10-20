@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const root = resolve(import.meta.dirname, '../..');
@@ -12,7 +13,17 @@ const original = await readFile(join(root, 'server.mjs'), 'utf8');
 const needle = 'value.trim().length <= max';
 if (original.split(needle).length !== 2) throw new Error('Validation fault anchor changed; inspect the server contract before updating this proof.');
 const mutant = join(directory, 'server-without-length-limit.mjs');
-await writeFile(mutant, original.replace(needle, 'true /* controlled missing length limit */'));
+// Moving the controlled copy must preserve its real dependencies and static
+// root. Otherwise a module-loading failure could masquerade as defect evidence.
+const importAnchor = "from './local-data/http.mjs'";
+const rootAnchor = 'const root = path.dirname(fileURLToPath(import.meta.url));';
+for (const anchor of [importAnchor, rootAnchor]) {
+  if (original.split(anchor).length !== 2) throw new Error('Server location anchor changed; preserve dependency resolution before running this proof.');
+}
+await writeFile(mutant, original
+  .replace(importAnchor, `from ${JSON.stringify(pathToFileURL(join(root, 'local-data/http.mjs')).href)}`)
+  .replace(rootAnchor, `const root = ${JSON.stringify(root)};`)
+  .replace(needle, 'true /* controlled missing length limit */'));
 const flatten = suites => suites.flatMap(s => [...(s.specs || []), ...flatten(s.suites || [])]);
 // An independent discovery contract: do not import the test's parameter table.
 // Exact identities catch one omitted case replaced with a duplicate or unrelated
@@ -36,6 +47,7 @@ for (const mode of ['control', 'shared-default', 'missing-length-limit']) {
       cwd: root, stdio: 'inherit',
       env: {
         ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: join(runDir, 'results.json'), PORT: process.env.PORT || '14832',
+        FORGE_PROGRESS_MODE: 'browser',
         FORGE_DB_PROOF_DIR: runDir,
         FORGE_DB_SHARED_DEFAULT_FAULT: mode === 'shared-default' ? '1' : '0',
         FORGE_DB_PROOF_SERVER: mode === 'missing-length-limit' ? mutant : join(root, 'server.mjs'),

@@ -24,6 +24,11 @@ it does not add more lesson assignments.
 - `PORT=14833 npm run test:visual`: **4 passed** against the existing reviewed
   macOS baselines without updating references. Default port 4176 was occupied,
   so this check used an unused port rather than reusing an unknown server.
+- `npm run test:builders:proof`: **50 controls passed**; the shared-data fault
+  produced its one expected failure and the missing-length-limit fault produced
+  exactly four expected failures. The first Linux pipeline exposed a relocated
+  server import error after SQLite integration; the controlled copy now preserves
+  its real dependency paths and static root. No assertion was weakened.
 - `npm run test:hosting`: **2 passed** after building; schema validation,
   TypeScript, syntax/discovery and `git diff --check` passed.
 - A real 212-file account copy completed `npm ci`, content validation, TypeScript,
