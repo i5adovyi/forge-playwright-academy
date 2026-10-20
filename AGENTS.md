@@ -33,6 +33,8 @@ The current user request defines the work to do.
 3. Use `docs/REVIEW.md` and `docs/INTERVIEW-AND-WORKPLACE.md` as background.
    They contain both delivered work and proposals; inspect source before
    calling a proposal implemented. Do not turn the whole roadmap into a task.
+   Read `docs/PROJECT-CLOSEOUT.md` for the initial build's history and handover.
+   Keep historical evidence dated; do not rewrite it as a claim about new work.
 4. For account changes, read `docs/ACCOUNT-HANDOFF.md`. For progress or storage
    changes, also read `docs/LOCAL-DATA.md` and `local-data/README.md`.
 5. Check available tools and the authenticated account before external actions.

@@ -40,6 +40,7 @@ Use these entry points before making changes:
 | [AGENTS.md](AGENTS.md) | Shared instructions for maintaining lessons, code, data and deployments |
 | [CLAUDE.md](CLAUDE.md) | Claude's entry point to the same shared context |
 | [Verification record](docs/VERIFICATION.md) | Checks actually executed, their scope and historical limitations |
+| [Project closeout](docs/PROJECT-CLOSEOUT.md) | Delivered scope, build history, postmortem, source checkpoint and handover |
 | [Academy review](docs/REVIEW.md) and [workplace roadmap](docs/INTERVIEW-AND-WORKPLACE.md) | Delivered improvements and explicitly proposed future work |
 | [Account handoff](docs/ACCOUNT-HANDOFF.md) | Continue under another account and create a separately owned site |
 | [Local data](docs/LOCAL-DATA.md) | Preserve learning records, handle conflicts, back up and restore |

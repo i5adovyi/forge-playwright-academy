@@ -2,9 +2,30 @@
 
 Verified on October 20, 2026. The project now requires Node.js 22.13+ for built-in SQLite. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
+## Project closeout
+
+The [closeout record](PROJECT-CLOSEOUT.md) adds build history, delivered scope,
+postmortem and handover. The inventory remains 61 lessons, 122 written challenges,
+61 quizzes and 74 executable assignment IDs; there are now **26 portal manuals**.
+
+- Content validation, TypeScript and `git diff --check` passed.
+- Portal integration: **26 passed**. Static hosting: **2 passed**.
+- Packaging/account portability: **14 passed**.
+- All **26 manuals rendered at 390 and 1440 px** (52 renders), with no observed
+  runtime errors or horizontal overflow.
+- Both ZIPs validate. All **214 distributable source files** match the checkout
+  byte-for-byte; only the original `.openai/hosting.json` is intentionally absent.
+- README, AGENTS, CLAUDE and closeout document links resolve. The prepared account
+  copy retains neutral hosting identity and its intentionally empty hosted URL.
+
+These are the local checks for the closing documentation/portal update. Earlier
+behavioral verification remains recorded below. The final Git tag
+`academy-closeout-2026-10-20` and the offline archive's `DELIVERY-RECEIPT.json`
+identify the closing commit, its own CI result and hosted deployment.
+
 ## Local persistence and account handoff
 
-Current inventory: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
+Inventory at that release: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
 assignment IDs, 25 manuals**. This batch changes portability and progress storage;
 it does not add more lesson assignments.
 

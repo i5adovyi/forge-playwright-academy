@@ -38,5 +38,7 @@ site ownership, chat history or access to another assistant's tools.
 
 Use [the verification record](docs/VERIFICATION.md) for executed evidence and
 [the review](docs/REVIEW.md) for delivered improvements and remaining proposals.
+Read [the closeout record](docs/PROJECT-CLOSEOUT.md) for build history,
+postmortem and the original handover checkpoint.
 Follow AGENTS.md for source ownership, exercise quality, relevant checks and
 delivery. Update shared rules there; keep this file a concise entry point.
