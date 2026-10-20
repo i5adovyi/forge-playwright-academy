@@ -41,6 +41,8 @@ The test runner starts the local server automatically if it is not already runni
 
 Completion is self-reported. The portal does not execute your submitted lesson work or issue an accredited certificate.
 
+Read the [academy review](docs/REVIEW.md) for corrected gaps and optional extensions, and the [verification record](docs/VERIFICATION.md) for executed checks and their limitations. Both are also available in the portal library.
+
 ## The learning path
 
 | Stage | Focus | What you build |

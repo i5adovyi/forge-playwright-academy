@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { test, expect, addProduct, login, credentials, shipping, openCart } from '../support/fixtures';
 
 type CartProbe = Window & {
@@ -163,6 +164,13 @@ test('hybrid checkout creates an API order and a downloadable receipt', async ({
   const [download] = await Promise.all([page.waitForEvent('download'), confirmation.getByRole('link', { name: 'Download receipt' }).click()]);
   expect(download.suggestedFilename()).toBe('ORD-0001.txt');
   expect(await download.failure()).toBeNull();
+  const downloadedPath = await download.path();
+  expect(downloadedPath).not.toBeNull();
+  const receipt = await readFile(downloadedPath!, 'utf8');
+  expect(receipt).toContain('Mechanical Keyboard x 2');
+  expect(receipt).toContain('Total: $178.00');
+  expect(receipt).toContain('No payment was collected.');
+  await expect(page).toHaveURL(/\/lab\/$/);
   const { orders } = await (await request.get('/api/orders')).json();
   expect(orders[0]).toMatchObject({ total: 17800, shipping });
   await confirmation.getByRole('button', { name: 'Close order confirmation' }).click();

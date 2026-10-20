@@ -16,6 +16,7 @@ A second review examined the lessons, runnable exercises, portal, shop/API, conf
 | Cart refresh could replace an input during typing | Opening the cart and editing immediately could lose input | Fresh state is rendered before editable cart controls appear |
 | Request limit counted characters rather than bytes; network chunks decoded separately | Unicode could bypass the size contract or be corrupted | Byte-counted buffering and a single UTF-8 decode, with fragmented Unicode/boundary tests |
 | Focus was lost after cart updates and dialog transitions | Keyboard users could lose their place; WebKit exposed implicit browser assumptions | Explicit focus preservation/return, plus engine-independent focus assertions |
+| Linux WebKit displayed the receipt instead of downloading it | The download header alone did not produce the promised action on every engine/platform | Explicit download intent on the link; test verifies file contents and that the shop remains open |
 | Skip link and malformed fragments could blank the portal | Navigation and reload were fragile | SPA-safe skip behavior, malformed-route fallback, and regressions |
 | Slow manual failures could overwrite a later route | A completed navigation could be replaced by an unrelated error | Rendering checks a route version on both success and failure |
 | Continue learning ignored the last open unfinished lesson | Returning learners lost their current position | Resume uses the saved last lesson when appropriate |

@@ -150,7 +150,11 @@ $('#checkout-form').addEventListener('submit', async event => {
   try {
     await withState(async () => {
       const { order } = await api('/orders', { method: 'POST', body: data });
-      $('#checkout-dialog').close(); $('#order-id').textContent = order.id; $('#receipt').href = `/api/orders/${order.id}/receipt`;
+      $('#checkout-dialog').close(); $('#order-id').textContent = order.id;
+      $('#receipt').href = `/api/orders/${order.id}/receipt`;
+      // Declare download intent on the link as well as on the HTTP response.
+      // Linux WebKit can otherwise render a text/plain attachment as a page.
+      $('#receipt').download = `${order.id}.txt`;
       updateCart({ items: [], subtotal: 0, discount: 0, total: 0, promoCode: null }); event.target.reset(); showDialog('#success-dialog', $('#cart-open'));
     });
   } catch (error) { errorAt('#checkout-error', error.message); }
