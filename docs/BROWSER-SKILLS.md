@@ -22,7 +22,7 @@ npm run test:skills
 npm run test:skills:practice -- --grep SK-01
 ```
 
-Every starter has a failing placeholder. Removing `.skip` alone must fail. A skipped assignment is not passing evidence. These six SK drills supplement the 24 EX drills and the 80 lesson challenges; they do not replace them.
+Every starter has a failing placeholder. Removing `.skip` alone must fail. A skipped assignment is not passing evidence. These six SK drills supplement the 24 EX drills and the 88 lesson challenges; they do not replace them.
 
 ## SK-01 · Timer boundary
 

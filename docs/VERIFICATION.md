@@ -1,44 +1,37 @@
 # Verification record
 
-Reviewed and verified locally on October 20, 2026 with Node.js 24.22.0 and Playwright 1.64.1 on macOS. The project supports Node 22+.
+Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
-## Review verification
+## Accessibility and visual workshop extension
 
-- `npm run validate`: 8 stages, 40 lessons, 80 lesson challenges, 34 resources, 8 articles, 30 executable drill mappings, and local document links validated.
-- `npm run typecheck`: strict TypeScript checks passed for configuration, reference tests, solutions, skills, and starters.
-- `PORT=14827 npm run test:all`: **97 passed, 30 intentionally skipped**, 127 discovered, zero failures/errors, approximately 14 seconds.
-- `PORT=14827 npm run test:matrix -- --project=ui-chromium --project=ui-webkit --reporter=list --output=/tmp/forge-verified-matrix`: **30 passed**, 15 shop UI tests on each engine, 9.4 seconds.
-- Manual viewport smoke check: all **14 manuals** rendered at **390px and 1440px** (28 checks), with no page errors or document-level horizontal overflow.
-- `npm run build`: static portal and downloadable source/manual bundles generated.
-- `git diff --check`: passed.
+- `npm run validate`: **8 stages, 44 lessons, 88 written challenges, 34 resources, 8 articles, and 38 executable drill mappings**; document links validated.
+- `npm run typecheck`, `npm run check`, and `git diff --check`: passed. Normal visual discovery lists only four worked examples and four starters; the separate defect configuration lists exactly one intentional failure.
+- `PORT=14827 npm run test:all`: **102 passed, 34 intentionally skipped**, 136 discovered, zero failures, 25.7 seconds.
+- `PORT=14827 npm run test:visual`: **4 passed**, 1.6 seconds, using reviewed macOS references with `maxDiffPixels: 0`, `threshold: 0`, and no update flag.
+- `PORT=14827 npm run test:visual:practice`: **4 intentionally skipped**. Together with the main suite, all 38 unfinished learner starters are accounted for; they are not passing coverage.
+- `PORT=14827 npm run test:visual:defect`: **1 expected experimental failure**, exit 1. The text amount stayed `$79.20`, but the unchanged summary baseline rejected the tiny, faint price and resulting layout shift. The report showed 23,500 differing pixels and a changed image height. Expected, actual, and diff images were inspected.
+- Missing-reference guard: temporarily removed the VS-01 reference, ran ordinary comparison, and observed exit 1 with a missing-snapshot error. No baseline was automatically created. The original reference was restored and its SHA-256 verified unchanged.
+- Manual viewport smoke check: **16 manuals × two widths (390px and 1440px)** rendered with no page errors or document-level horizontal overflow. Accessibility desktop/mobile layouts and all four macOS visual references were inspected.
+- `npm run build`: portal plus full source/manual download bundles generated, including the new labs, guides, licensed fonts, and visual configuration.
 
-The 97 passing cases comprise 43 UI/API reference cases, 29 shop solution cases, six browser-skills examples, and 19 portal integration cases. The 30 skipped cases are learner starters: 24 EX and six SK assignments. They contain explicit failing placeholders and do not count as verification coverage.
+The 102 passing main-suite cases comprise 43 UI/API reference cases, 29 shop solution cases, six browser-skills examples, four accessibility cases, and 20 portal integration cases. Visual comparisons run separately so ordinary API/UI feedback does not require screenshot-baseline maintenance.
 
-The portal tests include all 40 lesson routes, lesson/checklist/note persistence, quiz feedback, imports/exports, practice mappings, keyboard navigation, malformed paths, and stale asynchronous responses. The lab regressions include delayed cart responses, focus preservation, malformed requests, UTF-8 body limits and chunk boundaries, and receipt isolation.
+AX-02 and AX-04 scan real defective UI states and capture rejection by the original clean-scan assertion before repairing the interface. AX-03 checks keyboard focus behavior and the open dialog. AX-04 also verifies validation, linked errors, and successful recovery. Full axe results, including inconclusive results, are attached for inspection.
 
-## Browser-startup limit
+VS-03 verifies a changing metadata badge against the same narrow mask while separately comparing the important order-summary image before and after. During development this exposed unstable rendering of a decorative arrow; replacing that glyph with CSS geometry removed the noise without changing the strict comparison policy.
 
-Firefox was installed but could not launch on this Mac: it exited with `Could not find profile folder` before executing any page test. A fresh temporary directory produced the same result. This is recorded as an environmental launch failure, not a pass, skip, or application defect. No macOS privacy settings or browser installation were modified to work around it.
+## Baseline ownership and CI
 
-The optional GitHub Actions browser matrix runs all three engines on Ubuntu. Select `browser_matrix` when manually running the workflow. The complete Linux run passed on all three engines, as recorded below.
+Reviewed references are in `quality/visual/baselines/`, with their environment and review notes in its README. Normal comparison uses committed references and never updates them. The separate manual candidate workflow generates images for review; its success alone is not regression evidence.
 
-## Linux CI evidence
+The previous shop matrix passed **45 tests on Linux**, 15 per engine (Chromium, Firefox, WebKit), at commit `087b1633373de98e987b45af7f29bda28fdc6ae6`: [three-engine run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688299). This historical matrix does not imply the new accessibility and visual exercises were run on every engine; those new tracks target Chromium.
 
-Verified on GitHub Actions with Node.js 22 and the pinned Playwright package at source commit `087b1633373de98e987b45af7f29bda28fdc6ae6`:
+## Reproducibility and limits
 
-- [Core verification run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688314): **97 passed, 30 intentionally skipped**, 51.1 seconds. Validation, build, syntax/discovery, and TypeScript checks also passed.
-- [Three-engine matrix run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688299): **45 passed**, 15 per engine (Chromium, Firefox, WebKit), 1.5 minutes; no failed or flaky cases reported.
+Port 14827 avoids unrelated local applications on 4173/4174. The default remains 4173 and is configurable through `PORT`. The runner checks `/api/forge-health` before reusing a server.
 
-The first Linux matrix caught a real receipt-download mismatch: WebKit rendered the text attachment as a page. The fix declares download intent on the link, and the regression verifies the downloaded contents and that the shop remains open. The successful run above includes that fix. Subsequent edits to this record and the portal's manual-column CSS do not change the shop matrix; the separate 28-viewport manual check verifies the layout adjustment.
+Firefox could not launch in the earlier local macOS review (`Could not find profile folder` before any page test). Its successful Linux shop run above is separate evidence. No operating-system privacy settings were changed to work around that local startup issue.
 
-## Reproducibility and scope
+A clean axe scan is partial evidence for the scanned state and scope. Manual screen-reader, zoom, and assistive-technology review remain necessary for broader accessibility claims. Screenshot comparisons protect reviewed pixels in a specific rendering environment; they do not establish functional correctness, accessibility conformance, real-device behavior, load capacity, or production security.
 
-Port 14827 avoids unrelated local applications on 4173/4174. The default remains 4173 and is configurable through `PORT`. The runner verifies `/api/forge-health` before reusing a server.
-
-Firefox, Chromium, and WebKit engine testing is distinct from real mobile hardware or every branded browser/device combination. Full accessibility conformance, load testing, and production security have not been audited. The shop is a local simulation with in-memory state. The browser-skills harness is deliberately separate from commerce behavior.
-
-All lesson routes are checked, but the 80 open-ended challenge solutions are not all standalone executed tests. Some are design, investigation, and review tasks; illustrative code requires the surrounding setup. Independently runnable examples live in `solutions/` and `skills/worked.spec.ts`.
-
-## Initial baseline
-
-Before this review, the original Chromium suite had 78 passing cases and 24 intentionally skipped starters. Its GitHub Actions run completed successfully: [initial Linux run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39431300647). That baseline is historical evidence, not a substitute for the revised-suite results above.
+The 88 written challenges include design and investigation work and are not all independently executed specifications. Runnable examples are in `tests/`, `solutions/`, `skills/`, and `quality/`. The shop and quality fixtures use synthetic local data. No real account, registration, payment, or external service is created by these labs.

@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 40 lessons, 80 written exercises, and 40 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **38 hours 20 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 44 lessons, 88 written exercises, and 44 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **42 hours 50 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **80 written exercises** are separate from the **24 executable shop starter challenges** in `exercises/` and **6 supplemental browser-skills drills** in `skills/`. Shop starters have worked examples in `solutions/`; browser-skills starters and worked examples live together in `skills/`. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+The **88 written exercises** are separate from **38 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, and 4 visual drills in `quality/visual/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
 
 ## Before lesson 01-02
 
@@ -43,6 +43,12 @@ npm run test:solutions -- --grep EX-12
 # One browser-skills assignment and its worked example
 npm run test:skills:practice -- --grep SK-02
 npm run test:skills -- --grep SK-02
+
+# Accessibility and visual assignments, then their worked examples
+npm run test:a11y:practice -- --grep AX-02
+npm run test:a11y -- --grep AX-02
+npm run test:visual:practice -- --grep VS-01
+npm run test:visual -- --grep VS-01
 ```
 
 A skipped result means unfinished work. A passing solution run demonstrates the reference implementation; it does not establish that you completed the assignment yourself.
@@ -79,6 +85,16 @@ A skipped result means unfinished work. A passing solution run demonstrates the 
 | SK-04 | Scope an iframe locator | 02-02, 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
 | SK-05 | Capture a popup | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
 | SK-06 | Accept and dismiss a dialog | 03-04 | [skills/practice.spec.ts](../skills/practice.spec.ts) |
+| AX-01 | Scoped scan and complete evidence | 03-05, 03-06 | [quality/accessibility/practice.spec.ts](../quality/accessibility/practice.spec.ts) |
+| AX-02 | Detect and repair a missing accessible name | 03-06 | [quality/accessibility/practice.spec.ts](../quality/accessibility/practice.spec.ts) |
+| AX-03 | Keyboard focus and modal recovery | 03-05, 03-07 | [quality/accessibility/practice.spec.ts](../quality/accessibility/practice.spec.ts) |
+| AX-04 | Form states and contrast detection | 02-03, 03-07 | [quality/accessibility/practice.spec.ts](../quality/accessibility/practice.spec.ts) |
+| VS-01 | Stable desktop baseline | 03-05, 06-06 | [quality/visual/practice.spec.ts](../quality/visual/practice.spec.ts) |
+| VS-02 | Mobile expanded summary | 06-04, 06-06 | [quality/visual/practice.spec.ts](../quality/visual/practice.spec.ts) |
+| VS-03 | Mask only volatile metadata | 06-07 | [quality/visual/practice.spec.ts](../quality/visual/practice.spec.ts) |
+| VS-04 | Review a controlled visual regression | 06-07, 08-03 | [quality/visual/practice.spec.ts](../quality/visual/practice.spec.ts) |
+
+The [accessibility manual](ACCESSIBILITY-LABS.md) covers scans, keyboard behavior, error states and unchanged-oracle defect experiments at `/quality/accessibility/`. The [visual manual](VISUAL-BASELINES.md) covers reviewed platform-specific expectations at `/quality/visual/`. **`npm run test:all` does not run the separate visual projects.** Run `npm run test:visual` explicitly. Missing visual baselines fail until deliberately generated and reviewed; never update a baseline against the controlled defect.
 
 The [browser-skills manual](BROWSER-SKILLS.md) explains the local `/skills/` harness and six additional drills. Uploads, frames, popups, and native dialogs have explicit teaching fixtures there; they are not invented shop features. Clock and authentication drills exercise observable timer boundaries and real session cookies.
 
@@ -88,10 +104,10 @@ The [browser-skills manual](BROWSER-SKILLS.md) explains the local `/skills/` har
 |---|---|
 | Foundations | Run one discovered test, explain one boundary distinction, and show a deliberate assertion failure. |
 | First UI suite | Complete a persisted purchase and demonstrate a visible rejection, using scoped role/label locators. |
-| Resilient UI | Produce a controlled outage and recovery, prove session separation, inspect a receipt, and complete the browser-skills drills with no fixed sleeps. |
+| Resilient UI | Produce an outage and recovery, prove session separation, inspect a receipt, complete browser-skills drills, and retain scoped accessibility scans, a keyboard focus journey, and unchanged-oracle name/contrast defect evidence. Document manual-review gaps. |
 | API | Assert exact status/error codes, independent monetary expectations, and unchanged state for rejected mutations. |
 | Architecture | Explain fixture setup/use/teardown, then run selected tests alone and with multiple workers without shared-state interference. |
-| Delivery | Diagnose one failure from a trace and retain actual CI or local equivalent evidence. Distinguish configured browsers from browsers actually tested. |
+| Delivery | Diagnose a trace, retain actual CI or local evidence, review desktop/mobile baselines, justify a narrow metadata mask, and prove the original screenshot rejects the controlled styling defect. Distinguish configured browsers/platforms from those tested. |
 | AI agents | Map a reviewed plan to assertions, inspect the generated diff, and reject a repair that removes the protected rule. Manual planning/review works without paid agent access. |
 | Capstone | Demonstrate critical-risk coverage, a controlled defect detected by the intended oracle, a reproducible run, and explicit limitations. |
 
@@ -131,7 +147,7 @@ Stage output: a small browser suite covering discovery, forms, search, and a per
 
 ### 3. Make it resilient
 
-Replace fragile waits with observable conditions. Control dependencies and build useful visual and accessibility checks.
+Replace fragile waits with observable conditions. Control dependencies, audit meaningful interface states, and verify keyboard access with deliberate fault experiments.
 
 | Lesson | Focus | Guided estimate |
 |---|---|---:|
@@ -140,8 +156,10 @@ Replace fragile waits with observable conditions. Control dependencies and build
 | 03-03 | Browser isolation, sessions, and storage | 55 min |
 | 03-04 | Events, downloads, and deterministic time | 60 min |
 | 03-05 | Visual and accessibility checks with judgment | 60 min |
+| 03-06 | Accessibility audits grounded in UI state | 65 min |
+| 03-07 | Keyboard journeys and accessible recovery | 70 min |
 
-Stage output: controlled network experiments, independent browser sessions, a receipt check, and focused visual/keyboard evidence.
+Stage output: controlled network experiments, independent browser sessions, a receipt check, scoped axe reports with incomplete checks retained, a keyboard/modal journey, and name/contrast defect-detection evidence with a manual investigation note.
 
 ### 4. Go below the UI
 
@@ -173,7 +191,7 @@ Stage output: typed fixtures, focused page objects, data builders, and independe
 
 ### 6. Ship reliable signals
 
-Diagnose failures from artifacts, choose a useful browser matrix, and make CI a credible release signal.
+Diagnose failures from artifacts, review visual baselines, choose a useful browser matrix, and make CI a credible release signal.
 
 | Lesson | Focus | Guided estimate |
 |---|---|---:|
@@ -182,8 +200,10 @@ Diagnose failures from artifacts, choose a useful browser matrix, and make CI a 
 | 06-03 | A CI pipeline people can trust | 65 min |
 | 06-04 | Browser matrix, sharding, and cost | 55 min |
 | 06-05 | Reports that lead to decisions | 55 min |
+| 06-06 | Build a visual baseline you can defend | 65 min |
+| 06-07 | Investigate visual differences and prove detection | 70 min |
 
-Stage output: trace-based diagnoses, a CI policy, reproducible reports, and a release brief.
+Stage output: trace-based diagnoses, a CI policy, reproducible reports, reviewed desktop/mobile images, a narrowly justified mask, unchanged-baseline defect evidence, and a release brief.
 
 ### 7. Work with AI agents
 
@@ -222,6 +242,8 @@ For each implemented exercise retain: scenario ID, rule under test, isolated set
 ## Source and version notes
 
 Original lesson prose and exercises were written for this project. Official Playwright documentation was consulted on **20 October 2026**, including [writing tests](https://playwright.dev/docs/writing-tests), [API testing](https://playwright.dev/docs/api-testing), [fixtures](https://playwright.dev/docs/test-fixtures), [network control](https://playwright.dev/docs/network), [trace viewer](https://playwright.dev/docs/trace-viewer), and [official Test Agents](https://playwright.dev/docs/test-agents). Every lesson links to relevant primary documentation; the learning library supplies additional courses, books and videos through legitimate source links.
+
+The accessibility and visual extension also uses [Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing), [visual comparisons](https://playwright.dev/docs/test-snapshots), [screenshot assertions](https://playwright.dev/docs/api/class-pageassertions), [axe result documentation](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md), [W3C modal-dialog guidance](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/), and [W3C Easy Checks](https://www.w3.org/WAI/test-evaluate/preliminary/), checked on 20 October 2026. The lab scenarios, fault controls, acceptance criteria and review workflows are original exercises.
 
 Use the installed package and lockfile as the execution baseline. Agent definitions and optional features can change; confirm the installed version and current official instructions before initializing or refreshing agents. The official planner/generator/healer workflow is taught with explicit review of business expectations and execution evidence.
 

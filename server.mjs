@@ -144,7 +144,7 @@ async function api(req, res, url) {
   }
   fail(res, 404, 'NOT_FOUND', 'Endpoint not found.');
 }
-const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.md': 'text/plain', '.pdf': 'application/pdf', '.zip': 'application/zip' };
+const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.md': 'text/plain', '.pdf': 'application/pdf', '.zip': 'application/zip' };
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   try {
@@ -154,11 +154,11 @@ const server = http.createServer(async (req, res) => {
     const pathname = decodeURIComponent(url.pathname);
     let base = 'portal';
     let relative = pathname.slice(1);
-    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions', 'skills']) {
+    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions', 'skills', 'quality']) {
       if (pathname === `/${mount}` || pathname.startsWith(`/${mount}/`)) { base = mount; relative = pathname.slice(mount.length + 2); break; }
     }
     const basePath = path.resolve(root, base);
-    const target = path.resolve(basePath, relative || 'index.html');
+    const target = path.resolve(basePath, relative.endsWith('/') ? `${relative}index.html` : relative || 'index.html');
     if (!target.startsWith(`${basePath}${path.sep}`)) return fail(res, 403, 'FORBIDDEN', 'Path not allowed.');
     const data = await readFile(target);
     res.writeHead(200, { 'Content-Type': `${types[path.extname(target)] || 'text/plain'}; charset=utf-8`, 'Cache-Control': 'no-cache' });

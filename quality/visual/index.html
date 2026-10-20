@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Forge Visual Lab — Order review</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="workspace">
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="Forge visual lab home">forge<span>°</span></a>
+      <span class="edition">VISUAL ENGINEERING / LAB 01</span>
+      <span class="environment">LOCAL FIXTURE</span>
+    </header>
+    <main>
+      <div class="intro">
+        <p class="eyebrow">A LITTLE ORDER. A LOT OF FOCUS.</p>
+        <h1>Your workspace, ready.</h1>
+        <p>One carefully chosen setup. Check the details before making it yours.</p>
+      </div>
+      <div class="checkout-grid">
+        <section class="selection" aria-labelledby="selection-title">
+          <div class="section-heading"><h2 id="selection-title">Your selection</h2><span>02 ITEMS</span></div>
+          <article class="product">
+            <div class="product-art lamp" aria-hidden="true"><i></i><b></b></div>
+            <div><p class="product-category">LIGHT / WORKSPACE</p><h3>Focus Lamp</h3><p>Warm light. Clear thinking.</p><span class="quantity">Quantity 1</span></div>
+            <strong>$59.00</strong>
+          </article>
+          <article class="product">
+            <div class="product-art mat" aria-hidden="true"><i></i></div>
+            <div><p class="product-category">DESK / EVERYDAY</p><h3>Desk Mat</h3><p>A place for your next idea.</p><span class="quantity">Quantity 1</span></div>
+            <strong>$29.00</strong>
+          </article>
+          <div class="delivery"><span class="delivery-mark" aria-hidden="true">+</span><div><h3>A considered delivery.</h3><p>Free standard shipping. Thoughtfully packed.</p><p class="delivery-date">Order review: <time id="review-date" datetime="2026-10-20">20 October 2026</time></p></div></div>
+        </section>
+        <section class="order-summary" data-testid="order-summary" aria-labelledby="summary-title">
+          <p class="eyebrow">THE FINISHING TOUCH</p>
+          <h2 id="summary-title">Order summary</h2>
+          <button id="details-toggle" type="button" aria-expanded="false" aria-controls="order-lines">Show order details</button>
+          <div id="order-lines" data-testid="order-lines" class="order-lines">
+            <div><span>Focus Lamp × 1</span><span>$59.00</span></div>
+            <div><span>Desk Mat × 1</span><span>$29.00</span></div>
+          </div>
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd>$88.00</dd></div>
+            <div class="discount"><dt>SAVE10 / 10% off</dt><dd>−$8.80</dd></div>
+            <div><dt>Delivery</dt><dd>Free</dd></div>
+          </dl>
+          <div class="grand-total"><span>Total / USD</span><strong data-testid="order-total">$79.20</strong></div>
+          <button class="checkout" type="button">Confirm practice order <span class="checkout-arrow" aria-hidden="true"></span></button>
+          <p class="payment-note">Illustrative order. No payment is taken.</p>
+          <p id="confirmation" role="status" hidden>Practice order confirmed.</p>
+        </section>
+      </div>
+      <footer class="fixture-footer">
+        <div><span class="eyebrow">RENDER REFERENCE</span><span class="render-token" data-testid="render-token">RUN-0001</span><button id="refresh-reference" type="button">Refresh receipt reference</button></div>
+        <p>Small details make reliable products.</p>
+      </footer>
+    </main>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

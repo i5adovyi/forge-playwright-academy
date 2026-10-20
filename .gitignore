@@ -15,3 +15,6 @@ portal/docs/
 # Real authentication snapshots must never enter source control.
 playwright/.auth/
 .auth/
+
+# Separate visual comparison output (reviewed baseline PNGs are tracked).
+quality-results/

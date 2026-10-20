@@ -82,3 +82,8 @@ Pick one primary course and the official docs. Watching five introductions rarel
 ## Place the browser skills in your schedule
 
 During Stage 3, attempt SK-01 and SK-03–06 from [Browser Skills](BROWSER-SKILLS.md). Complete SK-02 when comparing cookie and header session isolation in Stages 3–5. Budget an additional two to four hours for these six drills if the browser APIs are new to you. During Stage 6, run the optional browser matrix and explain any engine-specific result.
+
+
+## Accessibility and visual workshop extension
+
+Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons 06-06 and 06-07 after learning CI evidence. The four guided lesson estimates add 4 hours 30 minutes. Budget extra time for implementing eight starters and reviewing failures. Attempt AX-01–04 before reading their worked solutions, then VS-01–04. Keep the axe report, a keyboard observation, an expected/actual/diff image set, and a written baseline approval reason in your portfolio. See [Accessibility labs](ACCESSIBILITY-LABS.md) and [Visual baselines](VISUAL-BASELINES.md).

@@ -35,14 +35,21 @@ A second review examined the lessons, runnable exercises, portal, shop/API, conf
 - Source downloads include the browser-skills harness, starter/solution files, and matrix configuration.
 - See [Verification](VERIFICATION.md) for commands actually executed and scope limitations.
 
+## Accessibility and visual extensions now implemented
+
+The first two recommendations have become complete workshops: **four new lessons, eight written challenges, and eight executable starter/solution pairs**. The academy now has 44 lessons, 88 written challenges, and 38 executable starters.
+
+- [Accessibility labs](ACCESSIBILITY-LABS.md): scoped axe evidence, a controlled naming defect and repair, keyboard dialog behavior, and form-error/contrast investigation.
+- [Visual baseline workshop](VISUAL-BASELINES.md): deterministic desktop/mobile images, narrow volatile-content masking, controlled-regression evidence, and deliberate review of platform-specific baseline updates.
+
+Normal visual comparison refuses missing references and does not overwrite them. Linux candidate generation is a separate manual workflow; approved images must be reviewed and committed before the comparison job can validate them. Automated accessibility checks remain partial evidence, and visual comparisons remain specific to the tested rendering environment.
+
 ## Useful next extensions — intentionally not claimed as implemented
 
 These are advanced branches after the core capstone, rather than prerequisites for starting the academy.
 
-1. **Automated accessibility investigation.** Add an axe-based scan to selected states, investigate each finding, and keep manual keyboard/screen-reader checks. Acceptance: demonstrate one controlled violation is detected; explain what automated scanning cannot establish.
-2. **Visual baseline maintenance.** The curriculum already covers the concepts. Build a committed, platform-specific baseline workflow with deliberate review of updates. Acceptance: an unintended layout change fails, an intentional change is reviewed, and font/OS noise is controlled without masking the relevant region.
-3. **Richer API protocols.** The current lab teaches REST/HTTP. Add a separate GraphQL or WebSocket fixture only when your work requires it. Acceptance: cover schema/event ordering, errors, state ownership, and a documented cleanup strategy.
-4. **A second product domain.** Extend the capstone to bookings, roles, or subscriptions rather than repeating the same shop. Acceptance: model different state transitions and justify which risks belong at each layer.
-5. **Real-device and performance evidence.** Browser engines and viewport emulation do not establish device behavior, throughput, or production latency. Define a separate environment and workload before making those claims.
+1. **Richer API protocols.** The current lab teaches REST/HTTP. Add a separate GraphQL or WebSocket fixture only when your work requires it. Acceptance: cover schema/event ordering, errors, state ownership, and a documented cleanup strategy.
+2. **A second product domain.** Extend the capstone to bookings, roles, or subscriptions rather than repeating the same shop. Acceptance: model different state transitions and justify which risks belong at each layer.
+3. **Real-device and performance evidence.** Browser engines and viewport emulation do not establish device behavior, throughput, or production latency. Define a separate environment and workload before making those claims.
 
 The first practical improvement for a learner is to complete one mapped exercise, produce a deliberate failure, and explain its oracle. More content is useful only when it leads to better evidence.

@@ -1,0 +1,20 @@
+const parameters = new URLSearchParams(location.search);
+if (parameters.get('defect') === 'total') document.body.classList.add('defect-total');
+let reference = 1;
+const token = document.querySelector('[data-testid="render-token"]');
+const renderReference = () => { token.textContent = `RUN-${String(reference).padStart(4, '0')}`; };
+renderReference();
+document.querySelector('#refresh-reference').addEventListener('click', () => { reference += 1; renderReference(); });
+const date = document.querySelector('#review-date');
+const now = new Date();
+date.dateTime = now.toISOString().slice(0, 10);
+date.textContent = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(now);
+const toggle = document.querySelector('#details-toggle');
+toggle.addEventListener('click', () => {
+  const expanded = toggle.getAttribute('aria-expanded') !== 'true';
+  toggle.setAttribute('aria-expanded', String(expanded));
+  toggle.textContent = expanded ? 'Hide order details' : 'Show order details';
+  document.querySelector('#order-lines').classList.toggle('expanded', expanded);
+});
+document.querySelector('.checkout').addEventListener('click', () => { document.querySelector('#confirmation').hidden = false; });
+document.documentElement.dataset.ready = 'true';

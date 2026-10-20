@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 80 lesson challenges.
+/** Executable drills complement (and do not replace) the 88 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -42,4 +42,25 @@ export const skillTracks = [
   skill(4, 'Scope an iframe locator', ['02-02', '03-04']),
   skill(5, 'Capture a popup', ['03-04']),
   skill(6, 'Accept and dismiss a dialog', ['03-04']),
+];
+const qualityDrill = (prefix, number, title, track, lessons, script) => {
+  const id = `${prefix}-${String(number).padStart(2, '0')}`;
+  return {
+    id, title, lessons,
+    file: `quality/${track}/practice.spec.ts`,
+    solution: `quality/${track}/worked.spec.ts`,
+    command: `npm run test:${script}:practice -- --grep ${id}`,
+  };
+};
+export const accessibilityTracks = [
+  qualityDrill('AX', 1, 'Scoped scan and complete evidence', 'accessibility', ['03-05', '03-06'], 'a11y'),
+  qualityDrill('AX', 2, 'Detect and repair a missing accessible name', 'accessibility', ['03-06'], 'a11y'),
+  qualityDrill('AX', 3, 'Keyboard focus and modal recovery', 'accessibility', ['03-05', '03-07'], 'a11y'),
+  qualityDrill('AX', 4, 'Form states and contrast detection', 'accessibility', ['02-03', '03-07'], 'a11y'),
+];
+export const visualTracks = [
+  qualityDrill('VS', 1, 'Stable desktop baseline', 'visual', ['03-05', '06-06'], 'visual'),
+  qualityDrill('VS', 2, 'Mobile expanded summary', 'visual', ['06-04', '06-06'], 'visual'),
+  qualityDrill('VS', 3, 'Mask only volatile metadata', 'visual', ['06-07'], 'visual'),
+  qualityDrill('VS', 4, 'Review a controlled visual regression', 'visual', ['06-07', '08-03'], 'visual'),
 ];

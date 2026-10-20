@@ -17,6 +17,8 @@
     "exercises/**/*.ts",
     "solutions/**/*.ts",
     "skills/**/*.ts",
-    "playwright.matrix.config.ts"
+    "playwright.matrix.config.ts",
+    "quality/**/*.ts",
+    "playwright.visual.config.ts"
   ]
 }

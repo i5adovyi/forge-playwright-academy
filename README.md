@@ -23,6 +23,8 @@ npm test                 # UI and API reference tests
 npm run test:solutions   # Worked exercise solutions
 npm run test:portal      # Learning portal integration tests
 npm run test:skills      # Six browser-feature worked examples
+npm run test:a11y        # Four accessibility worked labs
+npm run test:visual      # Four visual comparisons using reviewed platform baselines
 npm run test:interactive # Playwright UI mode
 ```
 
@@ -30,11 +32,11 @@ The test runner starts the local server automatically if it is not already runni
 
 ## What is inside
 
-- **8 stages / 40 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **80 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **40 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 44 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **88 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **44 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **30 executable starter exercises** (24 shop drills + 6 browser-skills drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **38 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -72,7 +74,13 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
-| `npm run test:all` | All configured projects; unimplemented starters stay skipped |
+| `npm run test:all` | Core, browser-skills, accessibility, and portal projects; visual comparisons run separately |
+| `npm run test:a11y` | Axe scans, defect detection, keyboard flows, and form recovery |
+| `npm run test:a11y:practice` | Accessibility starters you implement |
+| `npm run test:visual` | Compare against committed references for your platform; never create them silently |
+| `npm run test:visual:practice` | Visual starters you implement, sharing reviewed references |
+| `npm run test:visual:update` | Generate candidate references for deliberate human review |
+| `npm run test:visual:defect` | Intentionally fail on a controlled defect; inspect the screenshot diff |
 | `npm run test:interactive` | Open Playwright UI mode |
 | `npm run test:debug` | Open the inspector for UI tests |
 | `npm run test:report` | View the latest HTML report |
@@ -86,10 +94,11 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 40 lessons, exercises, knowledge checks
+  content/curriculum.js 44 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
+quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
 tests/                  UI, API, and portal verification
 exercises/              Starter assignments; remove test.skip as you work
@@ -99,6 +108,7 @@ scripts/                Content validation and download/build packaging
 .github/workflows/      CI workflow and test artifacts
 playwright.config.ts    Projects, timeouts, reports, and web server
 playwright.matrix.config.ts  Optional three-engine UI matrix
+playwright.visual.config.ts  Separate visual comparison and practice projects
 ```
 
 ## Your practice environment
@@ -108,6 +118,14 @@ Demo login: **demo@forge.test / Playwright123!**. Discount code: **SAVE10**.
 Read `docs/lab-api.md` for the exact endpoint and data contract. The lesson pages and practice lab map each EX/SK ID to its starter, solution, and run command. Read `docs/BROWSER-SKILLS.md` for the supplemental browser features and optional cross-browser matrix. Sessions are isolated with a `lab_session` cookie or `x-lab-session` header. Use unique session IDs per API test. Browser tests get a fresh context. Data is in memory and resets when the server restarts. The demo credentials, reset endpoint, and simplified state are for local training; this is not a production commerce service.
 
 The server binds to `127.0.0.1`. To choose another port, set `PORT` and use the same setting for the tests. Avoid pointing destructive reset tests at any external environment.
+
+## Accessibility and visual workshops
+
+Start with lessons **03-06 / 03-07** and [Accessibility labs](docs/ACCESSIBILITY-LABS.md). The dedicated signup fixture at `/quality/accessibility/` includes reversible training defects. Use axe results as investigation evidence, then test keyboard navigation and error recovery. A clean automated scan does not establish accessibility conformance.
+
+Continue with lessons **06-06 / 06-07** and [Visual baselines](docs/VISUAL-BASELINES.md). The fixture at `/quality/visual/` has local fonts, stable data, desktop/mobile states, and a narrow volatile-content mask. Baselines are separated by operating system and reviewed before comparison. The default comparison refuses to create missing images. Use the update command only for candidate generation, inspect the images and diff, and commit approved changes with a reason. Normal CI only compares; a separate manual workflow prepares Linux candidates for review.
+
+The controlled-defect command is supposed to exit unsuccessfully. Its screenshot mismatch is the learning evidence; an unrelated launch or setup failure does not count. The main suite excludes this intentional failure and the separate visual projects.
 
 ## Learning progress and privacy
 
@@ -125,4 +143,4 @@ Official Playwright agent tooling depends on the installed version and your chos
 
 `npm run build` generates a standalone static learning portal in `dist/`. You can host that directory on a static host. The **real shop and HTTP API remain local**; the hosted portal offers the source download and setup guide. No learner data is uploaded by the portal.
 
-The original project and writing are MIT licensed. Third-party resources, trademarks, videos, and books remain their authors’ property. Forge is independent and is not an official Microsoft, Playwright, or OpenAI training program. Commercial reuse is permitted for the original work; conduct your own editorial, accessibility, and product review before presenting it as a commercial course.
+The original project and writing are MIT licensed. Third-party resources, trademarks, videos, and books remain their authors’ property. Bundled Atkinson Hyperlegible fonts have their own [SIL Open Font License](quality/visual/fonts/OFL.txt). Forge is independent and is not an official Microsoft, Playwright, or OpenAI training program. Commercial reuse is permitted for the original work; conduct your own editorial, accessibility, and product review before presenting it as a commercial course.

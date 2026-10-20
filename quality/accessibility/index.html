@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forge Accessibility Lab — Fieldnotes</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lab</a>
+  <header class="site-header"><a class="brand" href="/">forge<span>°</span> <span class="brand-section">/ quality lab</span></a><a href="/#/manual/ACCESSIBILITY-LABS">Exercise guide <span aria-hidden="true">↗</span></a></header>
+  <main id="main-content">
+    <section class="intro" aria-labelledby="lab-title">
+      <p class="eyebrow">ACCESSIBILITY · FOUR PRACTICAL EXPERIMENTS</p>
+      <h1 id="lab-title">A good interface<br>invites everyone in.</h1>
+      <p class="lead">Inspect the names. Follow the focus. Challenge the scan.<br>A small form with a lot to teach you.</p>
+      <div class="lab-meta"><span>AX-01 — AX-04</span><span>Local browser state</span><span>No account created</span></div>
+    </section>
+    <div class="workspace">
+      <section id="signup-panel" class="signup-card" aria-labelledby="signup-title">
+        <div class="card-top"><span class="wordmark">fieldnotes<span aria-hidden="true">✳</span></span><span class="pill">LIVE WORKSHOP</span></div>
+        <div class="card-heading">
+          <div><p class="eyebrow">MAKE SOMETHING THAT WORKS FOR PEOPLE</p><h2 id="signup-title">Your next good idea<br>starts here.</h2></div>
+          <button id="preferences-open" class="icon-button" aria-label="Edit workshop preferences" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></button>
+        </div>
+        <p class="card-description">Join a fictional workshop on thoughtful product testing. Use a made-up name and email to explore this form.</p>
+        <form id="signup-form" novalidate>
+          <div id="error-summary" class="error-summary" role="alert" tabindex="-1" hidden>
+            <h3>Check your details</h3><p>Fix these fields, then try again.</p><ul id="error-links"></ul>
+          </div>
+          <div class="field"><label for="full-name">Full name <span>(required)</span></label><input id="full-name" name="name" autocomplete="name" required aria-describedby="name-hint"><p class="hint" id="name-hint">A fictional first and last name is perfect.</p><p class="field-error" id="name-error" hidden>Enter your full name.</p></div>
+          <div class="field"><label for="email">Email address <span>(required)</span></label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-hint"><p class="hint" id="email-hint">Try alex@example.test. Nothing will be sent.</p><p class="field-error" id="email-error" hidden>Enter an email address, such as alex@example.test.</p></div>
+          <p id="privacy-note" class="privacy-note">Your details stay in this browser tab. Reloading clears them.</p>
+          <button class="primary-button" type="submit">Join the workshop <span aria-hidden="true">↗</span></button>
+        </form>
+        <p id="signup-status" class="status" role="status" aria-live="polite"></p>
+        <p id="preferences-status" class="preferences-status" role="status">Workshop reminders: off.</p>
+        <div class="card-footer"><span aria-hidden="true">✳</span><p>Small details.<br>More people included.</p><span class="edition">FIELDNOTES / 001</span></div>
+      </section>
+      <aside class="workbench" aria-labelledby="bench-title">
+        <p class="eyebrow">THE EXPERIMENT CONTROLS</p><h2 id="bench-title">Break it on purpose.</h2>
+        <p>Each switch introduces one known defect. Capture the failure, repair it here, then rerun the same check.</p>
+        <label class="fault-control"><input id="name-defect" type="checkbox"><span><strong>Introduce a missing button name</strong><small>AX-02 · The preferences icon keeps working but loses its accessible name.</small></span></label>
+        <label class="fault-control"><input id="contrast-defect" type="checkbox"><span><strong>Introduce low-contrast text</strong><small>AX-04 · The privacy note becomes difficult to read against its background.</small></span></label>
+        <p class="fault-status" id="fault-status" role="status">No deliberate defects enabled.</p>
+        <button id="repair" class="secondary-button">Repair both defects</button>
+        <div class="review-note"><span class="eyebrow">THE IMPORTANT DISTINCTION</span><h3>A clean scan is one piece of evidence.</h3><p>Check keyboard navigation, visible focus, zoom, and screen-reader announcements yourself. An automated scan cannot prove the experience works for everyone.</p></div>
+        <a class="guide-link" href="/#/manual/ACCESSIBILITY-LABS">Open the lab instructions <span aria-hidden="true">↗</span></a>
+      </aside>
+    </div>
+    <section class="experiment-list" aria-label="Accessibility experiments">
+      <article><span>AX-01</span><h2>Know your scope.</h2><p>Scan a real component and preserve the full JSON evidence.</p></article>
+      <article><span>AX-02</span><h2>Prove the detector.</h2><p>Find a missing name. Repair the app, keeping the assertion intact.</p></article>
+      <article><span>AX-03</span><h2>Follow the keyboard.</h2><p>Open, explore, and close a modal without losing your place.</p></article>
+      <article><span>AX-04</span><h2>Test the other states.</h2><p>Inspect errors, successful submission, and a contrast regression.</p></article>
+    </section>
+  </main>
+  <dialog id="preferences-dialog" aria-labelledby="preferences-title" aria-describedby="preferences-description">
+    <p class="eyebrow">MAKE IT YOURS</p><h2 id="preferences-title">Workshop preferences</h2>
+    <p id="preferences-description">Choose a reminder setting for this tab. No email is sent.</p>
+    <form id="preferences-form">
+      <label class="checkbox-label"><input id="reminders" type="checkbox" autofocus>Send workshop reminders</label>
+      <div class="dialog-actions"><button class="primary-button" type="submit">Save preferences</button><button type="button" id="preferences-cancel" class="secondary-button">Cancel</button></div>
+    </form>
+  </dialog>
+  <footer><span>FORGE / LEARN THROUGH EVIDENCE</span><p>Educational fixture · fictional details only · no external services</p></footer>
+</body>
+</html>

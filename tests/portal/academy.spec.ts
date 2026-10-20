@@ -11,7 +11,7 @@ test('overview introduces the academy and opens the first lesson', async ({ page
 
 test('curriculum search and filters narrow real lesson content', async ({ page }) => {
   await page.goto('/#/curriculum');
-  await expect(page.locator('.lesson-row')).toHaveCount(40);
+  await expect(page.locator('.lesson-row')).toHaveCount(44);
   await page.getByLabel('Stage', { exact: true }).selectOption('api');
   await expect(page.locator('.lesson-row')).toHaveCount(5);
   await page.getByLabel('Search lessons', { exact: true }).fill('zz-no-match');
@@ -28,7 +28,7 @@ test('lesson notes, exercise checklists, and completion survive reload', async (
   await expect(page.locator('.acceptance input').first()).toBeChecked();
   await expect(page.getByRole('button', { name: 'Completed · mark incomplete' })).toBeVisible();
   await page.getByRole('link', { name: 'My progress' }).click();
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 40');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 44');
 });
 
 test('quiz gives meaningful feedback and retains the chosen answer', async ({ page }) => {
@@ -69,7 +69,7 @@ test('resource format and price filters show only the selected shelf', async ({ 
   await expect(page.getByText('Nothing on this shelf matches yet.')).toBeVisible();
 });
 
-test('all 40 lesson routes render without runtime errors', async ({ page }) => {
+test('all 44 lesson routes render without runtime errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/#/curriculum');
@@ -104,7 +104,7 @@ test('export contains saved progress and invalid import is rejected', async ({ p
   expect(JSON.parse(Buffer.concat(chunks).toString()).completed).toEqual(['01-01']);
   await page.locator('#progress-file').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"wrong":true}')});
   await expect(page.getByRole('status')).toContainText('not a valid Forge');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 40');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 44');
 });
 
 test('valid import restores notes and escapes user-supplied text', async ({ page }) => {
@@ -112,7 +112,7 @@ test('valid import restores notes and escapes user-supplied text', async ({ page
   page.on('dialog', dialog=>dialog.accept());
   await page.locator('#progress-file').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({completed:['01-01'],notes:{'01-01':'<img src=x onerror=alert(1)>'},checks:{},quizzes:{},lastLesson:'01-01'}))});
   await expect(page.getByRole('status')).toContainText('restored');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 40');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 44');
   await expect(page.locator('main img')).toHaveCount(0);
   await page.goto('/#/lesson/01-01');
   await expect(page.getByLabel('Your field notes')).toHaveValue('<img src=x onerror=alert(1)>');
@@ -125,7 +125,7 @@ test('mobile navigation works without horizontal overflow', async ({ page }) => 
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Toggle navigation' }).click();
   await page.getByRole('link', { name: 'Learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(40);
+  await expect(page.locator('.lesson-row')).toHaveCount(44);
   await expect(page.getByRole('button', { name: 'Toggle navigation' })).toHaveAttribute('aria-expanded','false');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -147,7 +147,7 @@ test('invalid encoded routes recover and legacy content fragments still render',
   await page.goto('/#/lesson/%E0%A4%A');
   await expect(page.getByRole('heading', { name: 'That page is not in the workshop.' })).toBeVisible();
   await page.getByRole('link', { name: 'Open the learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(40);
+  await expect(page.locator('.lesson-row')).toHaveCount(44);
   await page.goto('/#main');
   await expect(page.getByRole('heading', { name: 'Ship confidence. Not just tests.' })).toBeVisible();
   expect(errors).toEqual([]);
@@ -184,7 +184,7 @@ test('an old failed manual request cannot replace the newly opened page', async 
   // Let the browser render the fetch completion before checking the active route.
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
   await expect(page.getByRole('heading', { name: 'From curious to capable.' })).toBeVisible();
-  await expect(page.locator('.lesson-row')).toHaveCount(40);
+  await expect(page.locator('.lesson-row')).toHaveCount(44);
 });
 
 test('import discards unknown exercise checks and impossible quiz choices', async ({ page }) => {
@@ -245,4 +245,20 @@ test('lesson and lab practice maps connect learners to runnable starter commands
   await skill.getByRole('link', { name: /03-04 · Events/ }).click();
   await expect(page).toHaveURL(/#\/lesson\/03-04$/);
   await expect(page.locator('[data-practice-id="SK-03"]')).toBeVisible();
+});
+
+test('accessibility and visual workshops connect lessons, starters, manuals, and local labs', async ({ page }) => {
+  await page.goto('/#/lab');
+  await expect(page.locator('[data-practice-id^="AX-"]')).toHaveCount(4);
+  await expect(page.locator('[data-practice-id^="VS-"]')).toHaveCount(4);
+  await expect(page.getByRole('link', { name: 'Launch accessibility lab' })).toHaveAttribute('href', '/quality/accessibility/');
+  await expect(page.getByRole('link', { name: 'Launch visual lab' })).toHaveAttribute('href', '/quality/visual/');
+  await page.getByRole('link', { name: 'Start accessibility lessons' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/03-06$/);
+  await expect(page.locator('[data-practice-id="AX-01"]')).toBeVisible();
+  await page.goto('/#/lab');
+  await page.getByRole('link', { name: 'Open visual workshop' }).click();
+  await expect(page.locator('main h1')).toHaveText('Visual baseline workshop');
+  await expect(page.locator('.prose')).toContainText('npm run test:visual');
+  await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', './docs/VISUAL-BASELINES.md');
 });
