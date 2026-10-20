@@ -1,6 +1,6 @@
 # Welcome to Playwright Forge
 
-Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 58-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
+Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 61-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
 
 ## Your first session · 45–60 minutes
 
@@ -33,9 +33,9 @@ Keep a short learning log: lesson, command, actual outcome, one mistake, one cor
 | Build your foundation | 01-01–01-05 | Understand browser/HTTP basics, TypeScript, async code, and test design |
 | Your first UI suite | 02-01–02-05 | Automate meaningful flows with locators and assertions |
 | Make it resilient | 03-01–03-11 | Synchronize on outcomes and diagnose UI failures |
-| Go below the UI | 04-01–04-06 | Verify APIs, invalid inputs, state, and cross-layer behavior |
-| Engineer your framework | 05-01–05-10 | Own data, fixtures, configuration, and parallel isolation |
-| Ship reliable signals | 06-01–06-07 | Produce trustworthy CI results and useful artifacts |
+| Go below the UI | 04-01–04-08 | Verify APIs, invalid inputs, state, and cross-layer behavior |
+| Engineer your framework | 05-01–05-12 | Own data, fixtures, configuration, and parallel isolation |
+| Ship reliable signals | 06-01–06-10 | Produce trustworthy CI results and useful artifacts |
 | Work with AI agents | 07-01–07-05 | Review plans, generated tests, and repair proposals |
 | Prove your craft | 08-01–08-05 | Deliver and defend a complete capstone |
 
@@ -70,13 +70,15 @@ Choose **UI testing track** for eleven lessons and twenty mapped drills. The
 server validation, rejected saves, and out-of-order responses. Run
 `npm run test:ui:workshop`, then implement one UI starter yourself.
 
-Choose **API testing track** for six lessons and twelve mapped drills. The
+Choose **API testing track** for eight lessons and eighteen mapped drills. The
 [API workbook](API-TESTING.md) covers contracts, ownership, body boundaries,
 receipts, and persisted state. Run `npm run test:api:workshop`, then implement
-one AP starter. The [curriculum map](curriculum.md) lists all 65 executable starters.
+one AP starter. The [curriculum map](curriculum.md) lists all 74 executable starters.
 
 
 After the UI, API, fixture, and CI foundations, open **Workplace practice** in the
 portal. The [workplace workbook](WORKPLACE-LABS.md) adds incident diagnosis, CI
 coverage gates, page-object refactoring, and data builders with starters and
 solutions. Run the dedicated proofs after your own attempt.
+
+Continue with **Real-world systems** for wrong-build detection, lost-response recovery, and async jobs. Read the [systems workbook](REAL-WORLD-SYSTEMS.md). Use [Run anywhere](RUN-ANYWHERE.md) to switch between the OpenAI site, localhost, and private GitHub source.

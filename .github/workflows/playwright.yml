@@ -25,6 +25,8 @@ jobs:
       - run: npm run build
       - run: npm run check
       - run: npm run typecheck
+      - name: Verify the static portal distribution
+        run: npm run test:hosting
       - run: npm run test:all
         env:
           CI: 'true'
@@ -47,6 +49,21 @@ jobs:
             quality-results/workplace-gates/
             quality-results/refactoring-proof/
             quality-results/builders-proof/
+          retention-days: 7
+      - name: Prove wrong-build, lost-response and asynchronous-job boundaries
+        run: |
+          npm run test:preflight:proof
+          npm run test:recovery:proof
+          npm run test:jobs:proof
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: real-world-proof-evidence
+          path: |
+            quality-results/preflight/
+            quality-results/recovery/
+            quality-results/jobs/
+            quality-results/hosting/
           retention-days: 7
       - name: Verify authentication setup dependencies
         run: npm run test:state:auth

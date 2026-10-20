@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 116 lesson challenges.
+/** Executable drills complement (and do not replace) the 122 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -93,7 +93,7 @@ export const apiTracks = [
   apiDrill(3, 'Receipts belong to a session', ['04-04', '04-05']),
   apiDrill(4, 'Orders remain immutable after later purchases', ['04-05']),
 ];
-export const apiLessonIds = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06'];
+export const apiLessonIds = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06', '04-07', '04-08'];
 
 const uiDrill = (number, title, lessons) => {
   const id = `UI-${String(number).padStart(2, '0')}`;
@@ -124,3 +124,21 @@ export const workplaceTracks = [
   workplaceDrill('DB-02', 'Register a complete shipping validation matrix', 'builders', '05-12', 'npm run test:builders:practice -- --grep DB-02'),
 ];
 export const workplaceLessonIds = ['06-08', '06-09', '05-11', '05-12'];
+
+const realWorldDrill = (id, title, folder, lesson, script) => ({
+  id, title, lessons: [lesson], file: `workplace/${folder}/practice.spec.ts`,
+  solution: `workplace/${folder}/worked.spec.ts`,
+  command: `npm run test:${script}:practice -- --enable-starters --grep ${id}`,
+});
+export const realWorldTracks = [
+  realWorldDrill('WB-01', 'Verify the frontend and actual backend release', 'preflight', '06-10', 'preflight'),
+  realWorldDrill('WB-02', 'Classify dependency, server, and transport evidence', 'preflight', '06-10', 'preflight'),
+  realWorldDrill('WB-03', 'Block wrong-target writes and allow the valid control', 'preflight', '06-10', 'preflight'),
+  realWorldDrill('LR-01', 'Recover a reply lost after the commit', 'recovery', '04-07', 'recovery'),
+  realWorldDrill('LR-02', 'Prove replay, conflict, and customer/key scope', 'recovery', '04-07', 'recovery'),
+  realWorldDrill('LR-03', 'Reconcile without inventing success or another write', 'recovery', '04-07', 'recovery'),
+  realWorldDrill('AJ-01', 'Submit once and verify the matching job artifact', 'jobs', '04-08', 'jobs'),
+  realWorldDrill('AJ-02', 'Stop on terminal failure with the real reason', 'jobs', '04-08', 'jobs'),
+  realWorldDrill('AJ-03', 'Bound stalled observation and reject false results', 'jobs', '04-08', 'jobs'),
+];
+export const realWorldLessonIds = ['06-10', '04-07', '04-08'];

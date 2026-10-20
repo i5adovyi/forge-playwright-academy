@@ -3,8 +3,9 @@
 **The first workplace batch is implemented:** four lessons and nine assignments
 cover incident diagnosis, CI execution gates, page-object refactoring, and data
 builders. Open **Workplace practice** in the portal and use the
-[workplace workbook](WORKPLACE-LABS.md). The academy now has **58 lessons and
-65 executable assignment IDs**. Further proposals below are explicitly marked;
+[workplace workbook](WORKPLACE-LABS.md). The academy now has **61 lessons and
+74 executable assignment IDs**. The next systems batch adds wrong-build detection, lost-response recovery, and
+async jobs in [three implemented lessons](REAL-WORLD-SYSTEMS.md). Further proposals below are explicitly marked;
 they are not included in those totals.
 
 Three independent reviews examined technical interview coverage, runnable
@@ -145,17 +146,17 @@ length limits. See the [builder brief](../workplace/builders/README.md).
 
 ## Add next: targeted integration and delivery labs
 
-These proposals need their own fixtures or isolated configurations. They should
-not be described as features already present in Forge Shop.
+The rows marked implemented now have separate local fixtures. Other rows remain
+proposals. None should be described as features of the original Forge Shop.
 
 | Proposed lab | Interview or work problem | Evidence required to finish |
 | --- | --- | --- |
-| Asynchronous jobs and safe polling | A POST returns 202; the job may succeed, fail, or never finish | Submit once; retain the job ID; use bounded read-only observations; detect terminal failure and deadline expiry; prove the final independent result. Do not repeat writes inside a retrying assertion. |
+| Asynchronous jobs and safe polling — implemented in AJ-01–03 | A POST returns 202; the job may succeed, fail, or never finish | Submit once; retain the job ID; use bounded read-only observations; detect terminal failure and deadline expiry; prove the final independent result. Do not repeat writes inside a retrying assertion. |
 | Pagination and collection completeness | Page one looks right but an export loses or duplicates rows | Assert the full expected identity set, uniqueness, ordering, filter retention and termination; detect a missing/duplicated page. Ask what consistency the API promises during concurrent changes. |
 | Browser versus API CORS behavior | Direct API requests work while the frontend cannot read the response | Use two local origins; observe the browser request/preflight where applicable; demonstrate correct origin and credential policy; keep authentication and authorization distinct from CORS. |
 | Locale, timezone and dates | An appointment appears on the wrong calendar day | Specify instant versus calendar-date semantics; fix time; vary locale and timezone independently; check known display and persisted values at a day boundary, with a documented DST stretch case. |
 | Mock payload drift | A mock still passes although the real response contract changed | Validate `unknown` data from both reviewed fixtures and the real endpoint; report field paths; detect wrong types/missing IDs; retain separate semantic membership and money checks. This is not a complete contract-testing platform. |
-| Wrong environment preflight | A healthy server is the wrong app or build | Compare a service/build identity with an independent expected target before running UI checks; fail clearly against another healthy local server; avoid exposing secrets in environment evidence. |
+| Wrong environment preflight — implemented in WB-01–03 | A healthy server is the wrong app or build | Compare a service/build identity with an independent expected target before running UI checks; fail clearly against another healthy local server; avoid exposing secrets in environment evidence. |
 | Popup routing scope | A parent-page route misses the popup's first request | Install context routing before opening the popup; verify synthetic content; remove the route and verify a second real popup; close owned pages. |
 | Shards and complete merged reports | HTML is generated although one shard is missing | Verify the union of expected case identities and compatible run revisions; preserve a deliberate failure and its attachment; reject omitted or mixed reports. |
 | Actual browser identity | Three project labels accidentally launch the same browser | Compare actual browser type with an independent project policy; verify required case membership per engine; report missing installations as unexecuted coverage. |
@@ -186,7 +187,7 @@ memorizing the wording is not the objective.
 | What belongs in a page object versus a fixture? | Interaction abstractions and lifecycle/resource ownership differ; explain where scenario expectations remain visible | 05-01/02 |
 | What makes a negative test meaningful? | Valid earlier preconditions, the intended rejection, unchanged useful state, and a nearby accepted control | EX-12/16, AP-02 |
 | What is wrong with retrying an entire checkout until it passes? | Repeated non-idempotent writes may create extra outcomes; distinguish observation retries from operation retries and ambiguous outcomes | 04-06, UI-03 |
-| How would you prove a green pipeline omitted a critical check? | Compare intended and executed identities/projects/outcomes; a passing count alone is inadequate | 06-03 and proposed CI gate |
+| How would you prove a green pipeline omitted a critical check? | Compare intended and executed identities/projects/outcomes; a passing count alone is inadequate | 06-09, CG-01/02 |
 | How do workers differ from shards? | Concurrency within a runner versus division across invocations/machines; both need independent data and complete result collection | 06-04 |
 | Is a clean axe scan proof of accessibility? | Automated checks cover only part of the requirement; include keyboard/manual review and declared scope | AX-01–04 |
 | When should a screenshot baseline change? | A reviewed intended product change supported by the diff; preserve the original baseline during a defect-detection experiment | VS-04 |
@@ -221,49 +222,36 @@ ownership. The remaining weakness is **integration under uncertain outcomes and
 partial evidence**. More happy-path cart tests would not close it. The proposals
 below are based on three independent reviews of the actual lessons, source, and
 exercises; they are engineering priorities, not survey claims about employers or
-commercial courses. **None of these next-wave fixtures is implemented yet.**
+commercial courses. **Priorities 1–3 are implemented in the systems batch; the remaining proposed labs are not implemented.**
 
-### Priority 1: prove the right system was tested
+### Priority 1: prove the right system was tested — implemented
 
-A server answers health checks, but it is an older build or the browser calls a
-stale API. Current health checks and CG inventory do not establish build identity.
-Add two healthy local targets and an independently supplied expected revision.
-Distinguish a wrong build, an unavailable dependency, and a genuine product error.
+Lesson **06-10**, **WB-01–03**, and `workplace/preflight/` compare frontend/backend
+application, build, tenant, environment, and actual browser destination with an
+independent manifest. Healthy impostors are rejected before business writes.
+Diagnostic probes distinguish documented dependency unavailability, product
+errors, malformed responses, and transport failure. A valid target also has to
+complete a real action. Application-reported identity is not cryptographic
+attestation, and a preflight is a point-in-time check.
 
-**Deliverable:** a preflight that fails before any business write, showing safe
-expected/actual service and build identifiers. **Fault proof:** the healthy impostor
-and mismatched API are rejected; the correct target is accepted. Deriving the
-expected revision from the same observed response must not pass the grading
-harness. **Prerequisites:** 06-01/03 and CG-01/02. Suggested scope: 60–90 minutes.
+### Priority 2: a successful write loses its reply — implemented
 
-### Priority 2: a successful write loses its reply
+Lesson **04-07**, **LR-01–03**, and `workplace/recovery/` persist an order before
+truncating its reply. A scoped idempotency contract defines replay, conflict,
+and legitimate new operations. The API and browser retain operation identity;
+read-only reconciliation distinguishes committed, authoritative absence, and
+uncertain outcomes. The disk journal supplies causal evidence; it does not
+restore the process-local deduplication ledger after restart. Browser intent
+is page-local. The [systems workbook](REAL-WORLD-SYSTEMS.md) states the bounds.
 
-UI-03 deliberately rejects before commit; it cannot prove safe recovery after a
-write actually succeeds. Build an isolated service with an explicit idempotency
-contract and a barrier that commits before dropping the reply. Define key scope,
-replay behavior, payload conflict, and retention; a custom header alone supplies
-none of those guarantees.
+### Priority 3: an accepted background job fails or never finishes — implemented
 
-**Deliverable:** a request/journal timeline and bounded recovery that separates
-writes from read-only reconciliation. **Fault proof:** same key and payload yields
-one original operation; changed payload conflicts without mutation; two legitimate
-keys succeed independently. Disable deduplication or regenerate the key on retry,
-and the exact persisted-operation oracle must catch duplication.
-**Prerequisites:** UI-03, 04-06, API persistence, IN-03. Scope: 90–150 minutes.
-
-### Priority 3: an accepted background job fails or never finishes
-
-The current shop commits synchronously. Add a deterministic job service with
-queued/running/succeeded/failed states, a stalled mode, and a separate result.
-A 202 or “not pending” observation must not masquerade as successful work.
-
-**Deliverable:** submit once, correlate reads with the same ID, distinguish
-terminal failure from a bounded observation deadline, then inspect the result.
-**Fault proof:** a wrong/empty artifact fails an independent content oracle;
-a failed job terminates with its specific reason; a stalled job produces a named
-deadline error and bounded reads; a write inside the poll loop fails the create
-counter. Reserve time for cleanup. **Prerequisites:** 04-06 and IN-03.
-Scope: 90–120 minutes.
+Lesson **04-08**, **AJ-01–03**, and `workplace/jobs/` provide controlled
+queued/running/succeeded/failed states and a separate result. Submit once,
+correlate reads, honor a monotonic observation deadline and read ceiling,
+distinguish terminal failure, and verify the produced artifact independently.
+A timed-out observer does not establish cancellation or failure of server work.
+Reference proofs challenge duplicate creation, ignored failure, and wrong results.
 
 ### Priority 4: authentication disappears halfway through work
 

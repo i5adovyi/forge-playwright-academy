@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 58 lessons, 116 written exercises, and 58 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **60 hours 15 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 61 lessons, 122 written exercises, and 61 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **64 hours 55 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **116 written exercises** are separate from **65 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, 4 UI transition drills in `ui-workshop/`, and 9 workplace assignments in `workplace/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. Most starters are skipped until implemented. Incident starters use an explicit enable flag; CI gate modules reject with an unfinished sentinel. The workplace workbook explains each mode. Those counts describe different practice formats and should not be conflated.
+The **122 written exercises** are separate from **74 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, 4 UI transition drills in `ui-workshop/`, 9 workplace assignments and 9 real-world systems assignments in `workplace/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. Most starters are skipped until implemented. Incident starters use an explicit enable flag; CI gate modules reject with an unfinished sentinel. The workplace workbook explains each mode. Those counts describe different practice formats and should not be conflated.
 
 ## The Playwright Docs specialization
 
@@ -205,6 +205,8 @@ Test the real API, explore invalid inputs, isolate sessions, and combine fast se
 | 04-04 | Authentication and session boundaries | 60 min |
 | 04-05 | Hybrid testing and order invariants | 65 min |
 | 04-06 | Request controls, response ownership, and safe retries | 75 min |
+| 04-07 | Recover a lost reply without duplicating the write | 100 min |
+| 04-08 | Observe asynchronous jobs without creating more work | 100 min |
 
 Stage output: API contract tests for filtering, mutations, access rules, discounts, and order invariants.
 
@@ -224,6 +226,8 @@ Create focused fixtures, typed helpers, data builders, project boundaries, and p
 | 05-08 | Options, overrides, and automatic evidence | 75 min |
 | 05-09 | Authentication setup that fits the workload | 80 min |
 | 05-10 | A docs-guided fixture and state investigation | 80 min |
+| 05-11 | Refactor page objects without losing evidence | 75 min |
+| 05-12 | Build independent data and a complete validation matrix | 75 min |
 
 Stage output: typed fixtures, focused page objects, data builders, and independent parallel execution. Trace dependency teardown, distinguish worker/test lifetime, apply typed options, and defend authentication ownership.
 
@@ -240,6 +244,9 @@ Diagnose failures from artifacts, review visual baselines, choose a useful brows
 | 06-05 | Reports that lead to decisions | 55 min |
 | 06-06 | Build a visual baseline you can defend | 65 min |
 | 06-07 | Investigate visual differences and prove detection | 70 min |
+| 06-08 | Diagnose incidents from competing hypotheses | 75 min |
+| 06-09 | Make CI reject missing and misleading coverage | 80 min |
+| 06-10 | Prove you are testing the intended build | 80 min |
 
 Stage output: trace-based diagnoses, a CI policy, reproducible reports, reviewed desktop/mobile images, a narrowly justified mask, unchanged-baseline defect evidence, and a release brief.
 
@@ -290,7 +297,7 @@ The shop uses in-memory state, simplified demo authentication, integer-cent pric
 ## API testing specialization
 
 Open **API testing track** in the sidebar. The five existing Stage 04 lessons retain their
-original IDs; 04-06 adds a sixth lesson for request controls and resource ownership. Work
+original IDs; 04-06 adds request controls and resource ownership, while 04-07/08 add lost replies and asynchronous jobs on separate local services. Work
 through EX-09–16 first, then AP-01–04. EX-17 connects API setup with an observed UI
 purchase and persisted evidence. Read the [API workbook](API-TESTING.md) for the
 claim, negative control, and fault experiment for each drill.
@@ -350,5 +357,21 @@ in their natural architecture/delivery stages in the complete curriculum.
 | DB-01–02 | Nested data ownership and field boundaries | `workplace/builders/practice.spec.ts`, `builders.starter.ts` |
 
 The nine IDs describe assignments. RF-01 expands to two consumers; DB-02 expands
-to 48 separately registered cases. Do not equate the 65 assignment IDs with a
+to 48 separately registered cases. Do not equate the 74 assignment IDs with a
 Playwright report's discovered or skipped test count.
+
+## Real-world systems specialization
+
+Continue **06-10 → 04-07 → 04-08** after the workplace fundamentals. The
+[systems workbook](REAL-WORLD-SYSTEMS.md) defines the separate fixture contracts.
+
+| Assignments | Focus | Starter |
+| --- | --- | --- |
+| WB-01–03 | Wrong builds, diagnostic classification, zero-write gates | `workplace/preflight/practice.spec.ts` |
+| LR-01–03 | After-commit response loss, replay policy, bounded reconciliation | `workplace/recovery/practice.spec.ts` |
+| AJ-01–03 | Submit once, terminal results, bounded observation | `workplace/jobs/practice.spec.ts` |
+
+All nine use an explicit `--enable-starters` flag. Implement the typed helper and
+acceptance cases before replacing the sentinel. Dedicated runners start their
+own services and retain evidence under `quality-results/`; these suites are
+separate from `test:all` and run explicitly in CI.

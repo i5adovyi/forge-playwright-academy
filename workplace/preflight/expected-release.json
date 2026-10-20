@@ -1,0 +1,7 @@
+{
+  "application": "forge-release-lab",
+  "environment": "training",
+  "tenant": "academy",
+  "frontendBuild": "web-2026-10-20.1",
+  "backendBuild": "api-2026-10-20.3"
+}

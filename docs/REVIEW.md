@@ -156,7 +156,7 @@ remain explicitly unimplemented and do not inflate lesson or starter totals.
 
 ## Workplace batch and real-world learning audit
 
-The current inventory is **58 lessons, 116 written challenges, 58 quizzes, and
+At the first workplace release the inventory was **58 lessons, 116 written challenges, 58 quizzes, and
 65 executable assignment IDs**. Nine new assignments cover three diagnostic
 incidents, two coverage-gate stages, two page-object tasks, and two builder tasks.
 The [workplace workbook](WORKPLACE-LABS.md) distinguishes assignment IDs from
@@ -177,3 +177,18 @@ release ordering. Proof runners validate exact case identities and named failure
 reasons; a missing browser, malformed report, or unrelated timeout cannot count
 as successful product-defect detection. See [verification](VERIFICATION.md) for
 actual execution evidence.
+
+## Real-world systems batch
+
+The current inventory is **61 lessons, 122 written challenges, 61 quizzes, and
+74 executable assignment IDs**. Three lessons and nine assignments add independent
+release preflight, idempotent recovery after a committed write loses its reply,
+and bounded observation of asynchronous jobs. Each has starters, typed helpers,
+worked solutions, standalone services, and deliberate defect proofs. Open
+**Real-world systems** in the portal or [its workbook](REAL-WORLD-SYSTEMS.md).
+
+Cross-review checks the weak boundaries: both frontend and backend identity,
+exhausted recovery attempts, and honest UI uncertainty after an observation
+deadline. Proofs establish the supplied fixture contracts, not durable exactly-once
+processing or production build attestation. [Run anywhere](RUN-ANYWHERE.md) records
+local use, OpenAI hosting, GitHub, and progress portability.

@@ -30,13 +30,24 @@ npm run test:interactive # Playwright UI mode
 
 The test runner starts the local server automatically if it is not already running. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
 
+## OpenAI Sites, localhost, and private GitHub
+
+Use the [OpenAI-hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/)
+for learning content, `npm run local` for the complete workshop at
+**http://127.0.0.1:4173**, and the [private GitHub repository](https://github.com/i5adovyi/forge-playwright-academy)
+for source and history. After `npm run build`, `npm run preview` serves the exact
+static portal at **http://127.0.0.1:4174**. A GitHub push does not deploy OpenAI Sites.
+
+[Run anywhere](docs/RUN-ANYWHERE.md) explains both modes, publishing, Git pushes,
+and moving your progress between origins and OpenAI accounts.
+
 ## What is inside
 
-- **8 stages / 58 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **116 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **58 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 61 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **122 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **61 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **65 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills), reference tests, and executable solutions. Most starter specs use `test.skip` until implemented; incident enable flags and unfinished CI gate modules are explained in the workplace workbook.
+- **74 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills + 9 workplace assignments + 9 real-world systems assignments), reference tests, and executable solutions. Most starter specs use `test.skip` until implemented; incident enable flags and unfinished CI gate modules are explained in the workplace workbook.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -64,6 +75,8 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 
 | Command | Purpose |
 | --- | --- |
+| `npm run local` | Start the full local workshop; same as dev/start |
+| `npm run preview` | Preview built static hosting output on port 4174 |
 | `npm run dev` | Serve the portal, shop, and API on port 4173 |
 | `npm test` | Run the core UI/API reference suite |
 | `npm run test:ui` | Run browser UI reference tests |
@@ -82,7 +95,7 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
-| `npm run test:all` | Core, UI/API workshops, browser-skills, accessibility, fixtures/state, refactoring, builders, and portal projects; visual and incident/gate proofs run separately |
+| `npm run test:all` | Core, UI/API workshops, browser-skills, accessibility, fixtures/state, refactoring, builders, and portal projects; visual and standalone workplace proof runners run separately |
 | `npm run test:a11y` | Axe scans, defect detection, keyboard flows, and form recovery |
 | `npm run test:a11y:practice` | Accessibility starters you implement |
 | `npm run test:visual` | Compare against committed references for your platform; never create them silently |
@@ -102,13 +115,13 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 58 lessons, exercises, knowledge checks
+  content/curriculum.js 61 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
 ui-workshop/            UI transition starters and worked examples
 api-workshop/            Four advanced API starters and worked solutions
-workplace/              Incident, CI gate, refactoring, and data-builder workshops
+workplace/              Incident, gate, refactoring, builder, preflight, recovery, and job workshops
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
@@ -174,8 +187,8 @@ The FS drills keep snapshots in memory. Lesson 05-09 also provides an optional p
 
 ## API testing track
 
-Open **API testing track** in the portal (`#/api`). Six lessons connect the eight
-EX-09–16 foundations to four advanced AP drills and the EX-17 hybrid checkout.
+Open **API testing track** in the portal (`#/api`). Eight lessons connect the eight EX-09–16 foundations to four advanced AP drills,
+six LR/AJ systems assignments, and the related EX-17 hybrid checkout.
 The [API workbook](docs/API-TESTING.md) gives a route, exact run commands, evidence
 criteria, and deliberate faults. The [endpoint contract](docs/lab-api.md)
 describes the actual local backend.
@@ -239,3 +252,24 @@ A successful proof means the expected intentional faults were detected. It does
 not grade an untouched starter. Incident and gate runners have separate
 configurations; the other reference cases are also included in `test:all`.
 The GitHub workflow runs all four proofs and keeps their fresh evidence.
+
+## Real-world systems: wrong builds, lost replies, asynchronous jobs
+
+Open **Real-world systems** (`#/real-world`) and follow 06-10 → 04-07 → 04-08.
+The [systems workbook](docs/REAL-WORLD-SYSTEMS.md) connects nine assignments to
+separate local services, typed starters, worked solutions, and defect proofs.
+
+```sh
+npm run test:preflight
+npm run test:recovery
+npm run test:jobs
+npm run test:preflight:practice -- --enable-starters --grep WB-01
+npm run test:recovery:practice -- --enable-starters --grep LR-01
+npm run test:jobs:practice -- --enable-starters --grep AJ-01
+```
+
+Run `test:preflight:proof`, `test:recovery:proof`, and `test:jobs:proof` for the
+controlled reference checks. These standalone configurations run explicitly in
+CI and are separate from `test:all`. Read each README before treating a reference
+proof as grading of your edited starter. Missing evidence stays uncertain;
+a healthy wrong build, an accepted job, or a lost reply is not proof of success.

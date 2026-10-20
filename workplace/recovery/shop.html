@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forge · Recover a purchase</title>
+<style>body{font:18px system-ui;background:#111827;color:#e5e7eb;max-width:680px;padding:48px 24px;margin:auto}button{font:inherit;padding:14px 20px;border:0;border-radius:8px;background:#a7f3d0;color:#111827;cursor:pointer}button[disabled]{opacity:.5}output{display:block;margin:24px 0}code{color:#a7f3d0}</style>
+<h1>One purchase, one intent key</h1>
+<p>Studio headphones · $129.00. This synthetic checkout demonstrates a committed purchase whose reply disappears.</p>
+<button id="buy">Buy headphones</button>
+<button id="retry" hidden>Retry same purchase</button>
+<output role="status" aria-live="polite">Ready to purchase.</output>
+<p>The key survives retries in this open page. A reload is outside this demo’s recovery contract.</p>
+<script type="module">
+const buy = document.querySelector('#buy');
+const retry = document.querySelector('#retry');
+const status = document.querySelector('output');
+let intentKey;
+let attempts = 0;
+async function submit() {
+  attempts += 1;
+  buy.disabled = true;
+  retry.hidden = true;
+  status.textContent = 'Submitting purchase…';
+  try {
+    const response = await fetch('/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Idempotency-Key': intentKey, 'X-Customer': 'alice' },
+      body: JSON.stringify({ sku: 'headphones', quantity: 1 }),
+    });
+    if (![200, 201].includes(response.status)) {
+      status.textContent = `Purchase needs investigation (${response.status}).`;
+      return;
+    }
+    const order = await response.json();
+    status.textContent = `Confirmed ${order.id} · $${(order.total / 100).toFixed(2)}`;
+  } catch {
+    status.textContent = attempts === 1
+      ? 'Outcome unknown. Your purchase may already exist. Retry this same purchase.'
+      : 'Outcome still unknown. Stop submitting and reconcile this intent key.';
+    retry.hidden = attempts !== 1;
+  }
+}
+buy.addEventListener('click', () => { intentKey = crypto.randomUUID(); submit(); });
+retry.addEventListener('click', submit);
+</script>
+</html>

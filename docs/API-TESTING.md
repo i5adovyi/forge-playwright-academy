@@ -2,11 +2,11 @@
 
 Use this workbook to turn an endpoint list into experiments that detect wrong
 data, partial mutations, leaked sessions, and misleading client behavior. The
-target is the local Forge Shop. Its [API contract](lab-api.md) defines the
+first six lessons use the local Forge Shop. Its [API contract](lab-api.md) defines the
 expected application behavior; Playwright's documentation defines the client.
 This is original practice material, not a replacement for either reference.
 
-## A six-lesson learning route
+## An eight-lesson learning route
 
 Complete the basic TypeScript and asynchronous-code lessons first. Each row
 below ends with observable evidence, rather than a list of methods to memorize.
@@ -19,6 +19,16 @@ below ends with observable evidence, rather than a list of methods to memorize.
 | 04-04 · Authentication and session boundaries | Who is signed in, and whose data does a request address? | EX-13, EX-15; then AP-03 |
 | 04-05 · Hybrid testing and order invariants | Which business facts must survive cart changes and a second purchase? | EX-14, EX-17; then AP-04 |
 | 04-06 · Request controls, response ownership, and safe retries | Did the server reject a request, did the client fail, or was a resource already disposed? | AP-01 |
+| 04-07 · Recover a lost reply without duplicating the write | What committed when the client received no usable reply? | LR-01–03 |
+| 04-08 · Observe asynchronous jobs without creating more work | Did the correct job finish, fail, or remain uncertain? | AJ-01–03 |
+
+Lessons 04-07/08 use **separate local services** in `workplace/recovery/` and
+`workplace/jobs/`. Their explicit contracts, enable flags, and proof limits are
+in the [systems workbook](REAL-WORLD-SYSTEMS.md). These do not add idempotency or
+asynchronous jobs to the original shop. The API track maps 18 assignment IDs:
+EX-09–16, AP-01–04, LR-01–03, and AJ-01–03. Run `npm run test:recovery` and
+`npm run test:jobs` for the new reference suites. Their starters use
+`--enable-starters`, rather than editing the registered skip condition.
 
 Begin with [Playwright's API testing guide](https://playwright.dev/docs/api-testing).
 Use the [APIRequestContext reference](https://playwright.dev/docs/api/class-apirequestcontext)

@@ -1,0 +1,23 @@
+[
+  "WB-01 correct release",
+  "WB-01 stale frontend",
+  "WB-01 stale backend",
+  "WB-01 misleading badge and wrong API origin",
+  "WB-01 wrong tenant",
+  "WB-01 wrong environment",
+  "WB-01 wrong application",
+  "WB-01 malformed frontend identity",
+  "WB-01 malformed backend identity",
+  "WB-01 wrong frontend origin",
+  "WB-01 wrong frontend tenant",
+  "WB-01 wrong frontend environment",
+  "WB-01 wrong frontend application",
+  "WB-02 ready dependency",
+  "WB-02 explicit dependency outage",
+  "WB-02 unexpected product response",
+  "WB-02 malformed success body",
+  "WB-02 connection reset",
+  "WB-03 wrong build makes zero writes",
+  "WB-03 wrong origin makes zero writes",
+  "WB-03 correct target makes exactly one write"
+]

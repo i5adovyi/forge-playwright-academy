@@ -24,6 +24,7 @@
     "playwright.state-auth.config.ts",
     "api-workshop/**/*.ts",
     "ui-workshop/**/*.ts",
-    "workplace/**/*.ts"
+    "workplace/**/*.ts",
+    "playwright.hosting.config.ts"
   ]
 }

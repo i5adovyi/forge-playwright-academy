@@ -215,3 +215,10 @@ Primary reading:
 [retries](https://playwright.dev/docs/test-retries),
 [page objects](https://playwright.dev/docs/pom),
 and [parameterization](https://playwright.dev/docs/test-parameterize).
+
+## Continue with real-world systems
+
+The next implemented batch adds 06-10, 04-07, and 04-08 with WB-01–03, LR-01–03,
+and AJ-01–03. Follow [the systems workbook](REAL-WORLD-SYSTEMS.md) for wrong-build
+detection, committed writes with lost replies, and asynchronous jobs. The four
+lessons and nine assignments described above remain the first workplace batch.

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forge report jobs</title>
+<style>body{font:18px system-ui;max-width:780px;margin:6vh auto;padding:24px;background:#101827;color:#eff4ff}button{padding:14px 24px;font:inherit;background:#b6f07d;border:0;border-radius:12px}section{border:1px solid #44506a;padding:24px;margin-top:24px;border-radius:18px}dt{color:#9facbd}dd{margin:4px 0 20px}code{overflow-wrap:anywhere}</style>
+<main><p>FORGE / OPERATIONS LAB</p><h1>Customer report</h1>
+<p>Generate the order summary for customer-42. A queued job is not a finished report.</p>
+<button id="generate">Generate report</button>
+<button id="resume" hidden>Resume observation</button>
+<p id="active-job" hidden>Accepted job: <code></code></p>
+<p id="status" role="status">Ready</p><p id="error" role="alert"></p>
+<section id="result" aria-label="Completed report" hidden>
+<h2>Report ready</h2><dl><dt>Job</dt><dd><code id="job"></code></dd>
+<dt>Customer</dt><dd id="customer"></dd><dt>Orders</dt><dd id="orders"></dd><dt>Total</dt><dd id="total"></dd></dl></section>
+</main><script type="module" src="/app.js"></script></html>

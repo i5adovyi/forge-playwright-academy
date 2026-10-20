@@ -90,7 +90,7 @@ Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons
 
 ## A focused Playwright Docs path
 
-The complete 58-lesson program now contains **60 hours 15 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+The complete 61-lesson program now contains **64 hours 55 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The fixtures and state track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
 
 | Session block | Lessons | Evidence to keep |
 |---|---|---|
@@ -104,7 +104,7 @@ Use [Fixtures & browser state](FIXTURES-AND-STATE.md) alongside the portal's **P
 
 ## Strengthen your API evidence
 
-The six API lessons total **6 hours of guided work**. Keep the first five in
+The eight API lessons total **9 hours 20 minutes of guided work**. Keep the first five in
 Stage 04, add the 75-minute request-controls lesson 04-06, and schedule separate
 practice time for AP-01–04. Open the API track in the portal and use the
 [API testing workbook](API-TESTING.md) to choose one focused experiment per
@@ -123,8 +123,21 @@ experiments for a session after you understand locators, assertions, and routes.
 
 Use four sessions for incidents (75 min), CI gates (80 min), refactoring (75 min),
 and builders (75 min), then an extra 45–60 minute oral defense. The 5 hours
-5 minutes of guided lessons are already included in the current 60 hours
-15 minutes total. Use [the workplace workbook](WORKPLACE-LABS.md) for deliverables.
+5 minutes of guided lessons are already included in the current 64 hours
+55 minutes total. Use [the workplace workbook](WORKPLACE-LABS.md) for deliverables.
 Attempt each starter before reading its solution and keep one diagnostic or fault
 evidence packet per session. The [real-world gap review](INTERVIEW-AND-WORKPLACE.md)
-prioritizes later work; proposed fixtures are not yet runnable assignments.
+separates implemented batches from remaining proposals.
+
+## Practice uncertain outcomes after the workplace batch
+
+Reserve three sessions: wrong-build detection (06-10, 80 minutes), lost-response
+recovery (04-07, 100 minutes), and async jobs (04-08, 100 minutes). These **4 hours
+40 minutes** are included in the 64 hours 55 minutes total; independent starter
+implementation and debugging may need more time. Read 04-06 and complete the
+incident/gate fundamentals first. Follow [Real-world systems](REAL-WORLD-SYSTEMS.md).
+
+Keep three evidence packets: denied target with zero writes; committed order
+with a lost reply and one recovered effect; one submitted job with correctly
+classified terminal or uncertain outcome. Defend the difference between a
+request timeout and a failed business operation before progressing.

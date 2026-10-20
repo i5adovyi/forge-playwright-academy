@@ -1,5 +1,52 @@
 import { test, expect } from '@playwright/test';
 
+test('systems track maps real starters and preserves focused navigation and shared API progress', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Real-world systems', exact: true }).click();
+  await expect(page.locator('main h1')).toHaveText('Know what actually happened.');
+  await expect(page.locator('.real-world-lessons .lesson-row')).toHaveCount(3);
+  await expect(page.locator('[data-practice-id]')).toHaveCount(9);
+  for (const [id, script, folder] of [
+    ['WB-01', 'preflight', 'preflight'], ['LR-01', 'recovery', 'recovery'], ['AJ-03', 'jobs', 'jobs'],
+  ]) {
+    const drill = page.locator(`[data-practice-id="${id}"]`);
+    await drill.locator('summary').first().click();
+    await expect(drill.locator('pre')).toHaveText(`npm run test:${script}:practice -- --enable-starters --grep ${id}`);
+    await expect(drill).toContainText(`workplace/${folder}/practice.spec.ts`);
+    await drill.getByText('Where to compare your solution').click();
+    await expect(drill).toContainText(`workplace/${folder}/worked.spec.ts`);
+  }
+  await page.getByRole('link', { name: 'Begin the systems track' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/06-10$/);
+  const nav = page.getByRole('navigation', { name: 'Real-world lesson navigation' });
+  await nav.getByRole('link', { name: 'Next in this track' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/04-07$/);
+  await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await nav.getByRole('link', { name: 'Next in this track' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/04-08$/);
+  await page.goto('/#/api');
+  await expect(page.locator('.api-lessons .lesson-row[href="#/lesson/04-07"] .lesson-status')).toHaveClass(/done/);
+  await page.goto('/#/real-world');
+  await page.getByRole('link', { name: 'Read the systems workbook' }).click();
+  await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', './docs/REAL-WORLD-SYSTEMS.md');
+  await expect(page.locator('.prose')).toContainText('npm run test:recovery:proof');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/#/real-world');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('run anywhere explains local commands, private source, hosting and progress portability', async ({ page }) => {
+  await page.goto('/#/start');
+  await expect(page.locator('main')).toContainText('You are using the full local workshop.');
+  await expect(page.getByRole('link', { name: 'Private GitHub source' })).toHaveAttribute('href', 'https://github.com/i5adovyi/forge-playwright-academy');
+  await page.getByRole('link', { name: 'Run anywhere guide' }).click();
+  await expect(page.locator('.prose')).toContainText('npm run local');
+  await expect(page.locator('.prose')).toContainText('npm run preview');
+  await expect(page.locator('.prose')).toContainText('git push origin main');
+  await expect(page.locator('.prose')).toContainText('GitHub stores code, not your notes');
+  await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', './docs/RUN-ANYWHERE.md');
+});
+
 test('workplace track connects nine assignments, four lessons, shared progress, and evidence guidance', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Workplace practice', exact: true }).click();
@@ -33,7 +80,7 @@ test('workplace track connects nine assignments, four lessons, shared progress, 
   await expect(page.locator('.prose')).toContainText('STARTER_UNFINISHED');
   await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', './docs/WORKPLACE-LABS.md');
   await page.goto('/#/manual/INTERVIEW-AND-WORKPLACE');
-  await expect(page.locator('.prose')).toContainText('None of these next-wave fixtures is implemented yet');
+  await expect(page.locator('.prose')).toContainText('remaining proposed labs are not implemented');
   await expect(page.locator('.prose')).toContainText('a successful write loses its reply');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/#/workplace');
@@ -52,9 +99,9 @@ test('overview introduces the academy and opens the first lesson', async ({ page
 
 test('curriculum search and filters narrow real lesson content', async ({ page }) => {
   await page.goto('/#/curriculum');
-  await expect(page.locator('.lesson-row')).toHaveCount(58);
+  await expect(page.locator('.lesson-row')).toHaveCount(61);
   await page.getByLabel('Stage', { exact: true }).selectOption('api');
-  await expect(page.locator('.lesson-row')).toHaveCount(6);
+  await expect(page.locator('.lesson-row')).toHaveCount(8);
   await page.getByLabel('Search lessons', { exact: true }).fill('zz-no-match');
   await expect(page.getByText('No lessons match those filters.')).toBeVisible();
 });
@@ -69,7 +116,7 @@ test('lesson notes, exercise checklists, and completion survive reload', async (
   await expect(page.locator('.acceptance input').first()).toBeChecked();
   await expect(page.getByRole('button', { name: 'Completed · mark incomplete' })).toBeVisible();
   await page.getByRole('link', { name: 'My progress' }).click();
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 58');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 61');
 });
 
 test('quiz gives meaningful feedback and retains the chosen answer', async ({ page }) => {
@@ -110,7 +157,7 @@ test('resource format and price filters show only the selected shelf', async ({ 
   await expect(page.getByText('Nothing on this shelf matches yet.')).toBeVisible();
 });
 
-test('all 58 lesson routes render without runtime errors', async ({ page }) => {
+test('all 61 lesson routes render without runtime errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/#/curriculum');
@@ -145,7 +192,7 @@ test('export contains saved progress and invalid import is rejected', async ({ p
   expect(JSON.parse(Buffer.concat(chunks).toString()).completed).toEqual(['01-01']);
   await page.locator('#progress-file').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"wrong":true}')});
   await expect(page.getByRole('status')).toContainText('not a valid Forge');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 58');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 61');
 });
 
 test('valid import restores notes and escapes user-supplied text', async ({ page }) => {
@@ -153,7 +200,7 @@ test('valid import restores notes and escapes user-supplied text', async ({ page
   page.on('dialog', dialog=>dialog.accept());
   await page.locator('#progress-file').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({completed:['01-01'],notes:{'01-01':'<img src=x onerror=alert(1)>'},checks:{},quizzes:{},lastLesson:'01-01'}))});
   await expect(page.getByRole('status')).toContainText('restored');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 58');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 61');
   await expect(page.locator('main img')).toHaveCount(0);
   await page.goto('/#/lesson/01-01');
   await expect(page.getByLabel('Your field notes')).toHaveValue('<img src=x onerror=alert(1)>');
@@ -166,7 +213,7 @@ test('mobile navigation works without horizontal overflow', async ({ page }) => 
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Toggle navigation' }).click();
   await page.getByRole('link', { name: 'Learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(58);
+  await expect(page.locator('.lesson-row')).toHaveCount(61);
   await expect(page.getByRole('button', { name: 'Toggle navigation' })).toHaveAttribute('aria-expanded','false');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -188,7 +235,7 @@ test('invalid encoded routes recover and legacy content fragments still render',
   await page.goto('/#/lesson/%E0%A4%A');
   await expect(page.getByRole('heading', { name: 'That page is not in the workshop.' })).toBeVisible();
   await page.getByRole('link', { name: 'Open the learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(58);
+  await expect(page.locator('.lesson-row')).toHaveCount(61);
   await page.goto('/#main');
   await expect(page.getByRole('heading', { name: 'Ship confidence. Not just tests.' })).toBeVisible();
   expect(errors).toEqual([]);
@@ -225,7 +272,7 @@ test('an old failed manual request cannot replace the newly opened page', async 
   // Let the browser render the fetch completion before checking the active route.
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
   await expect(page.getByRole('heading', { name: 'From curious to capable.' })).toBeVisible();
-  await expect(page.locator('.lesson-row')).toHaveCount(58);
+  await expect(page.locator('.lesson-row')).toHaveCount(61);
 });
 
 test('import discards unknown exercise checks and impossible quiz choices', async ({ page }) => {
@@ -343,13 +390,15 @@ test('PW Docs track connects shared lesson progress, the workbook, and all ten s
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test('API track connects six lessons, twelve drills, shared progress, and its workbook', async ({ page }) => {
+test('API track connects eight lessons, eighteen drills, shared progress, and its workbook', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'API testing track', exact: true }).click();
   await expect(page.locator('main h1')).toHaveText('Test the contract. Prove the state.');
-  await expect(page.locator('.api-lessons .lesson-row')).toHaveCount(6);
+  await expect(page.locator('.api-lessons .lesson-row')).toHaveCount(8);
   await expect(page.locator('[data-practice-id^="EX-"]')).toHaveCount(8);
   await expect(page.locator('[data-practice-id^="AP-"]')).toHaveCount(4);
+  await expect(page.locator('[data-practice-id^="LR-"]')).toHaveCount(3);
+  await expect(page.locator('[data-practice-id^="AJ-"]')).toHaveCount(3);
   await expect(page.locator('main')).toContainText('A skipped result is unfinished work.');
   await page.getByRole('link', { name: 'Begin the API track' }).click();
   await expect(page).toHaveURL(/#\/lesson\/04-01$/);
@@ -363,7 +412,7 @@ test('API track connects six lessons, twelve drills, shared progress, and its wo
   await page.getByRole('link', { name: 'Read the API workbook' }).click();
   await expect(page.locator('main h1')).toHaveText('API testing workbook');
   await expect(page.locator('.prose')).toContainText('npm run test:api:workshop');
-  await page.goto('/#/lesson/04-06');
+  await page.goto('/#/lesson/04-08');
   await page.getByRole('navigation', { name: 'API lesson navigation' })
     .getByRole('link', { name: 'Review your API evidence' }).click();
   await expect(page).toHaveURL(/#\/manual\/API-TESTING$/);

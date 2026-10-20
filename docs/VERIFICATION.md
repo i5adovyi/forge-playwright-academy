@@ -2,9 +2,66 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
+## Real-world systems and portable hosting batch
+
+Current inventory: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
+assignment IDs, 23 manuals**, and **64 hours 55 minutes** of guided estimates.
+The nine new assignment IDs expand into 41 worked acceptance cases across three
+standalone configurations; they are separate from the main suite.
+
+- Final `PORT=14827 npm run test:all`: **186 passed, 56 intentionally skipped**,
+  242 discovered, no failures, 27.5 seconds. The portal subset is 26 tests,
+  including all 61 routes, systems navigation, shared API progress, downloads,
+  and the Run anywhere guide. Three initial stale lesson-count assertions were
+  corrected from 58 to 61 before this complete rerun.
+- Wrong-build reference proof: **21 controls passed**. Three weakened helpers
+  caused exactly **12 identity, 3 classification, and 2 write-gate failures**.
+  Frontend and backend origin/application/build/tenant/environment boundaries
+  are challenged. Default practice skips 21 cases; enabling untouched helpers
+  produces 21 assignment-specific sentinel failures.
+  Evidence: `quality-results/preflight/run-1WAHXo/`.
+- Lost-response reference proof: **10 controls passed**, including API and
+  browser exhaustion after two lost replies, same-key recovery, one complete
+  persisted effect, conflict/scope controls, and bounded GET-only reconciliation.
+  **Five controlled defects** failed their intended oracles; three default
+  starters skip and all three enabled unfinished starters fail their sentinels.
+  Journal evidence proves commit before reply loss.
+  Evidence: `quality-results/recovery/run-4pfeMo/`.
+- Async-job reference proof: **10 controls passed**, including a held request
+  capped by the remaining overall budget and browser uncertainty with read-only
+  resume of the same job. **Three controlled faults** failed their intended
+  oracles with effect evidence and specific observed errors. All ten enabled
+  unfinished acceptance cases fail their sentinel.
+  Evidence: `quality-results/jobs/run-u9nPz3/`.
+- `npm run test:hosting`: **2 passed** against the built static distribution.
+  The browser sees static mode, lessons, manuals and a valid ZIP download;
+  it does not advertise a live shop. Missing API, mutation requests, malformed
+  paths, traversal, Git metadata, and hosting identity requests are rejected.
+- Content/schema validation, TypeScript, syntax checks and discovery passed.
+  Both download ZIPs validate. **149 critical source/assets** match the checkout,
+  all eight reviewed visual references are included, and an extracted source
+  ZIP passes content validation without Git metadata.
+- Headless Chromium rendered the overview, setup, systems route, API track and
+  three new lessons at **390 and 1440 px**: 14 renders, no runtime errors or
+  horizontal overflow. All **23 manuals** rendered at both widths (46 renders).
+  Representative desktop/mobile screenshots were inspected. The setup link
+  remains reachable at 1280×720 and 390×667.
+
+These are executed local results. The workflow now runs static-hosting checks
+and all three systems proofs explicitly on Linux; inspect the workflow attached
+to the exact published commit for its actual CI outcome. A configured check is
+not proof of execution. Existing visual/broader browser results below retain
+their original scope.
+
+The services are deterministic teaching models. Application-reported identity
+is not signed build provenance; the recovery ledger is process-local; lookup
+absence follows the fixture contract; observation timeout does not cancel jobs.
+OpenAI Sites and the static localhost preview serve learning content; the full
+local server and dedicated runners supply live practice services.
+
 ## Workplace batch and real-world gap review
 
-- Current inventory: **58 lessons, 116 written challenges, 58 quizzes, 39 external
+- Inventory at that release: **58 lessons, 116 written challenges, 58 quizzes, 39 external
   resources, 8 articles, 21 manuals, and 65 executable assignment mappings**.
   Guided estimates total **60 hours 15 minutes**. Assignment IDs are not report
   case counts: DB-02 alone expands into 48 registered boundary cases.
