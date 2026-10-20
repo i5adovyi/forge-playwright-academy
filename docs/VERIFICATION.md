@@ -2,6 +2,61 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
+## Workplace batch and real-world gap review
+
+- Current inventory: **58 lessons, 116 written challenges, 58 quizzes, 39 external
+  resources, 8 articles, 21 manuals, and 65 executable assignment mappings**.
+  Guided estimates total **60 hours 15 minutes**. Assignment IDs are not report
+  case counts: DB-02 alone expands into 48 registered boundary cases.
+- `npm run validate`, `npm run typecheck`, and `npm run check` passed.
+- `PORT=14827 npm run test:all`: **184 passed, 56 intentionally skipped**,
+  240 discovered, no failures, 31.2 seconds. This includes six refactoring
+  baseline/worked cases, 50 builder cases, and 24 portal cases. Incident/gate
+  configurations and visual comparisons are separate.
+- Incident proof: **3 original failures, 3 passing repairs, 3 detected response
+  defects, and 3 explicit unfinished-starter failures**. Exact identities,
+  named errors, causal attachments, and fresh traces were verified. IN-02 also
+  passed three independent parallel repetitions; default practice discovers
+  three skipped starters. Latest full evidence: `quality-results/incidents/run-wxFQK9/`.
+- Gate proof: **10 real Playwright report scenarios** produced the intended
+  decisions; baseline accepted and all nine bad scenarios rejected for their
+  expected reasons. **14 unit tests passed**, including malformed evidence.
+  Both unfinished JavaScript modules exited 1 with `STARTER_UNFINISHED`.
+  Evidence: `quality-results/workplace-gates/run-0tZgYI/`.
+- Refactoring proof: all **6 baseline/worked cases passed normally**, then all
+  **6 rejected the same +$1 browser-visible total** at `RF_CART_TOTAL_ORACLE`.
+  Exact source/title inventories are checked. Latest evidence:
+  `quality-results/refactoring-proof/run-n7YmPH/`.
+- Builder proof: **50 controls passed**; the shared-default fault produced
+  exactly **1 intended ownership failure**; removing length limits from an
+  isolated server copy produced exactly **4 intended upper-bound failures**,
+  with 46 remaining cases passing. Exact independent case inventory is checked.
+  Latest evidence: `quality-results/builders-proof/run-iBKEdQ/`.
+- Dedicated runners pin their report destinations. Conflicting inherited
+  Playwright JSON reporter settings were challenged successfully for incident,
+  gate, refactoring, and builder runners; evidence stayed in each owned run.
+- Refactoring and builder references also passed serially (6 and 50 cases).
+  Ordinary main execution and the proofs exercise parallel test ownership.
+- The workplace overview and all four lessons rendered at **390px and 1440px**
+  with no page errors or horizontal overflow; desktop/mobile screenshots were
+  inspected. **21 manuals × two widths** passed the same checks. Setup navigation
+  remains reachable at 1280×720 and 390×667.
+- Source/manual downloads were rebuilt and extracted. **107 critical files and
+  assets** matched the checkout, including all workplace files and all eight
+  platform visual references. The extracted content validator passed. No auth
+  snapshots, Git internals, dependencies, or runtime results enter the source ZIP.
+- Three independent follow-up reviews examined real-world incident, delivery,
+  and maintenance gaps. The roadmap now separates the implemented first batch
+  from nine prioritized future scenarios with explicit contracts, fault proofs,
+  deliverables, and prerequisites. Those proposals are not executable coverage.
+- Existing reviewed visual baselines were unchanged. New-commit Linux CI must
+  be read from its own run; the records below describe earlier checkpoints.
+
+Proof directories are local ignored artifacts and are retained as CI artifacts
+when that workflow runs. They are not bundled as fabricated historical evidence.
+A passing proof wrapper confirms the intended controlled failures, not an
+unconditionally passing application suite or a completed learner submission.
+
 ## UI testing track review
 
 - Content inventory: **54 lessons, 108 written challenges, 39 resources, 8 articles, and 56 executable starter mappings**. Guided lesson estimates total **55 hours 10 minutes**.

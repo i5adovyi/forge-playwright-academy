@@ -33,6 +33,10 @@ export default defineConfig({
     { name: 'accessibility-practice', testMatch: /quality\/accessibility\/practice\.spec\.ts/ },
     { name: 'state', testMatch: /state\/worked\.spec\.ts/ },
     { name: 'state-practice', testMatch: /state\/practice\.spec\.ts/ },
+    { name: 'workplace-refactoring', testMatch: /workplace\/refactoring\/(baseline|worked)\.spec\.ts/ },
+    { name: 'workplace-refactoring-practice', testMatch: /workplace\/refactoring\/practice\.spec\.ts/ },
+    { name: 'workplace-builders', testMatch: /workplace\/builders\/worked\.spec\.ts/ },
+    { name: 'workplace-builders-practice', testMatch: /workplace\/builders\/practice\.spec\.ts/ },
     { name: 'portal', testMatch: /tests\/portal\/.*\.spec\.ts/ },
   ],
   webServer: {

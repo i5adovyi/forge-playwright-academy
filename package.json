@@ -42,7 +42,21 @@
     "test:api:workshop": "playwright test --project=api-workshop",
     "test:api:practice": "playwright test --project=api-practice",
     "test:ui:workshop": "playwright test --project=ui-workshop",
-    "test:ui:practice": "playwright test --project=ui-practice"
+    "test:ui:practice": "playwright test --project=ui-practice",
+    "test:incidents": "node workplace/incidents/run.mjs --solutions",
+    "test:incidents:broken": "node workplace/incidents/run.mjs --broken",
+    "test:incidents:practice": "node workplace/incidents/run.mjs --practice",
+    "test:incidents:proof": "node workplace/incidents/run.mjs --prove",
+    "test:gates": "node workplace/gates/run.mjs",
+    "test:gates:proof": "node workplace/gates/run.mjs --prove-gate",
+    "test:gates:unit": "node --test workplace/gates/gate.test.mjs",
+    "test:gates:practice": "node workplace/gates/run.mjs --practice",
+    "test:refactoring": "playwright test --project=workplace-refactoring",
+    "test:refactoring:practice": "playwright test --project=workplace-refactoring-practice",
+    "test:refactoring:proof": "node workplace/refactoring/prove.mjs",
+    "test:builders": "playwright test --project=workplace-builders",
+    "test:builders:practice": "playwright test --project=workplace-builders-practice",
+    "test:builders:proof": "node workplace/builders/prove.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

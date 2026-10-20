@@ -90,7 +90,7 @@ Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons
 
 ## A focused Playwright Docs path
 
-The complete 54-lesson program now contains **55 hours 10 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+The complete 58-lesson program now contains **60 hours 15 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
 
 | Session block | Lessons | Evidence to keep |
 |---|---|---|
@@ -117,3 +117,14 @@ For the UI specialization, use the eleven-lesson route and twenty mapped drills
 in [UI testing workbook](UI-TESTING.md). Lesson 03-11 adds 75 guided minutes;
 budget extra implementation time for UI-01–04. Keep failed-save and stale-response
 experiments for a session after you understand locators, assertions, and routes.
+
+
+## Add the workplace batch after the fundamentals
+
+Use four sessions for incidents (75 min), CI gates (80 min), refactoring (75 min),
+and builders (75 min), then an extra 45–60 minute oral defense. The 5 hours
+5 minutes of guided lessons are already included in the current 60 hours
+15 minutes total. Use [the workplace workbook](WORKPLACE-LABS.md) for deliverables.
+Attempt each starter before reading its solution and keep one diagnostic or fault
+evidence packet per session. The [real-world gap review](INTERVIEW-AND-WORKPLACE.md)
+prioritizes later work; proposed fixtures are not yet runnable assignments.

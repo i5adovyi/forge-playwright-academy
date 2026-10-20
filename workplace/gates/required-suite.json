@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "projects": ["gate-smoke", "gate-checkout"],
+  "required": [
+    { "project": "gate-smoke", "id": "catalog", "reason": "The complete expected product set is available." },
+    { "project": "gate-smoke", "id": "stock", "reason": "Unavailable stock cannot be sold." },
+    { "project": "gate-checkout", "id": "checkout", "reason": "A discounted purchase preserves the monetary contract and empties the cart." }
+  ]
+}

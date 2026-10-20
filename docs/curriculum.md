@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 54 lessons, 108 written exercises, and 54 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **55 hours 10 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 58 lessons, 116 written exercises, and 58 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **60 hours 15 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **108 written exercises** are separate from **56 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, and 4 UI transition drills in `ui-workshop/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+The **116 written exercises** are separate from **65 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, 4 UI transition drills in `ui-workshop/`, and 9 workplace assignments in `workplace/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. Most starters are skipped until implemented. Incident starters use an explicit enable flag; CI gate modules reject with an unfinished sentinel. The workplace workbook explains each mode. Those counts describe different practice formats and should not be conflated.
 
 ## The Playwright Docs specialization
 
@@ -333,3 +333,22 @@ npm run test:ui:practice -- --grep UI-01
 
 Run starters only after implementing their TODOs, replacing the sentinel, and
 removing `.skip`. Worked examples are comparators, not completed learner work.
+
+
+## Workplace specialization
+
+Follow **06-08 → 06-09 → 05-11 → 05-12** in the portal's Workplace practice route.
+The [workplace workbook](WORKPLACE-LABS.md) connects diagnosis, coverage policy,
+refactoring, and data ownership with reviewable evidence. The same lessons remain
+in their natural architecture/delivery stages in the complete curriculum.
+
+| Assignments | Focus | Starter location |
+| --- | --- | --- |
+| IN-01–03 | Rejected setup, shared identity, premature observation | `workplace/incidents/practice.spec.ts` |
+| CG-01–02 | Required execution and truthful outcomes | `workplace/gates/starter-inventory.mjs`, `starter-outcomes.mjs` |
+| RF-01–02 | Independent consumers and locator lifetime | `workplace/refactoring/practice.spec.ts`, `shop.starter.ts` |
+| DB-01–02 | Nested data ownership and field boundaries | `workplace/builders/practice.spec.ts`, `builders.starter.ts` |
+
+The nine IDs describe assignments. RF-01 expands to two consumers; DB-02 expands
+to 48 separately registered cases. Do not equate the 65 assignment IDs with a
+Playwright report's discovered or skipped test count.

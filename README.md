@@ -32,11 +32,11 @@ The test runner starts the local server automatically if it is not already runni
 
 ## What is inside
 
-- **8 stages / 54 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **108 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **54 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 58 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **116 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **58 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **56 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **65 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills), reference tests, and executable solutions. Most starter specs use `test.skip` until implemented; incident enable flags and unfinished CI gate modules are explained in the workplace workbook.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -82,7 +82,7 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
-| `npm run test:all` | Core, UI/API workshops, browser-skills, accessibility, fixtures/state, and portal projects; visual comparisons run separately |
+| `npm run test:all` | Core, UI/API workshops, browser-skills, accessibility, fixtures/state, refactoring, builders, and portal projects; visual and incident/gate proofs run separately |
 | `npm run test:a11y` | Axe scans, defect detection, keyboard flows, and form recovery |
 | `npm run test:a11y:practice` | Accessibility starters you implement |
 | `npm run test:visual` | Compare against committed references for your platform; never create them silently |
@@ -102,12 +102,13 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 54 lessons, exercises, knowledge checks
+  content/curriculum.js 58 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
 ui-workshop/            UI transition starters and worked examples
 api-workshop/            Four advanced API starters and worked solutions
+workplace/              Incident, CI gate, refactoring, and data-builder workshops
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
@@ -212,3 +213,29 @@ and their failing sentinels replaced with meaningful assertions. The browser run
 against the local shop; the hosted portal supplies lessons and downloads.
 
 The [interview and workplace roadmap](docs/INTERVIEW-AND-WORKPLACE.md) audits current coverage, supplies 18 practical interview probes and a 90-minute mock session, and prioritizes the next incident, code-review, refactoring, CI, and integration assignments. Proposed labs are clearly separated from executable material.
+
+
+## Workplace engineering practice
+
+Open **Workplace practice** (`#/workplace`) for four lessons and nine assignments.
+Use the [workplace workbook](docs/WORKPLACE-LABS.md) for the sequence, starter
+activation rules, review rubric, and exact proof limits. The implementation lives
+under `workplace/`, with detailed briefs beside each starter and worked solution.
+
+```sh
+npm run test:incidents:broken  # Intentionally fails; investigate the evidence.
+npm run test:incidents        # Worked repairs
+npm run test:gates            # Real report checked against reviewed requirements
+npm run test:refactoring      # Duplicated baseline and refactored consumers
+npm run test:builders         # Fresh nested data and 48 field/boundary cases
+npm run test:incidents:proof
+npm run test:gates:unit
+npm run test:gates:proof
+npm run test:refactoring:proof
+npm run test:builders:proof
+```
+
+A successful proof means the expected intentional faults were detected. It does
+not grade an untouched starter. Incident and gate runners have separate
+configurations; the other reference cases are also included in `test:all`.
+The GitHub workflow runs all four proofs and keeps their fresh evidence.

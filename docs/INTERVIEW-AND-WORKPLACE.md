@@ -1,9 +1,11 @@
 # Interview and workplace readiness roadmap
 
-This is a review of what to add next, plus an interview practice session you can
-use now. **The proposed labs below are not implemented assignments.** They do
-not increase the academy's 54 lessons or 56 executable starters. Existing lesson
-and drill references point to working material already in the project.
+**The first workplace batch is implemented:** four lessons and nine assignments
+cover incident diagnosis, CI execution gates, page-object refactoring, and data
+builders. Open **Workplace practice** in the portal and use the
+[workplace workbook](WORKPLACE-LABS.md). The academy now has **58 lessons and
+65 executable assignment IDs**. Further proposals below are explicitly marked;
+they are not included in those totals.
 
 Three independent reviews examined technical interview coverage, runnable
 engineering practice, and the learner's ability to explain decisions at work.
@@ -27,74 +29,53 @@ a broken pipeline, an inherited test suite, an unsafe proposed repair, or a
 release decision where a green run is insufficient. More definitions of fixtures
 or more happy-path checkout tests would add less value than those assignments.
 
-## Build first: practical engineering simulations
+## First batch delivered, with remaining simulations
 
-Each proposed assignment should ship with a brief, a starter, a reference
-solution, reviewer notes, and a reproducible fault. Preserve the original
+The delivered assignments include briefs, starters, reference solutions, reviewer
+notes, and reproducible faults. Future assignments should meet the same bar. Preserve the original
 business expectation while diagnosing and repairing it.
 
-### 1. Diagnose a CI-only failure
+### 1. Diagnose misleading failures — implemented
 
-**Existing basis:** 03-01, 05-10, 06-01/02, traces and retry evidence.
-**Missing practice:** a supplied incident pack where the learner must distinguish
-product, test, environment, and data failures before choosing a repair.
+Lesson **06-08**, **IN-01–03**, `workplace/incidents/` supply fresh traces and
+causal evidence for rejected stock setup hidden by a UI timeout, two contexts
+sharing server identity, and a premature snapshot during a held response.
+`npm run test:incidents:broken` intentionally fails; implement the repairs before
+reading `worked.spec.ts`. The proof challenges the repaired business assertions.
 
-Give the learner a failing command, a trace, a small log, and an unproven claim
-such as “the runner is slow.” Provide variants for an ambiguous locator, an
-unobserved state transition, and test-owned data accidentally shared in parallel.
-Use synthetic data and generate artifacts from a known commit.
+**Interview probe:** “What is the earliest unexpected event, and what experiment
+rules out a competing explanation?” Submit two hypotheses, a small repair, and
+normal/fault evidence. These deterministic cases do not reproduce every kind of
+CI-only or environment failure; see the next-wave review below.
 
-**Interview probe:** “It passes locally and passes on the second CI attempt.
-What do you inspect first, and what experiment would distinguish your hypotheses?”
+### 2. Make required execution visible — implemented
 
-**Acceptance evidence:** identify the first unexpected event; reject at least
-one competing explanation; submit a small patch and a run of the previously
-failing scenario; show that the original business assertion still detects its
-controlled defect. A larger timeout or more retries without evidence earns no
-repair credit. Repeat runs supplement the causal experiment; they cannot prove
-the absence of all future flakiness.
+Lesson **06-09**, **CG-01/02**, `workplace/gates/` compare a real report with an
+independent required ID/project inventory. The first starter covers discovery;
+the second adds outcomes. Ten real scenarios cover omissions, duplicates, skips,
+expected-failed misuse, failure, flaky execution, and errors. Optional skipped
+starters remain legitimate. Unit tests cover malformed evidence.
 
-### 2. Make a green pipeline mean the required tests ran
+**Interview probe:** “CI is green after a grep change. How do you prove the
+required suite ran?” Explain why a zero runner exit and a raw count are each
+insufficient. This teaching manifest covers its own isolated suite; distributed
+artifact provenance, quarantine governance, and full production inventory remain
+future work. See the [workbook](WORKPLACE-LABS.md).
 
-**Existing basis:** 05-05, 06-02/03, project selection, CI and skipped starters.
-**Missing practice:** an executable release gate for omitted projects, accidental
-skips, unexpected expected-failure annotations, and flaky outcomes.
+### 3. Refactor an inherited suite — implemented
 
-Create a small required-suite manifest for a separate teaching configuration.
-Have one branch accidentally select only a smoke project; another skips a
-required checkout case. Keep learner starters outside the required manifest:
-this academy intentionally ships unfinished skipped exercises.
+Lesson **05-11**, **RF-01/02**, `workplace/refactoring/` include duplicated
+baseline cases, typed starter models, fixtures, and worked consumers. Preserve
+independent expected product, quantity, price, and persisted cart in each spec.
+The second assignment reuses locators across real catalog/cart rerenders.
 
-**Interview probe:** “CI is green after someone changed the grep expression.
-How do you prove the critical suite still executed?”
+**Interview probe:** “How do you prove your refactor preserved protection?”
+The controlled +$1 UI-total fault must fail all three baseline and all three
+worked cases at the same price oracle. The README explains how to apply that
+proof to your own completed consumers. The poor BasePage proposal is a review
+prompt; it is not a separate runnable anti-pattern fixture.
 
-**Acceptance evidence:** enumerate the intended cases; compare executed results
-to that contract; fail on an omitted required case or unexpected result; distinguish
-skipped, expected-failed, flaky and consistently passed outcomes. A deliberately
-permitted quarantine needs an owner, reason, expiry and replacement evidence.
-Do not gate on a raw passing-test count that unrelated cases can satisfy.
-
-### 3. Refactor an inherited suite without weakening its tests
-
-**Existing basis:** 05-01–03, UI-02, EX-17 and shared fixtures.
-**Missing practice:** a complete page-object/data-builder refactor with actual
-consumers and a behavior-preserving comparison.
-
-Supply two duplicated workflows, one overgeneralized base class, and a helper
-that hides a weak assertion. Ask the learner to introduce focused page objects
-or functions, keep test data ownership in fixtures, and preserve clear independent
-expected values in the tests. The solution should be modest; an inheritance tree
-is not a success criterion.
-
-**Interview probe:** “Which logic belongs in a fixture, a page object, a data
-builder, or the test itself? Show the tradeoff in this diff.”
-
-**Acceptance evidence:** both consumers remain readable; the same deliberate
-pricing or validation defect fails before and after the refactor; each case runs
-alone and in parallel; cleanup still happens after an assertion failure. Review
-both code reduction and diagnostic clarity.
-
-### 4. Review a convincing but unsafe pull request
+### 4. Review a convincing but unsafe pull request — proposed
 
 **Existing basis:** 07-03/04 and the assessment's false-green release blockers.
 **Missing practice:** a supplied diff with realistic review decisions and a
@@ -113,7 +94,7 @@ controlled failure for the important oracle; request specific evidence; separate
 blocking issues from preferences. Produce a final patch and concise review
 summary. AI may suggest changes, but the learner must defend the evidence.
 
-### 5. Defend a release decision under time pressure
+### 5. Defend a release decision under time pressure — proposed
 
 **Existing basis:** 01-01/05, 06-04/05 and the capstone.
 **Missing practice:** a finite-budget assignment with an ambiguous requirement,
@@ -132,7 +113,7 @@ rule, name untested risks, attach commands and results, and communicate a
 conditional go/no-go decision without claiming certainty. The scoring should
 reward defensible tradeoffs, not the number of test cases proposed.
 
-### 6. Test navigation and hydration readiness
+### 6. Test navigation and hydration readiness — proposed
 
 **Existing basis:** 03-01, 03-04, 02-03.
 **Missing practice:** a dedicated page where the document and enabled control
@@ -149,24 +130,18 @@ assert the expected URL and destination state. Do not replace the missing
 contract with a fixed sleep, forced click or generic network-idle assumption.
 See [Playwright navigation and hydration](https://playwright.dev/docs/navigations).
 
-### 7. Build independent data-driven validation cases
+### 7. Build independent validation data — implemented
 
-**Existing basis:** 05-03, 04-03, API rejection and unchanged-state tests.
-**Missing practice:** an executable typed shipping builder and separately
-registered field/boundary cases, rather than only a written builder exercise.
+Lesson **05-12**, **DB-01/02**, `workplace/builders/` provide typed builders and
+50 worked cases: nested data ownership, one positive checkout consumer, 36 field
+rejections, and 12 accepted controls. Each rejection checks `422 INVALID_ADDRESS`,
+the entire preserved discounted cart, and empty order history. Limits apply to
+trimmed UTF-16 string length, with padded-boundary controls.
 
-Supply a builder that accidentally shares a mutable default object. Ask for
-fresh input per case, one invalid field at a time, required/whitespace/type/length
-boundaries, and accepted boundary controls. Use the actual shipping contract;
-do not assume the UI and API impose identical constraints.
-
-**Interview probe:** “Why might a parameterized test pass alone and fail after
-another case? How do you prove each failure reaches the intended validation rule?”
-
-**Acceptance evidence:** discover every intended case; keep all earlier
-preconditions valid; assert the exact rejection, preserved discounted cart, and
-empty history after each attempt. A missing case or reused mutated builder
-must be detectable. See [parameterized tests](https://playwright.dev/docs/test-parameterize).
+**Interview probe:** “Why does a case pass alone and fail after another one?”
+Prove that defaults and caller-owned overrides cannot be contaminated by another
+result. The exact-inventory proof catches shared defaults and four removed
+length limits. See the [builder brief](../workplace/builders/README.md).
 
 ## Add next: targeted integration and delivery labs
 
@@ -239,21 +214,169 @@ and a defended tradeoff. An unfinished time-boxed task can receive reasoning
 credit, but must not be reported as a passing implementation. Invented execution,
 hidden required skips, or weakened business assertions remain blockers.
 
-## Recommended next implementation order
+## Real-world gap review: what to build after this batch
 
-1. Build the incident pack and required-suite gate first: they train judgment
-   about failures and green results across every existing track.
-2. Add the page-object refactor and shipping-builder exercises with starter,
-   solution, two independent consumers, and controlled faults.
-3. Package the PR review and constrained design/release briefs, then add three
-   interview formats: explanation/code reading, debugging, and system design.
-4. Add hydration/navigation and the advanced integration labs based on the roles
-   being targeted. Each new target needs a stated contract before tests are written.
+The first batch improves diagnosis, execution policy, maintenance, and data
+ownership. The remaining weakness is **integration under uncertain outcomes and
+partial evidence**. More happy-path cart tests would not close it. The proposals
+below are based on three independent reviews of the actual lessons, source, and
+exercises; they are engineering priorities, not survey claims about employers or
+commercial courses. **None of these next-wave fixtures is implemented yet.**
 
-Estimated learner effort is roughly **45–90 minutes per incident or design
-brief**, **30–60 minutes per review**, and **60–120 minutes per coding lab**.
-These are planning estimates, not measured completion times. Implement one
-small batch and use the learner's mistakes to decide the next batch.
+### Priority 1: prove the right system was tested
+
+A server answers health checks, but it is an older build or the browser calls a
+stale API. Current health checks and CG inventory do not establish build identity.
+Add two healthy local targets and an independently supplied expected revision.
+Distinguish a wrong build, an unavailable dependency, and a genuine product error.
+
+**Deliverable:** a preflight that fails before any business write, showing safe
+expected/actual service and build identifiers. **Fault proof:** the healthy impostor
+and mismatched API are rejected; the correct target is accepted. Deriving the
+expected revision from the same observed response must not pass the grading
+harness. **Prerequisites:** 06-01/03 and CG-01/02. Suggested scope: 60–90 minutes.
+
+### Priority 2: a successful write loses its reply
+
+UI-03 deliberately rejects before commit; it cannot prove safe recovery after a
+write actually succeeds. Build an isolated service with an explicit idempotency
+contract and a barrier that commits before dropping the reply. Define key scope,
+replay behavior, payload conflict, and retention; a custom header alone supplies
+none of those guarantees.
+
+**Deliverable:** a request/journal timeline and bounded recovery that separates
+writes from read-only reconciliation. **Fault proof:** same key and payload yields
+one original operation; changed payload conflicts without mutation; two legitimate
+keys succeed independently. Disable deduplication or regenerate the key on retry,
+and the exact persisted-operation oracle must catch duplication.
+**Prerequisites:** UI-03, 04-06, API persistence, IN-03. Scope: 90–150 minutes.
+
+### Priority 3: an accepted background job fails or never finishes
+
+The current shop commits synchronously. Add a deterministic job service with
+queued/running/succeeded/failed states, a stalled mode, and a separate result.
+A 202 or “not pending” observation must not masquerade as successful work.
+
+**Deliverable:** submit once, correlate reads with the same ID, distinguish
+terminal failure from a bounded observation deadline, then inspect the result.
+**Fault proof:** a wrong/empty artifact fails an independent content oracle;
+a failed job terminates with its specific reason; a stalled job produces a named
+deadline error and bounded reads; a write inside the poll loop fails the create
+counter. Reserve time for cleanup. **Prerequisites:** 04-06 and IN-03.
+Scope: 90–120 minutes.
+
+### Priority 4: authentication disappears halfway through work
+
+Current drills cover initial guest/member state and cookie ownership. Add an
+explicitly revocable session and a product policy for draft retention and
+reauthentication. Do not wait for an actual multi-hour token lifetime or assume
+browser clock controls the backend clock.
+
+**Deliverable:** prove initial authentication, revoke it after form entry, observe
+401 and no mutation, retain the required draft, and perform explicit recovery.
+**Fault proof:** removing authorization must expose a persisted forbidden write;
+losing the draft must fail a field assertion; repeated login/resubmit must fail
+a request-count bound. **Prerequisites:** FS-08–10, UI-01/02, 05-09.
+Scope: 90–120 minutes. Refresh-token rotation and RBAC require separate contracts.
+
+### Priority 5: mocks stay green while the provider changes
+
+03-02 explains mock limits, but there is no shared runtime contract that is
+executed against both fixture data and real responses. Add a reviewed contract
+for `unknown` JSON with explicit required/optional/additive-field policy.
+
+**Deliverable:** fixture validation, a direct API check, a mocked UI consumer,
+and a compatibility decision for a supplied provider change. **Fault proof:** a
+string price or missing ID fails at the correct field path; a permitted additive
+field passes; a correctly shaped but wrong known price passes the schema and
+fails an independent business assertion. **Prerequisites:** 01-03, 03-02, EX-09.
+Scope: 75–105 minutes. Types and schemas do not establish business correctness.
+
+### Priority 6: distributed CI evidence lies by omission
+
+CG validates one complete run. A plausible merged report may omit a shard or
+include yesterday’s artifact. Add an independent expected shard manifest and
+artifact envelopes with run/attempt, commit, project, and shard identity.
+
+**Deliverable:** a collector that rejects missing, duplicate, stale, or mixed-run
+inputs before merging and checks merged required identities afterward.
+**Fault proof:** each corrupted collection must fail for its own reason while a
+complete set passes. Local hashes establish byte consistency, not trusted build
+provenance or signed attestation. **Prerequisites:** CG-01/02 and 06-03.
+Scope: 90–120 minutes.
+
+### Priority 7: a killed worker leaves data behind
+
+Normal fixture teardown does not guarantee cleanup after process termination.
+Use a dedicated child process and a resource service that survives that child.
+Terminate only the owned child after an allocation acknowledgement.
+
+**Deliverable:** an ownership ledger and idempotent recovery/lease-expiry policy.
+**Fault proof:** demonstrate the orphan, recover it, and preserve a second active
+run’s sentinel record. Disable recovery to reveal the leak; remove ownership
+filtering to reveal overbroad deletion. **Prerequisites:** FS-01/02, 05-07, DB-01.
+Scope: 90–120 minutes. `finally` is not a crash-recovery protocol.
+
+### Priority 8: two editors intentionally share a record
+
+IN-02 repairs accidental identity sharing; UI-04 rejects stale GET rendering.
+Neither exercises intentional concurrent writes. Add a versioned draft fixture
+with a defined `If-Match`/412 contract and an explicit conflict-recovery policy.
+
+**Deliverable:** two contexts read version 1, A saves, B's stale save is rejected,
+A's persisted value survives, B's draft remains available, and an explicit UI
+resolution saves with the current version. **Fault proof:** disabling the version
+guard exposes a lost update; clearing the rejected draft exposes lost user work.
+Giving the editors different records would evade the requirement.
+**Prerequisites:** FS-08/09, IN-02, UI-03/04, RF-02. Scope: 90–120 minutes.
+
+### Priority 9: an export silently loses a later page
+
+The current catalog is unpaginated. Add an explicit cursor contract, a reviewed
+identity dataset, duplicate display names, and an empty intermediate page that
+still has a continuation cursor. Define snapshot versus changing-collection
+semantics before testing concurrent inserts.
+
+**Deliverable:** traverse to the documented terminal cursor, preserve filters,
+bound repeated cursors, and compare exact exported membership and order.
+**Fault proof:** replace a row with a duplicate while preserving count, omit a
+page, repeat a cursor, or drop a filter after page one. Each must fail its own
+membership, termination, or filtering oracle. Silently deduplicating is not a
+repair. **Prerequisites:** 04-02, EX-20, DB-01, CG-01. Scope: 90–120 minutes.
+
+### Further bounded extensions
+
+After those, add a synthetic secret-canary exercise for shareable traces/logs and
+archives: produce intentionally sensitive-looking fake data, identify what leaves
+the workspace, package only approved evidence, and prove the canary cannot leak
+into the shared bundle. Use no real credentials. Add locale/time-zone/DST and
+money-formatting checks, permission-denied feature controls, controlled navigation
+hydration, pagination, and release decision constraints when their product
+contracts and dedicated targets are ready. These remain proposals, not coverage.
+
+## Improve the way you practise now
+
+The existing labs can support harder work without pretending new service behavior
+exists. Use this progression on one completed workplace assignment:
+
+1. **Cold attempt:** read only the ticket and record two hypotheses before opening
+   the solution. Keep the first failed command and what it actually demonstrated.
+2. **Restricted repair:** change only the starter/model/gate; keep the business
+   expectation and reviewed required inventory intact.
+3. **Change request:** add a second named consumer, a permitted optional case,
+   or another documented shipping boundary without weakening existing coverage.
+4. **Adversarial review:** explain why increasing timeouts, hiding a retry, sharing
+   setup state, or deriving expected money from actual output would be misleading.
+5. **Handover:** another person should reproduce your result from the command,
+   commit, evidence path, and a five-sentence explanation. Include one remaining
+   uncertainty and a conditional release recommendation.
+
+Track **read → attempted → implemented → fault-proven → explained** in your field
+notes. The portal completion checkbox stays a self-assessment; it does not verify
+those stages automatically. Select two next-wave labs according to your work:
+preflight + mock drift for integration work, shard completeness + evidence handling
+for delivery work, ambiguous writes + jobs for backend-heavy systems. Do not add
+all proposed hours to every study week.
 
 ## Primary references for the proposed additions
 

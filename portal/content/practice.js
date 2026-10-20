@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 108 lesson challenges.
+/** Executable drills complement (and do not replace) the 116 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -106,3 +106,21 @@ export const uiTracks = [
   uiDrill(4, 'The newest catalog selection survives an older response', ['02-04', '03-01', '03-02', '03-11']),
 ];
 export const uiLessonIds = ['02-01', '02-02', '02-03', '02-04', '02-05', '03-01', '03-02', '03-03', '03-04', '03-05', '03-11'];
+
+// Nine assignments; DB-02 expands into 48 separately registered test cases.
+const workplaceDrill = (id, title, folder, lesson, command, starter = 'practice.spec.ts', solution = 'worked.spec.ts') => ({
+  id, title, lessons: [lesson], file: `workplace/${folder}/${starter}`,
+  solution: `workplace/${folder}/${solution}`, command,
+});
+export const workplaceTracks = [
+  workplaceDrill('IN-01', 'Find the rejected setup behind a UI timeout', 'incidents', '06-08', 'npm run test:incidents:practice -- --enable-starters --grep IN-01'),
+  workplaceDrill('IN-02', 'Separate browser isolation from server ownership', 'incidents', '06-08', 'npm run test:incidents:practice -- --enable-starters --grep IN-02'),
+  workplaceDrill('IN-03', 'Replace a premature snapshot with a proven transition', 'incidents', '06-08', 'npm run test:incidents:practice -- --enable-starters --grep IN-03'),
+  workplaceDrill('CG-01', 'Reject missing required execution', 'gates', '06-09', 'npm run test:gates:practice -- --stage inventory --prove-gate', 'starter-inventory.mjs', 'worked-gate.mjs'),
+  workplaceDrill('CG-02', 'Reject misleading success and malformed evidence', 'gates', '06-09', 'npm run test:gates:practice -- --stage outcomes --prove-gate', 'starter-outcomes.mjs', 'worked-gate.mjs'),
+  workplaceDrill('RF-01', 'Extract page objects with two independent consumers', 'refactoring', '05-11', 'npm run test:refactoring:practice -- --grep RF-01'),
+  workplaceDrill('RF-02', 'Preserve ownership and locators across rerenders', 'refactoring', '05-11', 'npm run test:refactoring:practice -- --grep RF-02'),
+  workplaceDrill('DB-01', 'Build fresh defaults and independently owned overrides', 'builders', '05-12', 'npm run test:builders:practice -- --grep DB-01'),
+  workplaceDrill('DB-02', 'Register a complete shipping validation matrix', 'builders', '05-12', 'npm run test:builders:practice -- --grep DB-02'),
+];
+export const workplaceLessonIds = ['06-08', '06-09', '05-11', '05-12'];

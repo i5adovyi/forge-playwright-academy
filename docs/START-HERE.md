@@ -1,6 +1,6 @@
 # Welcome to Playwright Forge
 
-Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 54-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
+Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 58-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
 
 ## Your first session · 45–60 minutes
 
@@ -73,4 +73,10 @@ server validation, rejected saves, and out-of-order responses. Run
 Choose **API testing track** for six lessons and twelve mapped drills. The
 [API workbook](API-TESTING.md) covers contracts, ownership, body boundaries,
 receipts, and persisted state. Run `npm run test:api:workshop`, then implement
-one AP starter. The [curriculum map](curriculum.md) lists all 56 executable starters.
+one AP starter. The [curriculum map](curriculum.md) lists all 65 executable starters.
+
+
+After the UI, API, fixture, and CI foundations, open **Workplace practice** in the
+portal. The [workplace workbook](WORKPLACE-LABS.md) adds incident diagnosis, CI
+coverage gates, page-object refactoring, and data builders with starters and
+solutions. Run the dedicated proofs after your own attempt.

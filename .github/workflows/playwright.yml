@@ -28,6 +28,26 @@ jobs:
       - run: npm run test:all
         env:
           CI: 'true'
+      - name: Prove incident repairs retain detection
+        run: npm run test:incidents:proof
+      - name: Validate the coverage gate and challenge it with real reports
+        run: |
+          npm run test:gates:unit
+          npm run test:gates:proof
+      - name: Prove refactor equivalence and independent builder boundaries
+        run: |
+          npm run test:refactoring:proof
+          npm run test:builders:proof
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: workplace-proof-evidence
+          path: |
+            quality-results/incidents/
+            quality-results/workplace-gates/
+            quality-results/refactoring-proof/
+            quality-results/builders-proof/
+          retention-days: 7
       - name: Verify authentication setup dependencies
         run: npm run test:state:auth
         env:

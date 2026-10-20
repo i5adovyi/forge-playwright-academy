@@ -119,7 +119,7 @@ The [verification record](VERIFICATION.md) records the executed checks.
 ## UI testing track review · 20 October 2026
 
 The UI review focused on whether a passing exercise proves its stated rule.
-The academy now contains **54 lessons, 108 written challenges, 54 quizzes, and
+At the UI review checkpoint, the academy contained **54 lessons, 108 written challenges, 54 quizzes, and
 56 executable starters**. The focused UI route contains eleven lessons and
 20 mapped assignments, with shared completion and notes.
 
@@ -152,3 +152,28 @@ The [interview and workplace roadmap](INTERVIEW-AND-WORKPLACE.md) records the
 coverage map, ranked proposals, acceptance evidence, advanced integration gaps,
 18 interview probes and a mock session using current material. Proposed labs
 remain explicitly unimplemented and do not inflate lesson or starter totals.
+
+
+## Workplace batch and real-world learning audit
+
+The current inventory is **58 lessons, 116 written challenges, 58 quizzes, and
+65 executable assignment IDs**. Nine new assignments cover three diagnostic
+incidents, two coverage-gate stages, two page-object tasks, and two builder tasks.
+The [workplace workbook](WORKPLACE-LABS.md) distinguishes assignment IDs from
+registered cases, learner starters from reference proofs, and intentional faults
+from unrelated failures. The portal exposes this route at `#/workplace`.
+
+Three independent follow-up reviews identified the highest-value remaining gaps:
+wrong-target preflight, committed writes with lost replies, asynchronous jobs,
+mid-workflow authentication loss, mock/provider drift, distributed evidence
+completeness, interrupted-worker cleanup, complete pagination, and intentional
+concurrent edits. The [updated roadmap](INTERVIEW-AND-WORKPLACE.md) specifies
+proposed fixture contracts, deliverables, discriminating faults, prerequisites,
+and learning-plan changes. These proposals are not added to executable totals.
+
+Peer review also corrected the new lessons' address-validation order, trimmed
+UTF-16 length semantics, cart-versus-purchase scope, and controlled response
+release ordering. Proof runners validate exact case identities and named failure
+reasons; a missing browser, malformed report, or unrelated timeout cannot count
+as successful product-defect detection. See [verification](VERIFICATION.md) for
+actual execution evidence.
