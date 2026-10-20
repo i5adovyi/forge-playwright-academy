@@ -1,0 +1,18 @@
+import { chromium } from '@playwright/test';
+const browser=await chromium.launch();
+const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1});
+const base=`http://127.0.0.1:${process.env.PORT||4173}`;
+await page.goto(base);
+await page.getByRole('heading',{name:'Ship confidence. Not just tests.'}).waitFor();
+await page.screenshot({path:'/tmp/forge-desktop.png',fullPage:true});
+await page.goto(`${base}/#/lesson/01-01`);
+await page.getByRole('heading',{name:'The automation engineer’s mindset'}).waitFor();
+await page.screenshot({path:'/tmp/forge-lesson.png',fullPage:true});
+await page.goto(`${base}/lab/`);
+await page.getByRole('heading',{name:'Good tools. Great work.'}).waitFor();
+await page.screenshot({path:'/tmp/forge-shop.png',fullPage:true});
+await page.setViewportSize({width:390,height:844});
+await page.goto(base);
+await page.screenshot({path:'/tmp/forge-mobile.png',fullPage:true});
+await browser.close();
+console.log('Captured desktop, lesson, shop, and mobile previews in /tmp/forge-*.png');

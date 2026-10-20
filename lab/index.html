@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forge Shop — Your automation playground</title>
+  <link rel="stylesheet" href="/lab/style.css">
+  <script src="/lab/app.js" defer></script>
+</head>
+<body>
+  <div class="training-banner"><span class="pulse"></span> LIVE PRACTICE ENVIRONMENT <span>Real UI. Real API. Zero real payments.</span><a href="/">Back to academy ↗</a></div>
+  <header class="shop-header">
+    <a class="brand" href="/lab/" aria-label="Forge Shop home"><span class="brand-symbol">f</span>forge<span class="brand-shop">/ shop</span></a>
+    <nav aria-label="Shop navigation"><a class="active" href="#collection">Collection</a><a href="#lab-notes">Lab notes</a></nav>
+    <div class="header-actions"><button id="login-open" class="text-button">Sign in</button><button id="cart-open" class="cart-button" aria-haspopup="dialog">Cart (0)</button></div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow">THE EVERYDAY ESSENTIALS COLLECTION</p><h1>Good tools.<br><span>Great work.</span></h1><p>A thoughtfully curated workspace. A brilliantly testable shop. Your next breakthrough starts here.</p><a class="primary-link" href="#collection">Explore the collection <span>↘</span></a><div class="hero-proof"><span>01 — 06</span> Six essentials. Endless possibilities.</div></div>
+      <div class="hero-art" aria-hidden="true"><div class="orbit"></div><div class="headphone-art"><div class="band"></div><div class="ear left"></div><div class="ear right"></div></div><span class="art-tag">ENGINEERED FOR FOCUS</span><div class="art-caption"><span>01 / STUDIO HEADPHONES</span><strong>$129</strong></div></div>
+    </section>
+    <section class="collection" id="collection" aria-labelledby="collection-title">
+      <div class="section-top"><div><p class="eyebrow">BUILD YOUR SETUP</p><h2 id="collection-title">Small upgrades. Big difference.</h2></div><span id="product-count" role="status">Loading collection…</span></div>
+      <div class="filters">
+        <label class="search-label"><span>Search products</span><input id="search" type="search" placeholder="Find your next essential…" autocomplete="off"></label>
+        <label><span>Category</span><select id="category" aria-label="Category"><option>All</option><option>Audio</option><option>Desk</option><option>Video</option></select></label>
+        <label><span>Sort by</span><select id="sort" aria-label="Sort by"><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name</option></select></label>
+      </div>
+      <div id="catalog-error" class="error" role="alert" hidden></div>
+      <div id="products" class="product-grid" aria-busy="true"></div>
+      <div id="empty-products" class="empty-state" hidden><span>⌕</span><h3>No products found</h3><p>Try a different search or category.</p><button id="clear-filters" class="secondary-button">Clear filters</button></div>
+    </section>
+    <section id="lab-notes" class="lab-notes"><div><p class="eyebrow">A SMALL SHOP. A SERIOUS PLAYGROUND.</p><h2>Every interaction is<br>something worth testing.</h2></div><div><p>Search, filter, sort, sign in, build a cart, apply a promo, and place a demo order. Your session is isolated, so you can experiment freely.</p><p><strong>Demo account</strong><br>demo@forge.test · Playwright123!<br><strong>Promo code</strong> SAVE10 for 10% off</p><div class="note-actions"><a href="/docs/lab-api.md">Read the API contract ↗</a><button id="reset" class="text-button">Reset my sandbox</button></div></div></section>
+  </main>
+  <footer><a class="brand" href="/">forge<span class="brand-shop">/ academy</span></a><p>Built to learn by doing. Local educational demo.</p><span>PLAY. BREAK. UNDERSTAND.</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="login-dialog" aria-labelledby="login-title">
+    <div class="dialog-heading"><div><p class="eyebrow">WELCOME BACK</p><h2 id="login-title">Your workspace awaits.</h2></div><button class="close" data-close="login-dialog" aria-label="Close sign in">×</button></div>
+    <p class="muted">Use the demo account to practice authentication.</p>
+    <form id="login-form"><label>Email<input name="email" type="email" required autocomplete="username" placeholder="demo@forge.test"></label><label>Password<input name="password" type="password" required autocomplete="current-password" placeholder="Playwright123!"></label><div id="login-error" class="error" role="alert" hidden></div><button class="primary-button" type="submit">Sign in</button></form>
+    <p class="demo-hint">demo@forge.test / Playwright123!</p>
+  </dialog>
+  <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
+    <div class="dialog-heading"><div><p class="eyebrow">MAKE IT YOURS</p><h2 id="cart-title">Your cart</h2></div><button class="close" data-close="cart-dialog" aria-label="Close cart">×</button></div>
+    <div id="cart-items"></div>
+    <div id="cart-error" class="error" role="alert" hidden></div>
+    <div id="cart-details" hidden>
+      <form id="promo-form" class="promo-form"><label>Promo code<input name="code" placeholder="Try SAVE10"></label><button class="secondary-button" type="submit">Apply promo</button></form>
+      <dl class="totals"><div><dt>Subtotal</dt><dd data-testid="cart-subtotal"></dd></div><div><dt>Discount</dt><dd data-testid="cart-discount"></dd></div><div class="grand-total"><dt>Total</dt><dd data-testid="cart-total"></dd></div></dl>
+      <button id="checkout-open" class="primary-button">Continue to checkout →</button>
+      <p class="demo-hint">Demo checkout. No payment information needed.</p>
+    </div>
+  </dialog>
+  <dialog id="checkout-dialog" aria-labelledby="checkout-title">
+    <div class="dialog-heading"><div><p class="eyebrow">ONE LAST STEP</p><h2 id="checkout-title">The details.</h2></div><button class="close" data-close="checkout-dialog" aria-label="Close checkout">×</button></div>
+    <form id="checkout-form"><label>Full name<input name="name" required maxlength="120" autocomplete="name"></label><label>Street address<input name="address" required maxlength="120" autocomplete="street-address"></label><div class="form-row"><label>City<input name="city" required maxlength="120" autocomplete="address-level2"></label><label>Postal code<input name="postalCode" required maxlength="20" autocomplete="postal-code"></label></div><div id="checkout-error" class="error" role="alert" hidden></div><button type="submit" class="primary-button">Place order</button></form><p class="demo-hint">Use fictional details. Nothing will be shipped.</p>
+  </dialog>
+  <dialog id="success-dialog" aria-labelledby="success-title"><button class="close success-close" data-close="success-dialog" aria-label="Close order confirmation">×</button><div class="success-icon">✓</div><p class="eyebrow">NICE WORK</p><h2 id="success-title">You're all set.</h2><p>Your demo order is confirmed.</p><p id="order-id"></p><a id="receipt" class="primary-link">Download receipt ↓</a><p class="demo-hint">This is a sandbox. No payment was collected.</p></dialog>
+</body>
+</html>

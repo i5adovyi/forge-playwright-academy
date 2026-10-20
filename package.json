@@ -1,0 +1,35 @@
+{
+  "name": "forge-playwright-academy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An original, local-first Playwright training academy with UI and API practice labs.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate-content.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test --project=ui --project=api",
+    "test:ui": "playwright test --project=ui",
+    "test:api": "playwright test --project=api",
+    "test:portal": "playwright test --project=portal",
+    "test:solutions": "playwright test --project=solutions",
+    "test:exercises": "playwright test --project=exercises",
+    "test:all": "playwright test",
+    "test:debug": "playwright test --project=ui --debug",
+    "test:interactive": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "check": "node --check server.mjs && node --check lab/app.js && playwright test --list",
+    "browsers": "playwright install chromium",
+    "browsers:all": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "^24.0.0",
+    "typescript": "7.0.2"
+  }
+}
