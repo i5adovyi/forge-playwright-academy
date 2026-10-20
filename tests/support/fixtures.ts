@@ -32,5 +32,8 @@ export async function login(request: APIRequestContext) {
 }
 export async function openCart(page: Page) {
   await page.getByRole('button', { name: /^Cart \(/ }).click();
-  return page.getByRole('dialog', { name: 'Your cart', exact: true });
+  const cart = page.getByRole('dialog', { name: 'Your cart', exact: true });
+  // Forge opens the dialog after refreshing and rendering the cart snapshot.
+  await expect(cart).toBeVisible();
+  return cart;
 }

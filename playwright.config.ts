@@ -20,6 +20,8 @@ export default defineConfig({
   },
   projects: [
     { name: 'ui', testMatch: /tests\/ui\/.*\.spec\.ts/ },
+    { name: 'ui-workshop', testMatch: /ui-workshop\/worked\.spec\.ts/ },
+    { name: 'ui-practice', testMatch: /ui-workshop\/practice\.spec\.ts/ },
     { name: 'api', testMatch: /tests\/api\/.*\.spec\.ts/ },
     { name: 'api-workshop', testMatch: /api-workshop\/worked\.spec\.ts/ },
     { name: 'api-practice', testMatch: /api-workshop\/practice\.spec\.ts/ },

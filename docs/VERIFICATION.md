@@ -2,6 +2,28 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
+## UI testing track review
+
+- Content inventory: **54 lessons, 108 written challenges, 39 resources, 8 articles, and 56 executable starter mappings**. Guided lesson estimates total **55 hours 10 minutes**.
+- `npm run validate`, `npm run typecheck`, `npm run check`, and `git diff --check` passed after integration.
+- `PORT=14827 npm run test:all`: **127 passed, 52 intentionally skipped**, 179 discovered, zero failures, 27.8 seconds. This includes four UI workshop cases and 23 portal cases. The four visual starters run separately, making 56 unfinished starters in total.
+- The first integration run exposed two outdated portal expectations: an unscoped Overview link became ambiguous, and the next full-curriculum lesson after 03-10 is now 03-11. Both were corrected; the focused 23-case portal run and subsequent full suite passed.
+- All **eight code examples extracted from the revised UI lessons** passed strict TypeScript checking and actual Playwright execution. Setup wrappers were supplied only for fragments that explicitly state their prerequisites. The 03-05 teaching screenshot was generated and inspected in a temporary directory; committed visual baselines were unchanged.
+- Three unchanged worked tests rejected controlled, temporary browser-served defects at their intended assertions: removing the email's required constraint (UI-01), clearing shipping input after a checkout failure (UI-03), and allowing an older catalog response to overwrite the latest selection (UI-04). Each fault run exited with one expected failure; tracked application files were not mutated.
+- Removing only `.skip` from temporary copies of UI-01–04 produced **four sentinel failures**. The committed starters remain skipped and require actual implementation.
+- The UI route and all eleven linked lessons rendered at **390px and 1440px** without page errors or document-level horizontal overflow; representative screenshots were inspected. All 19 then-current manuals passed the same two-width checks. The additional interview/workplace roadmap is verified separately below.
+- Sidebar setup navigation remained reachable at **1280×720 and 390×667**, including opening the mobile navigation and scrolling to the setup link.
+- The shared `openCart` helper now explicitly waits for the visible dialog. Forge opens that dialog after its refreshed snapshot renders; the helper does not establish a general readiness contract for other applications.
+- UI-03 simulates one failure before persistence; it does not test a lost response after a committed order. UI-04 uses a transparent, test-only JSON-consumption probe specific to this application's synchronous rendering. Neither claim extends to arbitrary frontend frameworks.
+- The previous API commit `92b384628d26132e22fdba3bcf6aa70088b996cd` completed its [Linux CI workflow](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39463254651) successfully. New UI commit CI status must be read from its own run; local green results do not imply Linux or optional three-engine success.
+
+## Interview and workplace audit follow-up
+
+- Three subagents reviewed interview topics, delivery/maintenance exercises, and workplace assessment. The resulting roadmap marks all new lab proposals as unimplemented; the lesson and starter inventory is unchanged.
+- The roadmap adds 18 interview probes with expected reasoning and a 90-minute mock session referencing existing assignments. It is available in the portal library and linked from the UI track and assessment manual.
+- After the roadmap was integrated, all **23 portal tests passed** in 9.0 seconds, including its route and the explicit proposed-lab notice. All **20 manuals × two viewport widths** rendered without page errors or document overflow; the roadmap screenshot was inspected. The UI route and its eleven lessons also passed the final 24-render check.
+- Final source and manual bundles were rebuilt; critical source, test, configuration, document, font and baseline files match their working-tree originals. Content validation succeeds from an extracted source bundle, and no auth state, repository internals or test-result directories are included.
+
 ## API testing track review
 
 - Content validation: **53 lessons, 106 written challenges, 39 resources, 8 articles, and 52 executable starter mappings**. The guided estimates total **53 hours 55 minutes**.

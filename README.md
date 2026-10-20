@@ -32,11 +32,11 @@ The test runner starts the local server automatically if it is not already runni
 
 ## What is inside
 
-- **8 stages / 53 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **106 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **53 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 54 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **108 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **54 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **52 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **56 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -67,6 +67,8 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run dev` | Serve the portal, shop, and API on port 4173 |
 | `npm test` | Run the core UI/API reference suite |
 | `npm run test:ui` | Run browser UI reference tests |
+| `npm run test:ui:workshop` | Run four form, recovery, failed-save, and stale-response examples |
+| `npm run test:ui:practice` | Run the UI starters after implementing them |
 | `npm run test:api` | Run HTTP API reference tests |
 | `npm run test:portal` | Verify portal navigation and learning tools |
 | `npm run test:solutions` | Run executable shop worked solutions |
@@ -80,7 +82,7 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
-| `npm run test:all` | Core, browser-skills, accessibility, fixtures/state, and portal projects; visual comparisons run separately |
+| `npm run test:all` | Core, UI/API workshops, browser-skills, accessibility, fixtures/state, and portal projects; visual comparisons run separately |
 | `npm run test:a11y` | Axe scans, defect detection, keyboard flows, and form recovery |
 | `npm run test:a11y:practice` | Accessibility starters you implement |
 | `npm run test:visual` | Compare against committed references for your platform; never create them silently |
@@ -100,11 +102,12 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 53 lessons, exercises, knowledge checks
+  content/curriculum.js 54 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
-api-workshop/           Four advanced API starters and worked solutions
+ui-workshop/            UI transition starters and worked examples
+api-workshop/            Four advanced API starters and worked solutions
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
@@ -190,3 +193,22 @@ ownership, JSON byte limits, and text receipt ownership. AP starters and worked
 solutions live in `api-workshop/`. Existing lesson IDs and progress remain valid;
 04-06 adds request controls, disposal, and the distinctions between request
 errors, HTTP errors, polling, and retries.
+
+## UI testing specialization
+
+Open **UI testing track** in the portal for eleven lessons and twenty mapped drills.
+Read [the UI workbook](docs/UI-TESTING.md), implement EX-01–08, and use the advanced
+EX-17–24 and UI-01–04 cases to practice complete recovery and controlled timing.
+Lesson 03-11 adds failed-save and stale-response experiments. Existing lesson IDs
+and saved progress remain valid.
+
+```sh
+npm run test:ui:workshop
+npm run test:ui:practice -- --grep UI-01
+```
+
+The four UI starters are intentionally skipped until their TODOs are implemented
+and their failing sentinels replaced with meaningful assertions. The browser runs
+against the local shop; the hosted portal supplies lessons and downloads.
+
+The [interview and workplace roadmap](docs/INTERVIEW-AND-WORKPLACE.md) audits current coverage, supplies 18 practical interview probes and a 90-minute mock session, and prioritizes the next incident, code-review, refactoring, CI, and integration assignments. Proposed labs are clearly separated from executable material.

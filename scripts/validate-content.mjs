@@ -3,7 +3,7 @@ import { readFile, access, readdir } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { stages, lessons } from '../portal/content/curriculum.js';
 import { resources, articles } from '../portal/content/library.js';
-import { practiceTracks, skillTracks, accessibilityTracks, visualTracks, stateTracks, docsLessonIds, apiTracks, apiLessonIds } from '../portal/content/practice.js';
+import { practiceTracks, skillTracks, accessibilityTracks, visualTracks, stateTracks, docsLessonIds, apiTracks, apiLessonIds, uiTracks, uiLessonIds } from '../portal/content/practice.js';
 
 const root=resolve(import.meta.dirname,'..');
 const pkg=JSON.parse(await readFile(resolve(root,'package.json'),'utf8'));
@@ -11,9 +11,9 @@ const unique=(items,label)=>assert.equal(new Set(items.map(i=>i.id)).size,items.
 const prose=(value,label)=>assert(typeof value==='string'&&value.trim(),`${label} must be non-empty text`);
 const texts=(values,label,min=1)=>{assert(Array.isArray(values)&&values.length>=min,`${label} must have at least ${min} entries`);values.forEach(v=>prose(v,label));};
 const link=(value,label)=>{const url=new URL(value);assert(url.protocol==='https:'&&!url.username&&!url.password,`${label} must be an HTTPS link without credentials`);};
-for(const [items,label] of [[stages,'Stage'],[lessons,'Lesson'],[resources,'Resource'],[articles,'Article'],[[...practiceTracks,...skillTracks,...accessibilityTracks,...visualTracks,...stateTracks,...apiTracks],'Drill']])unique(items,label);
-assert.equal(stages.length,8);assert.equal(lessons.length,53);
-for(const s of stages){prose(s.title,s.id);assert.equal(lessons.filter(l=>l.stage===s.id).length,({ 'resilient-ui':10, architecture:10, delivery:7, api:6 }[s.id]||5),`Lesson count for ${s.id}`);}
+for(const [items,label] of [[stages,'Stage'],[lessons,'Lesson'],[resources,'Resource'],[articles,'Article'],[[...practiceTracks,...skillTracks,...accessibilityTracks,...visualTracks,...stateTracks,...apiTracks,...uiTracks],'Drill']])unique(items,label);
+assert.equal(stages.length,8);assert.equal(lessons.length,54);
+for(const s of stages){prose(s.title,s.id);assert.equal(lessons.filter(l=>l.stage===s.id).length,({ 'resilient-ui':11, architecture:10, delivery:7, api:6 }[s.id]||5),`Lesson count for ${s.id}`);}
 let exercises=0;
 for(const l of lessons){
   assert(stages.some(s=>s.id===l.stage),`${l.id}: unknown stage`);
@@ -42,10 +42,11 @@ for(const r of resources){
 }
 assert(articles.length>=8);
 for(const a of articles){prose(a.title,a.id);assert(a.sections.length>=2);for(const s of a.sections){prose(s.heading,a.id);prose(s.body,a.id);}}
-assert.equal(practiceTracks.length,24);assert.equal(skillTracks.length,6);assert.equal(accessibilityTracks.length,4);assert.equal(visualTracks.length,4);assert.equal(stateTracks.length,10);assert.equal(apiTracks.length,4);
+assert.equal(practiceTracks.length,24);assert.equal(skillTracks.length,6);assert.equal(accessibilityTracks.length,4);assert.equal(visualTracks.length,4);assert.equal(stateTracks.length,10);assert.equal(apiTracks.length,4);assert.equal(uiTracks.length,4);
+assert.equal(uiLessonIds.length,11);assert.equal(new Set(uiLessonIds).size,11);assert(uiLessonIds.every(id=>lessons.some(l=>l.id===id)));
 assert.equal(apiLessonIds.length,6);assert.deepEqual(apiLessonIds,lessons.filter(l=>l.stage==='api').map(l=>l.id));
 assert.equal(docsLessonIds.length,8);assert.equal(new Set(docsLessonIds).size,8);assert(docsLessonIds.every(id=>lessons.some(l=>l.id===id)));
-for(const d of [...practiceTracks,...skillTracks,...accessibilityTracks,...visualTracks,...stateTracks,...apiTracks]){
+for(const d of [...practiceTracks,...skillTracks,...accessibilityTracks,...visualTracks,...stateTracks,...apiTracks,...uiTracks]){
   const solution=d.solution||d.file.replace(/^exercises\//,'solutions/');
   texts(d.lessons,`${d.id} lesson map`);
   assert(d.lessons.every(id=>lessons.some(l=>l.id===id)),`${d.id}: unknown lesson`);
@@ -66,4 +67,4 @@ for(const name of await readdir(resolve(root,'docs'))){
     await access(resolve(dirname(file),match[1]));documentLinks++;
   }
 }
-console.log(`Validated ${stages.length} stages, ${lessons.length} lessons, ${exercises} challenges, ${resources.length} resources, ${articles.length} articles, ${practiceTracks.length+skillTracks.length+accessibilityTracks.length+visualTracks.length+stateTracks.length+apiTracks.length} executable drill mappings and ${documentLinks} local document links.`);
+console.log(`Validated ${stages.length} stages, ${lessons.length} lessons, ${exercises} challenges, ${resources.length} resources, ${articles.length} articles, ${practiceTracks.length+skillTracks.length+accessibilityTracks.length+visualTracks.length+stateTracks.length+apiTracks.length+uiTracks.length} executable drill mappings and ${documentLinks} local document links.`);

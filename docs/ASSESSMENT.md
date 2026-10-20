@@ -101,3 +101,7 @@ Reassessment evidence:
 ```
 
 Self-review is valid for solo practice. A fresh pair of eyes is especially valuable for setup instructions and assumptions you no longer notice.
+
+## Practice for interviews and workplace decisions
+
+Use the [interview and workplace roadmap](INTERVIEW-AND-WORKPLACE.md) for 18 additional interview probes, a 90-minute session using existing assignments, and prioritized proposals for incident, review, and engineering exercises. Proposed labs are explicitly marked and do not count as implemented assessment coverage.

@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 106 lesson challenges.
+/** Executable drills complement (and do not replace) the 108 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -11,9 +11,9 @@ export const practiceTracks = [
   drill(3, 'Empty results and recovery', '01-foundations', ['01-05', '02-04']),
   drill(4, 'Category + sort', '01-foundations', ['02-04']),
   drill(5, 'Unavailable products', '01-foundations', ['02-02']),
-  drill(6, 'Cart lifecycle', '01-foundations', ['02-05']),
-  drill(7, 'Discount arithmetic', '01-foundations', ['02-05', '04-05']),
-  drill(8, 'Keyboard-only dialog', '01-foundations', ['03-05']),
+  drill(6, 'Cart lifecycle', '01-foundations', ['02-02', '02-05']),
+  drill(7, 'Discount arithmetic', '01-foundations', ['02-05', '03-01', '04-05']),
+  drill(8, 'Keyboard activation and focus return', '01-foundations', ['03-05']),
   drill(9, 'Catalog contract', '02-api', ['01-03', '04-01']),
   drill(10, 'Query parameters', '02-api', ['04-02']),
   drill(11, 'Create then update', '02-api', ['04-03']),
@@ -94,3 +94,15 @@ export const apiTracks = [
   apiDrill(4, 'Orders remain immutable after later purchases', ['04-05']),
 ];
 export const apiLessonIds = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06'];
+
+const uiDrill = (number, title, lessons) => {
+  const id = `UI-${String(number).padStart(2, '0')}`;
+  return {id, title, lessons, file:'ui-workshop/practice.spec.ts', solution:'ui-workshop/worked.spec.ts', command:`npm run test:ui:practice -- --grep ${id}`};
+};
+export const uiTracks = [
+  uiDrill(1, 'Native validation, server rejection, and correction', ['02-03']),
+  uiDrill(2, 'Guest recovery through a complete UI purchase', ['02-05']),
+  uiDrill(3, 'Failed checkout preserves input and retries once', ['02-05', '03-02', '03-11']),
+  uiDrill(4, 'The newest catalog selection survives an older response', ['02-04', '03-01', '03-02', '03-11']),
+];
+export const uiLessonIds = ['02-01', '02-02', '02-03', '02-04', '02-05', '03-01', '03-02', '03-03', '03-04', '03-05', '03-11'];

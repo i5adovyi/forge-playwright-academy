@@ -12,14 +12,19 @@ test.skip('EX-17 · Hybrid checkout', async ({ page, request }) => {
   expect(false, 'Implement every acceptance criterion before removing this sentinel').toBe(true);
 });
 test.skip('EX-18 · Service outage', async ({ page }) => {
-  // TODO: route **/api/products?* to 503 JSON error; assert useful alert;
-  // remove route, change category, assert recovery.
+  // TODO: route **/api/products?* to a 503 JSON error; assert useful alert, zero
+  // product cards and NO "No products found" heading (an error is not empty data).
+  // Remove the route; choose Desk and assert the complete featured sequence:
+  // Mechanical Keyboard, Focus Lamp, Monitor Arm. Assert stale alert gone and
+  // products aria-busy=false. Recovery uses the real backend.
   // Register route BEFORE navigation and document that this is a UI test.
   expect(false, 'Implement every acceptance criterion before removing this sentinel').toBe(true);
 });
 test.skip('EX-19 · Deterministic empty state', async ({ page }) => {
   // TODO: fulfill products route with {products:[],total:0};
-  // assert no product cards, empty heading, and clear-filter action.
+  // assert no product cards, empty heading, clear-filter action, no error alert,
+  // count text "0 essentials" and aria-busy=false. Distinguish this 200 contract
+  // from EX-18's 503 error, even though both render zero cards.
   expect(false, 'Implement every acceptance criterion before removing this sentinel').toBe(true);
 });
 test.skip('EX-20 · Receipt download', async ({ page, request }) => {

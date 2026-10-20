@@ -1,6 +1,6 @@
 # Welcome to Playwright Forge
 
-Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 40-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
+Build evidence that you can design, write, diagnose, and maintain automated tests. The academy combines a 54-lesson path, a local practice shop, UI and API exercises, original articles, and a research library. Work through the code yourself; completion marks are a study aid, not proof of competence.
 
 ## Your first session · 45–60 minutes
 
@@ -32,10 +32,10 @@ Keep a short learning log: lesson, command, actual outcome, one mistake, one cor
 |---|---|---|
 | Build your foundation | 01-01–01-05 | Understand browser/HTTP basics, TypeScript, async code, and test design |
 | Your first UI suite | 02-01–02-05 | Automate meaningful flows with locators and assertions |
-| Make it resilient | 03-01–03-05 | Synchronize on outcomes and diagnose UI failures |
-| Go below the UI | 04-01–04-05 | Verify APIs, invalid inputs, state, and cross-layer behavior |
-| Engineer your framework | 05-01–05-05 | Own data, fixtures, configuration, and parallel isolation |
-| Ship reliable signals | 06-01–06-05 | Produce trustworthy CI results and useful artifacts |
+| Make it resilient | 03-01–03-11 | Synchronize on outcomes and diagnose UI failures |
+| Go below the UI | 04-01–04-06 | Verify APIs, invalid inputs, state, and cross-layer behavior |
+| Engineer your framework | 05-01–05-10 | Own data, fixtures, configuration, and parallel isolation |
+| Ship reliable signals | 06-01–06-07 | Produce trustworthy CI results and useful artifacts |
 | Work with AI agents | 07-01–07-05 | Review plans, generated tests, and repair proposals |
 | Prove your craft | 08-01–08-05 | Deliver and defend a complete capstone |
 
@@ -62,3 +62,15 @@ A local server is required for the live practice API. A static copy of the porta
 ## Continue into fixtures and browser state
 
 Choose **PW Docs track** in the sidebar for an eight-lesson route through the official docs. Open [the fixtures and state workbook](FIXTURES-AND-STATE.md), run `npm run test:state`, and explore `http://127.0.0.1:4173/state/` after starting the server. Use your chosen port if different. The FS-01–FS-10 starters live in `state/practice.spec.ts`; remove one skip and implement its acceptance criteria before comparing `state/worked.spec.ts`.
+
+## Practice UI and API testing deliberately
+
+Choose **UI testing track** for eleven lessons and twenty mapped drills. The
+[UI workbook](UI-TESTING.md) covers complete purchase and recovery, native versus
+server validation, rejected saves, and out-of-order responses. Run
+`npm run test:ui:workshop`, then implement one UI starter yourself.
+
+Choose **API testing track** for six lessons and twelve mapped drills. The
+[API workbook](API-TESTING.md) covers contracts, ownership, body boundaries,
+receipts, and persisted state. Run `npm run test:api:workshop`, then implement
+one AP starter. The [curriculum map](curriculum.md) lists all 56 executable starters.

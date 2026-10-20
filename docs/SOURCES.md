@@ -96,3 +96,17 @@ Request policy and retry descriptions were checked against those references
 and the installed Playwright version. The local endpoint behavior is separately
 defined by [the lab API contract](lab-api.md). These sources do not imply that
 Forge implements OAuth, multipart uploads, eventual consistency, or idempotency keys.
+
+
+## UI track review · 20 October 2026
+
+The revised UI lessons and original UI-01–04 exercises were checked against
+[locators](https://playwright.dev/docs/locators),
+[actionability](https://playwright.dev/docs/actionability),
+[retrying assertions](https://playwright.dev/docs/test-assertions),
+[network control](https://playwright.dev/docs/network),
+[actions and keyboard input](https://playwright.dev/docs/input), and
+[Trace Viewer](https://playwright.dev/docs/trace-viewer).
+The shop contract and local execution supply the product-specific expected
+values. The response-consumption probe in UI-04 is a documented, test-only
+experiment for this app, not a general Playwright network-idle guarantee.

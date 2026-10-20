@@ -90,7 +90,7 @@ Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons
 
 ## A focused Playwright Docs path
 
-The complete 53-lesson program now contains **53 hours 55 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+The complete 54-lesson program now contains **55 hours 10 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
 
 | Session block | Lessons | Evidence to keep |
 |---|---|---|
@@ -111,3 +111,9 @@ practice time for AP-01–04. Open the API track in the portal and use the
 session. Existing EX-09–16 now require stronger evidence; revisit completed
 assignments if they only checked status or an empty cart. Finish with EX-17's
 API/UI/persistence chain before continuing to the framework stage.
+
+
+For the UI specialization, use the eleven-lesson route and twenty mapped drills
+in [UI testing workbook](UI-TESTING.md). Lesson 03-11 adds 75 guided minutes;
+budget extra implementation time for UI-01–04. Keep failed-save and stale-response
+experiments for a session after you understand locators, assertions, and routes.

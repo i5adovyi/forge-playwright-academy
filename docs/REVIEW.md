@@ -115,3 +115,40 @@ expected values, controlled faults, cleanup boundaries, and evidence criteria.
 Polling is taught as a bounded read-only design for services that require it;
 Forge's synchronous mutation contract does not need retries to become correct.
 The [verification record](VERIFICATION.md) records the executed checks.
+
+## UI testing track review · 20 October 2026
+
+The UI review focused on whether a passing exercise proves its stated rule.
+The academy now contains **54 lessons, 108 written challenges, 54 quizzes, and
+56 executable starters**. The focused UI route contains eleven lessons and
+20 mapped assignments, with shared completion and notes.
+
+| Gap found | Improvement |
+| --- | --- |
+| Repeated SAVE10 could pass against the first submission's unchanged total | Match each response, inspect independent arithmetic, then reopen the cart for a fresh ordered read |
+| Search recovery and sort checks relied on counts or only endpoints | Check full collection membership/order, absence of stale cards, and all reset filter values |
+| A “keyboard-only” drill began with programmatic focus | Rename its claim to activation and focus return; link full keyboard reachability to AX-03 |
+| Rerender resilience was explained without exercising it | Reuse the same quantity locator across changes, a reload, and subsequent cart renders |
+| Guest checkout “recovery” ended after displaying an error | UI-02 follows the visible sign-in instructions and completes a real purchase with persisted evidence |
+| Native validation and server rejection were conflated | UI-01 separates a required-field event, a real 401, and successful correction, with an observer positive control |
+| Failed checkout lacked a complete retry assignment | UI-03 retains shipping and cart after one simulated 503, then proves a real retry creates one order |
+| Correct latest results could be asserted before the old response was processed | UI-04 delays real catalog data, waits for a documented browser consumption marker, then checks the final exact collection |
+| UI learners lacked one runnable path through scattered material | Add the UI track, UI workbook, four skipped starters and worked solutions, source downloads, and specialist links |
+| Setup guide still listed the initial 40-lesson inventory | Refresh lesson ranges, current counts, guided estimates, and track entry points |
+
+Lesson 03-11 teaches controlled transitions and their evidence boundaries.
+Existing lesson IDs remain stable. UI-03 tests browser recovery from an injected
+response, not a real backend outage; UI-04 uses real responses and a test-only
+completion probe tied to this application's synchronous catalog rendering.
+The [UI workbook](UI-TESTING.md) explains both limitations and fault experiments.
+See [verification](VERIFICATION.md) for checks actually executed.
+
+## Interview and workplace audit follow-up
+
+Three additional reviews found that incident diagnosis, required-suite/result
+gates, live refactoring, independent data builders, realistic code reviews and
+constrained release decisions would add more value than repeating definitions.
+The [interview and workplace roadmap](INTERVIEW-AND-WORKPLACE.md) records the
+coverage map, ranked proposals, acceptance evidence, advanced integration gaps,
+18 interview probes and a mock session using current material. Proposed labs
+remain explicitly unimplemented and do not inflate lesson or starter totals.

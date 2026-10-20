@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 53 lessons, 106 written exercises, and 53 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **53 hours 55 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 54 lessons, 108 written exercises, and 54 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **55 hours 10 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **106 written exercises** are separate from **52 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, and 4 advanced API drills in `api-workshop/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+The **108 written exercises** are separate from **56 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, and 4 UI transition drills in `ui-workshop/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
 
 ## The Playwright Docs specialization
 
@@ -71,9 +71,9 @@ A skipped result means unfinished work. A passing solution run demonstrates the 
 | EX-03 | Empty results and recovery | 01-05, 02-04 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
 | EX-04 | Category + sort | 02-04 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
 | EX-05 | Unavailable products | 02-02 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
-| EX-06 | Cart lifecycle | 02-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
-| EX-07 | Discount arithmetic | 02-05, 04-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
-| EX-08 | Keyboard-only dialog | 03-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-06 | Cart lifecycle | 02-02, 02-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-07 | Discount arithmetic | 02-05, 03-01, 04-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
+| EX-08 | Keyboard activation and focus return | 03-05 | [exercises/01-foundations.spec.ts](../exercises/01-foundations.spec.ts) |
 | EX-09 | Catalog contract | 01-03, 04-01 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
 | EX-10 | Query parameters | 04-02 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
 | EX-11 | Create then update | 04-03 | [exercises/02-api.spec.ts](../exercises/02-api.spec.ts) |
@@ -189,6 +189,7 @@ Replace fragile waits with observable conditions. Control dependencies, audit me
 | 03-08 | Browser, context, and page ownership | 65 min |
 | 03-09 | Know which storage owns your state | 70 min |
 | 03-10 | Restore state without losing the boundary | 75 min |
+| 03-11 | Prove transitions: failed saves and stale results | 75 min |
 
 Stage output: controlled network experiments, independent browser sessions, a receipt check, scoped axe reports with incomplete checks retained, a keyboard/modal journey, and name/contrast defect-detection evidence with a manual investigation note. Also demonstrate tab/context boundaries, storage snapshots, and origin-guarded tab-state restoration.
 
@@ -309,3 +310,26 @@ npm run test:api:practice -- --grep AP-01
 Each command selecting a starter remains skipped until you implement its
 criteria, replace its sentinel, and remove `.skip`. A passing worked example
 is a comparator for your reasoning, not evidence that you completed the assignment.
+
+
+## UI testing specialization
+
+Open **UI testing track** for 02-01–05, 03-01–05, and 03-11: eleven lessons with
+EX-01–08, EX-17–24, and UI-01–04. Related SK, AX, VS, and FS drills remain linked
+specializations. The [UI workbook](UI-TESTING.md) explains the evidence and limits
+of each experiment. Existing lesson IDs and saved progress are preserved.
+
+| Drill | Practice | Lessons | Starter |
+| --- | --- | --- | --- |
+| UI-01 | Native validation, server rejection, and correction | 02-03 | `ui-workshop/practice.spec.ts` |
+| UI-02 | Guest recovery through a complete UI purchase | 02-05 | `ui-workshop/practice.spec.ts` |
+| UI-03 | Failed checkout preserves input and retries once | 02-05, 03-02, 03-11 | `ui-workshop/practice.spec.ts` |
+| UI-04 | The newest catalog selection survives an older response | 02-04, 03-01, 03-02, 03-11 | `ui-workshop/practice.spec.ts` |
+
+```sh
+npm run test:ui:workshop
+npm run test:ui:practice -- --grep UI-01
+```
+
+Run starters only after implementing their TODOs, replacing the sentinel, and
+removing `.skip`. Worked examples are comparators, not completed learner work.

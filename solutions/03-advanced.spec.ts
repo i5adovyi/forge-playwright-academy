@@ -45,9 +45,13 @@ test('EX-18 solution · UI handles an outage and recovers', async ({ page }) => 
   await page.route('**/api/products?*', route => route.fulfill({ status: 503, json: { error: { code: 'UNAVAILABLE', message: 'Catalog unavailable.' } } }));
   await page.goto('/lab/');
   await expect(page.getByRole('alert')).toContainText('Catalog unavailable.');
+  await expect(page.locator('.product-card')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'No products found' })).not.toBeVisible();
   await page.unroute('**/api/products?*');
   await page.getByLabel('Category', { exact: true }).selectOption('Desk');
-  await expect(page.locator('.product-card')).toHaveCount(3);
+  await expect(page.locator('.product-card h3')).toHaveText(['Mechanical Keyboard', 'Focus Lamp', 'Monitor Arm']);
+  await expect(page.getByRole('alert')).not.toBeVisible();
+  await expect(page.locator('#products')).toHaveAttribute('aria-busy', 'false');
 });
 test('EX-19 solution · synthetic empty response', async ({ page }) => {
   await page.route('**/api/products?*', route => route.fulfill({ json: { products: [], total: 0 } }));
@@ -55,6 +59,9 @@ test('EX-19 solution · synthetic empty response', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'No products found' })).toBeVisible();
   await expect(page.locator('.product-card')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Clear filters' })).toBeVisible();
+  await expect(page.getByRole('alert')).not.toBeVisible();
+  await expect(page.locator('#product-count')).toHaveText('0 essentials');
+  await expect(page.locator('#products')).toHaveAttribute('aria-busy', 'false');
 });
 test('EX-20 solution · download content, not just a filename', async ({ page, request }) => {
   await login(request); await addProduct(request);

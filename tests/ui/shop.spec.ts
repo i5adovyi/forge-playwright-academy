@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { test, expect, addProduct, login, credentials, shipping, openCart } from '../support/fixtures';
 
+const featuredNames = ['Studio Headphones', 'Mechanical Keyboard', '4K Webcam', 'Focus Lamp', 'Pocket Speaker', 'Monitor Arm'];
+
 type CartProbe = Window & {
   cartRequests: number;
   cartResponseHeld: boolean;
@@ -10,24 +12,26 @@ type CartProbe = Window & {
 test('catalog renders accessible product cards and sold-out state', async ({ page }) => {
   await page.goto('/lab/');
   await expect(page.getByRole('heading', { name: 'Good tools. Great work.' })).toBeVisible();
-  await expect(page.locator('.product-card')).toHaveCount(6);
+  await expect(page.locator('.product-card h3')).toHaveText(featuredNames);
   await expect(page.getByRole('button', { name: 'Add Pocket Speaker to cart' })).toBeDisabled();
 });
 test('search, clear empty results, and filter a category', async ({ page }) => {
   await page.goto('/lab/');
   await page.getByRole('searchbox', { name: 'Search products' }).fill('nothing matches');
   await expect(page.getByRole('heading', { name: 'No products found' })).toBeVisible();
+  await expect(page.locator('.product-card')).toHaveCount(0);
   await page.getByRole('button', { name: 'Clear filters' }).click();
-  await expect(page.locator('.product-card')).toHaveCount(6);
+  await expect(page.locator('.product-card h3')).toHaveText(featuredNames);
+  await expect(page.getByRole('heading', { name: 'No products found' })).not.toBeVisible();
   await page.getByLabel('Category', { exact: true }).selectOption('Audio');
-  await expect(page.locator('.product-card')).toHaveCount(2);
-  await expect(page.getByRole('article', { name: 'Studio Headphones', exact: true })).toBeVisible();
+  await expect(page.locator('.product-card h3')).toHaveText(['Studio Headphones', 'Pocket Speaker']);
 });
 test('sort by price changes displayed order', async ({ page }) => {
   await page.goto('/lab/');
   await page.getByLabel('Sort by').selectOption('price-desc');
-  await expect(page.locator('.product-card').first()).toHaveAccessibleName('4K Webcam');
-  await expect(page.locator('.product-card').last()).toHaveAccessibleName('Pocket Speaker');
+  await expect(page.locator('.product-card h3')).toHaveText([
+    '4K Webcam', 'Studio Headphones', 'Mechanical Keyboard', 'Monitor Arm', 'Focus Lamp', 'Pocket Speaker',
+  ]);
 });
 test('add product, change quantity, apply discount, and remove', async ({ page }) => {
   await page.goto('/lab/');
@@ -115,14 +119,26 @@ test('cart re-render preserves focus and removing the last item has a focus fall
   await expect(cart.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible();
   await expect(cart.getByRole('button', { name: 'Close cart' })).toBeFocused();
 });
-test('invalid promo is visible without changing total', async ({ page, request }) => {
+test('invalid promo preserves the existing discount and complete cart', async ({ page, request }) => {
   await addProduct(request);
+  const applied = await request.post('/api/cart/promo', { data: { code: 'SAVE10' } });
+  expect(applied.status()).toBe(200);
+  const before = await applied.json();
+  expect(before).toMatchObject({ subtotal: 12900, discount: 1290, total: 11610, promoCode: 'SAVE10' });
   await page.goto('/lab/');
   const cart = await openCart(page);
   await cart.getByLabel('Promo code').fill('NOPE');
+  const rejected = page.waitForResponse(response =>
+    new URL(response.url()).pathname === '/api/cart/promo' && response.request().method() === 'POST');
   await cart.getByRole('button', { name: 'Apply promo' }).click();
+  expect((await rejected).status()).toBe(422);
   await expect(cart.getByRole('alert')).toContainText('not valid');
-  await expect(cart.getByTestId('cart-total')).toHaveText('$129.00');
+  await expect(cart.getByLabel('Quantity for Studio Headphones')).toHaveValue('1');
+  await expect(cart.getByTestId('cart-discount')).toHaveText('−$12.90 · SAVE10');
+  await expect(cart.getByTestId('cart-total')).toHaveText('$116.10');
+  const preserved = await request.get('/api/cart');
+  expect(preserved.status()).toBe(200);
+  expect(await preserved.json()).toEqual(before);
 });
 test('login reports failure, then succeeds with valid credentials', async ({ page }) => {
   await page.goto('/lab/');
@@ -144,6 +160,21 @@ test('guest checkout provides a sign-in recovery path', async ({ page, request }
   const cart = await openCart(page);
   await cart.getByRole('button', { name: 'Continue to checkout' }).click();
   await expect(cart.getByRole('alert')).toContainText('Sign in before checkout');
+  await expect(page.getByRole('dialog', { name: 'The details.' })).not.toBeVisible();
+  await cart.getByRole('button', { name: 'Close cart' }).click();
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  const signIn = page.getByRole('dialog', { name: 'Your workspace awaits.' });
+  await signIn.getByLabel('Email', { exact: true }).fill(credentials.email);
+  await signIn.getByLabel('Password', { exact: true }).fill(credentials.password);
+  await signIn.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(signIn).not.toBeVisible();
+  await openCart(page);
+  await expect(cart.getByLabel('Quantity for Studio Headphones')).toHaveValue('1');
+  await expect(cart.getByTestId('cart-total')).toHaveText('$129.00');
+  await expect(cart.getByRole('alert')).not.toBeVisible();
+  await cart.getByRole('button', { name: 'Continue to checkout' }).click();
+  await expect(page.getByRole('dialog', { name: 'The details.' })).toBeVisible();
+  // UI-02 carries this recovered journey through a real order and persistence.
 });
 test('hybrid checkout creates an API order and a downloadable receipt', async ({ page, request }) => {
   await login(request);
@@ -180,9 +211,13 @@ test('a server error produces a recoverable catalog state', async ({ page }) => 
   await page.route('**/api/products?*', route => route.fulfill({ status: 503, json: { error: { code: 'UNAVAILABLE', message: 'Catalog is temporarily unavailable.' } } }));
   await page.goto('/lab/');
   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+  await expect(page.locator('.product-card')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'No products found' })).not.toBeVisible();
   await page.unroute('**/api/products?*');
   await page.getByLabel('Category', { exact: true }).selectOption('Desk');
-  await expect(page.locator('.product-card')).toHaveCount(3);
+  await expect(page.locator('.product-card h3')).toHaveText(['Mechanical Keyboard', 'Focus Lamp', 'Monitor Arm']);
+  await expect(page.getByRole('alert')).not.toBeVisible();
+  await expect(page.locator('#products')).toHaveAttribute('aria-busy', 'false');
 });
 test('mobile layout fits the viewport and cart is usable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
