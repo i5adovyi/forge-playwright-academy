@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const port = process.env.PORT || '4173';
+const port = process.env.PORT || '4175';
 const baseURL = `http://127.0.0.1:${port}`;
 export default defineConfig({
   testDir: '.',
@@ -42,7 +42,9 @@ export default defineConfig({
   webServer: {
     command: 'node server.mjs',
     url: `${baseURL}/api/forge-health`,
-    reuseExistingServer: !process.env.CI,
+    // Never attach to the learner's SQLite-backed workshop.
+    env: { PORT: port, FORGE_PROGRESS_MODE: 'browser' },
+    reuseExistingServer: false,
     timeout: 15_000,
   },
 });

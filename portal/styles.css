@@ -38,3 +38,24 @@
 
 .docs-track-nav { display:flex; flex-direction:row; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:16px 0; margin-bottom:20px; border-block:1px solid var(--line); }
 .docs-track-nav>a { padding:4px 0; }
+
+/* Save acknowledgement stays visible while the learner edits their notes. */
+.persistence-bar{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 48px;border-bottom:1px solid var(--line);background:#f0f2e9;color:var(--muted);font-size:11px}
+.persistence-bar a{margin-left:auto;color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.persistence-bar button{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:3px 4px}
+.persistence-indicator{height:7px;width:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.persistence-bar[data-phase="saving"] .persistence-indicator,.persistence-bar[data-phase="loading"] .persistence-indicator{background:#aa7d38}
+.persistence-bar[data-phase="unsaved"],.persistence-bar[data-phase="conflict"],.persistence-bar[data-phase="unavailable"]{background:#fff0da;color:#794311}
+.persistence-bar[data-phase="unsaved"] .persistence-indicator,.persistence-bar[data-phase="conflict"] .persistence-indicator,.persistence-bar[data-phase="unavailable"] .persistence-indicator{background:#a4502e}
+.storage-panel{border:1px solid var(--line);background:var(--white);padding:24px;border-radius:6px;margin-bottom:28px}
+.storage-panel.needs-attention{border-color:#c49b65}
+.storage-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.storage-heading h2{font-size:22px;margin:9px 0}
+.storage-panel p{font-size:13px;line-height:1.7;color:var(--muted);margin:14px 0}
+.storage-panel .storage-message{color:#794311}
+.storage-details{display:grid;grid-template-columns:100px 1fr;gap:9px;font-size:12px;line-height:1.7;margin:18px 0}
+.storage-details dt{color:var(--muted)}.storage-details dd{margin:0;overflow-wrap:anywhere;min-width:0}
+.storage-panel .notice{margin-top:20px}
+.storage-panel .btn{white-space:normal;text-align:left}
+@media(max-width:720px){.persistence-bar{padding:10px 22px;font-size:10px}.storage-panel{padding:18px}.storage-heading h2{font-size:20px}.storage-details{grid-template-columns:1fr;gap:3px}.storage-details dd{margin-bottom:10px}.persistence-bar a{margin-left:0}}
+@media print{.persistence-bar,.storage-panel{display:none!important}}

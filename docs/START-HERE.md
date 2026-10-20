@@ -4,12 +4,14 @@ Build evidence that you can design, write, diagnose, and maintain automated test
 
 ## Your first session · 45–60 minutes
 
-1. Read the repository README and install its dependencies. Use the committed lockfile with `npm ci` after initial setup. Install Chromium with `npx playwright install chromium`.
+1. Use Node.js 22.13 or newer, read the repository README and install its dependencies. Use the committed lockfile with `npm ci` after initial setup. Install Chromium with `npx playwright install chromium`.
 2. Start the portal with the command in the README. Open `http://127.0.0.1:4173` and explore the curriculum.
 3. Open the practice shop at `http://127.0.0.1:4173/lab/`. Sign in using `demo@forge.test` and `Playwright123!`. This account is local training data.
 4. Add an item, change its quantity, and complete a checkout. Describe three ways this journey could fail before writing code.
 5. Run the supplied example suite using the README command. Open its report. Read one test and explain every `await` and assertion aloud.
 6. Begin lesson **01-01**. Put your own experiments in the designated exercise area. Keep supplied reference tests available for comparison.
+
+Your local learning record is saved to SQLite outside the code folder. Wait for the saved indicator before closing. Read [Local data](LOCAL-DATA.md) for backups and [Account handoff](ACCOUNT-HANDOFF.md) before moving to another OpenAI account or computer. The hosted site uses browser storage and needs an export/import to transfer progress.
 
 If setup fails, use [Troubleshooting](TROUBLESHOOTING.md). Do not spend the whole first evening reinstalling random packages.
 

@@ -1,10 +1,55 @@
 # Verification record
 
-Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
+Verified on October 20, 2026. The project now requires Node.js 22.13+ for built-in SQLite. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
+
+## Local persistence and account handoff
+
+Current inventory: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
+assignment IDs, 25 manuals**. This batch changes portability and progress storage;
+it does not add more lesson assignments.
+
+- `npm run test:all`: **186 passed, 56 intentionally skipped**, 20.1 seconds.
+  The suite owns a separate browser-only server and never opens learner SQLite.
+- `npm run test:data`: **13 passed**. Includes restart persistence, simultaneous
+  writers, database identity/revision guards, validated import/export, local
+  request boundaries, and byte preservation for an unsupported database.
+- `npm run test:portability`: **14 passed**. Real builds and extracted ZIPs are
+  checked for private JSON, SQLite sidecars, credentials, configured data paths
+  and a symlink alias. Required source survives; original learner files remain.
+- Persistence UI: **14 cases passed** in a fresh account-copy installation
+  (6.2 seconds), after the original 13-case run and focused import regression. Covers fresh browser/server restart, rapid typing,
+  lost responses, duplicate-tab drafts, stale writers, changed database identity,
+  delayed reload versus new typing, legacy migration, failed import/reset,
+  static mode, and narrow-screen layout. No real learner database was used.
+- `PORT=14833 npm run test:visual`: **4 passed** against the existing reviewed
+  macOS baselines without updating references. Default port 4176 was occupied,
+  so this check used an unused port rather than reusing an unknown server.
+- `npm run test:hosting`: **2 passed** after building; schema validation,
+  TypeScript, syntax/discovery and `git diff --check` passed.
+- A real 212-file account copy completed `npm ci`, content validation, TypeScript,
+  all 13 database tests, all 14 persistence UI tests, build, and both hosting tests.
+  Its hosting manifest has no old project ID. Both ZIPs validate; 167 critical
+  source/assets match the checkout, including all persistence and handoff files.
+- All **25 manuals rendered at 390 and 1440 px** (50 renders), plus eight setup,
+  storage and handoff renders. No runtime errors or horizontal overflow were
+  observed; desktop/mobile storage screenshots were inspected.
+
+Cross-review fixed two important boundaries: an old tab cannot overwrite a
+replacement database at the same revision, and a configured data directory
+reached through a symlink cannot enter the download package. Explicit imports
+reject incompatible records instead of silently discarding unknown notes.
+
+The SQLite record is local to an OS profile/data directory. Static sites retain
+browser storage and require explicit export/import for transfers. Tests prove
+these fixture boundaries, not cloud sync, multi-user authentication, encryption,
+or ownership in an account that is not signed in. Creating a new account's
+private OpenAI site remains a step performed in that account, using the handoff
+guide. CI now runs database, persistence and packaging checks; inspect the exact
+Git commit's workflow for its actual Linux outcome.
 
 ## Real-world systems and portable hosting batch
 
-Current inventory: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
+Inventory at that release: **61 lessons, 122 written challenges, 61 quizzes, 74 executable
 assignment IDs, 23 manuals**, and **64 hours 55 minutes** of guided estimates.
 The nine new assignment IDs expand into 41 worked acceptance cases across three
 standalone configurations; they are separate from the main suite.
@@ -229,7 +274,7 @@ The previous shop matrix passed **45 tests on Linux**, 15 per engine (Chromium, 
 
 ## Reproducibility and limits
 
-Port 14827 avoids unrelated local applications on 4173/4174. The default remains 4173 and is configurable through `PORT`. The runner checks `/api/forge-health` before reusing a server.
+Earlier checks used port 14827 to avoid unrelated applications. The personal workshop remains on 4173; main tests now own a browser-only server on 4175 and visual tests on 4176. They refuse to reuse an existing personal server. Persistence tests create temporary data directories.
 
 Firefox could not launch in the earlier local macOS review (`Could not find profile folder` before any page test). Its successful Linux shop run above is separate evidence. No operating-system privacy settings were changed to work around that local startup issue.
 

@@ -1,8 +1,9 @@
 import http from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { createProgressHandler } from './local-data/http.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 4173);
@@ -145,10 +146,12 @@ async function api(req, res, url) {
   fail(res, 404, 'NOT_FOUND', 'Endpoint not found.');
 }
 const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.md': 'text/plain', '.pdf': 'application/pdf', '.zip': 'application/zip' };
+const progressHandler = createProgressHandler({ getPort: () => server.address()?.port ?? port });
 const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   try {
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
+    if (await progressHandler.handle(req, res, url)) return;
     if (url.pathname.startsWith('/api/')) return await api(req, res, url);
     if (!['GET', 'HEAD'].includes(req.method)) return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Use GET for static files.');
     const pathname = decodeURIComponent(url.pathname);
@@ -160,6 +163,9 @@ const server = http.createServer(async (req, res) => {
     const basePath = path.resolve(root, base);
     const target = path.resolve(basePath, relative.endsWith('/') ? `${relative}index.html` : relative || 'index.html');
     if (!target.startsWith(`${basePath}${path.sep}`)) return fail(res, 403, 'FORBIDDEN', 'Path not allowed.');
+    const resolved = await realpath(target);
+    const resolvedBase = await realpath(basePath);
+    if (!resolved.startsWith(`${resolvedBase}${path.sep}`) || progressHandler.isPrivatePath(resolved)) return fail(res, 403, 'FORBIDDEN', 'Path not allowed.');
     const data = await readFile(target);
     res.writeHead(200, { 'Content-Type': `${types[path.extname(target)] || 'text/plain'}; charset=utf-8`, 'Cache-Control': 'no-cache' });
     res.end(req.method === 'HEAD' ? undefined : data);
@@ -169,5 +175,11 @@ const server = http.createServer(async (req, res) => {
     fail(res, error.status || 500, error.status ? 'INVALID_BODY' : 'INTERNAL_ERROR', error.status ? error.message : 'Unexpected server error.');
   }
 });
-server.listen(port, '127.0.0.1', () => console.log(`Forge Academy: http://127.0.0.1:${port}\nPractice lab: http://127.0.0.1:${port}/lab/`));
-for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(() => process.exit(0)));
+server.listen(port, '127.0.0.1', () => {
+  const actualPort = server.address().port;
+  console.log(`Forge Academy: http://127.0.0.1:${actualPort}\nPractice lab: http://127.0.0.1:${actualPort}/lab/`);
+});
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(() => {
+  progressHandler.close();
+  process.exit(0);
+}));

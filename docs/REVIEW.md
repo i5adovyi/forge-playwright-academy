@@ -192,3 +192,25 @@ exhausted recovery attempts, and honest UI uncertainty after an observation
 deadline. Proofs establish the supplied fixture contracts, not durable exactly-once
 processing or production build attestation. [Run anywhere](RUN-ANYWHERE.md) records
 local use, OpenAI hosting, GitHub, and progress portability.
+
+
+## Account independence and durable local learning
+
+The local workshop now saves completion, checks, quizzes, notes and last lesson
+in SQLite outside the source checkout. The hosted portal retains browser storage;
+[Local data](LOCAL-DATA.md) explains transfer, backups, save acknowledgement and
+recovery. A failed request or second tab cannot silently overwrite a newer record.
+Database identity is checked as well as revision when committing.
+
+[Account handoff](ACCOUNT-HANDOFF.md) and `AGENTS.md` describe opening the project
+in Codex under a different OpenAI login. `npm run account:copy` prepares a separate
+source folder without the original deployment identity or learner data. Creating
+the newly owned private site must happen while signed into that account. GitHub
+access and local learning remain independent of Sites ownership.
+
+The build and handoff share source exclusions, including configured database
+paths and recognized progress exports. Tests seed private markers and inspect
+actual static files and both ZIPs. Normal Playwright runs own a browser-only
+server; persistence tests use disposable directories. See [Verification](VERIFICATION.md)
+for executed evidence and limits. There is no automatic cross-device sync or
+multi-user database service in this release.

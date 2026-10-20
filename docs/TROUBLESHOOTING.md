@@ -10,7 +10,7 @@ Check that the local server is running and read its startup output. The default 
 curl -i http://127.0.0.1:4173/api/health
 ```
 
-If port 4173 is already occupied, identify the process before stopping it. Do not kill an unrelated service. You can run the server with another `PORT` only if you also align the test base URL and web-server configuration. A static preview can show portal pages while the live API still requires the Node server.
+If port 4173 is already occupied, identify the process before stopping it. Do not kill an unrelated service. Set another `PORT` for the workshop. The main tests own an isolated server on 4175 and visual tests on 4176; if overriding their `PORT`, choose an unused port. A static preview can show portal pages while the live API still requires the Node server.
 
 ## A Playwright browser executable is missing
 
@@ -78,7 +78,7 @@ Check `npx playwright --version` and `npx playwright init-agents --help`. The co
 
 ## The lab lost its data
 
-The demo stores state in memory. A server restart clears it; inactive sessions expire. This is intentional for local training. Tests should arrange their own data rather than depending on yesterday’s browser session. Portal study progress is a separate browser-local record.
+The demo stores state in memory. A server restart clears it; inactive sessions expire. This is intentional for local training. Tests should arrange their own data rather than depending on yesterday’s browser session. Portal study progress is separate: SQLite in the full local workshop and browser storage on static sites. See [Local data](LOCAL-DATA.md) for save failures, conflicts, and backups.
 
 ## A useful help request
 

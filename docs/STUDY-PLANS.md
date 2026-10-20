@@ -73,7 +73,7 @@ Next experiment:
 
 Select one test written this week. Remove comments temporarily and ask whether the code still explains its purpose. Run it alone and with neighboring cases. Explain one tradeoff. Revisit one old exercise without copying. Update your evidence notes and choose the next week’s most important gap.
 
-Progress in the portal is a local study tracker. Back it up using the available export control if you want to move between browsers. Do not assume a browser’s local storage is a permanent cloud account.
+Progress is a study tracker: the full local workshop saves it to SQLite, while hosted/static portals use browser storage. Export a private backup before moving to another device or site. See [Local data](LOCAL-DATA.md) for saved indicators and conflict recovery. Neither mode provides cloud synchronization.
 
 ## Resource discipline
 

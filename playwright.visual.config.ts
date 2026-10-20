@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const port = process.env.PORT || '4173';
+const port = process.env.PORT || '4176';
 const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
@@ -48,7 +48,9 @@ export default defineConfig({
     command: 'node server.mjs',
     cwd: root,
     url: `${baseURL}/api/forge-health`,
-    reuseExistingServer: !process.env.CI,
+    // Never attach to the learner's SQLite-backed workshop.
+    env: { PORT: port, FORGE_PROGRESS_MODE: 'browser' },
+    reuseExistingServer: false,
     timeout: 15_000,
   },
 });

@@ -5,7 +5,7 @@ does not require an AI subscription when run locally.
 
 | Location | What works | How to open |
 | --- | --- | --- |
-| OpenAI Sites | Lessons, quizzes, articles, manuals, progress, complete source downloads | [Open the hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/) |
+| OpenAI Sites | Lessons, quizzes, articles, manuals, progress, complete source downloads | [Open the original account’s hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/) |
 | Localhost, full workshop | The same portal plus live shop, HTTP API, storage, UI, accessibility and visual fixtures | `npm run local`, then http://127.0.0.1:4173 |
 | Localhost, static preview | The exact `dist/` portal prepared for hosting, with downloads | `npm run build`, then `npm run preview`, then http://127.0.0.1:4174 |
 | Private GitHub | Versioned source, starters, solutions, manuals and CI evidence | [Open the private repository](https://github.com/i5adovyi/forge-playwright-academy) |
@@ -16,7 +16,7 @@ runners start their own isolated services; use their commands in the workbooks.
 
 ## Start locally from GitHub
 
-Install Node.js **22+** and Git. Authenticate to the GitHub account that has
+Install Node.js **22.13+** (Node 24 recommended) and Git. Authenticate to the GitHub account that has
 access to the private repository, then run:
 
 ```sh
@@ -42,10 +42,11 @@ To choose another port on macOS/Linux:
 PORT=4180 npm run local
 ```
 
-In PowerShell use `$env:PORT=4180` before `npm run local`. Use the same `PORT`
-when running the main test suite against a manually started server. A separate
-terminal with no `PORT` setting uses the default. Workplace services have their
-own settings documented in their respective READMEs.
+In PowerShell use `$env:PORT=4180` before `npm run local`. The main test runner
+owns a separate server on 4175; visual tests use 4176. Tests use browser-only
+progress and refuse to reuse a running personal workshop server. If overriding
+`PORT` for tests, choose an unused port. Persistence tests use temporary data
+directories. Workplace services have their own documented settings.
 
 ## Run the tests and build
 
@@ -54,6 +55,9 @@ In a second terminal at the project root:
 ```sh
 npm run validate
 npm run typecheck
+npm run test:data
+npm run test:portability
+npm run test:persistence
 npm test
 npm run test:preflight
 npm run test:recovery
@@ -91,9 +95,11 @@ archive. A GitHub push alone does **not** deploy OpenAI Sites.
 Preserve the existing private/shared audience when updating. Source control,
 site viewing, and site publishing use separate permissions. Viewer access from
 another OpenAI account does not grant ownership or publishing rights.
-The source ZIP deliberately omits the existing hosting identity, so importing
-it elsewhere should create a site owned by that account rather than silently
-replacing this one. You can also host `dist/` on a static host you control.
+The source ZIP deliberately omits the existing hosting identity. To create a
+site owned by another account, follow [Account handoff](ACCOUNT-HANDOFF.md):
+prepare a separate copy, sign into that account, and use its available Sites
+workflow to create a private site once. GitHub source or an exported ZIP does not
+transfer site ownership. You can also host `dist/` on a static host you control.
 
 ## Push your work to private GitHub
 
@@ -117,12 +123,17 @@ is not a passed workflow.
 
 ## Keep your progress when changing accounts or hosts
 
-Before switching, open **My progress → Export progress** and keep the JSON file.
-Open the new portal origin and choose **Import progress**. Import replaces the
-current local record after confirmation.
+The full local workshop stores progress in SQLite, outside the checkout at
+`~/.forge-playwright-academy/progress.sqlite`. Restarting it, using another browser,
+or signing into another OpenAI account on this OS profile uses the same record.
+Set `FORGE_DATA_DIR` for a separate learner. See [Local data](LOCAL-DATA.md).
 
-`localhost`, `127.0.0.1`, different ports, and the OpenAI domain have different
-browser storage. GitHub stores code, not your notes or completion history.
-The source ZIP and Git clone also do not contain those browser records.
-Use GitHub access or the downloaded source to keep studying independently of
-the OpenAI account. Keep the progress JSON alongside your own backup.
+The OpenAI site and static preview store progress in browser storage. `localhost`,
+`127.0.0.1`, different ports and different site URLs are separate browser origins.
+Before moving, choose **My progress → Export progress**, keep the JSON privately,
+and choose **Import progress** at the destination. Verify a saved note there.
+Import replaces the current record after confirmation.
+
+GitHub and source ZIPs contain code, not learner data. Local SQLite does not sync
+with the hosted portal. Use a private export for transfer or backup. Do not delete
+the old record until you have checked the destination.

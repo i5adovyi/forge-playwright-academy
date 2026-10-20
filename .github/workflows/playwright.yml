@@ -27,6 +27,17 @@ jobs:
       - run: npm run typecheck
       - name: Verify the static portal distribution
         run: npm run test:hosting
+      - name: Verify private local data and portable account copies
+        run: |
+          npm run test:data
+          npm run test:portability
+          npm run test:persistence
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: persistence-failure-evidence
+          path: quality-results/persistence/
+          retention-days: 7
       - run: npm run test:all
         env:
           CI: 'true'

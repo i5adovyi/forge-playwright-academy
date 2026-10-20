@@ -6,7 +6,7 @@ Built for deliberate practice in **TypeScript + Playwright**. Everything needed 
 
 ## Start in five minutes
 
-Requirements: **Node.js 22+**, npm, and a supported Playwright operating system. Install from the project folder:
+Requirements: **Node.js 22.13+** (Node 24 recommended; `.nvmrc` is included), npm, and a supported Playwright operating system. Install from the project folder:
 
 ```bash
 npm ci
@@ -28,7 +28,7 @@ npm run test:visual      # Four visual comparisons using reviewed platform basel
 npm run test:interactive # Playwright UI mode
 ```
 
-The test runner starts the local server automatically if it is not already running. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
+The main test runner starts its own browser-only server on port 4175; visual tests use 4176. They refuse to reuse your personal workshop server, so automated tests cannot alter your SQLite learning record. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
 
 ## OpenAI Sites, localhost, and private GitHub
 
@@ -38,8 +38,19 @@ for learning content, `npm run local` for the complete workshop at
 for source and history. After `npm run build`, `npm run preview` serves the exact
 static portal at **http://127.0.0.1:4174**. A GitHub push does not deploy OpenAI Sites.
 
-[Run anywhere](docs/RUN-ANYWHERE.md) explains both modes, publishing, Git pushes,
-and moving your progress between origins and OpenAI accounts.
+[Run anywhere](docs/RUN-ANYWHERE.md) explains both modes and publishing. Follow
+[Account handoff](docs/ACCOUNT-HANDOFF.md) to open this folder in Codex after signing
+in with a different OpenAI account and create a separate private site owned by it.
+Use [Local data](docs/LOCAL-DATA.md) for database backups, recovery, and conflicts.
+
+```sh
+# Create a NEW source folder without the old account's site identity.
+npm run account:copy -- --destination /absolute/path/to/new-academy
+```
+
+Creating the new account's site happens after signing in to that account. The
+handoff guide supplies the exact Codex prompt. Local learning works independently
+of the OpenAI login and does not require an API key.
 
 ## What is inside
 
@@ -75,7 +86,14 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 
 | Command | Purpose |
 | --- | --- |
-| `npm run local` | Start the full local workshop; same as dev/start |
+| `npm run local` | Start the full local workshop with persistent SQLite learning data |
+| `npm run data:status` | Show local database path, revision, and record counts |
+| `npm run data:export -- /absolute/new-backup.json` | Back up committed learning data without overwriting a file |
+| `npm run data:import -- /absolute/backup.json --expected-revision N` | Restore after checking the current revision |
+| `npm run account:copy -- --destination /absolute/new-folder` | Prepare source for a different publishing account |
+| `npm run test:data` | Verify SQLite storage, revision guards, backup tools, and local HTTP boundary |
+| `npm run test:persistence` | Verify save/recovery UI using disposable databases |
+| `npm run test:portability` | Verify handoff and download data exclusions |
 | `npm run preview` | Preview built static hosting output on port 4174 |
 | `npm run dev` | Serve the portal, shop, and API on port 4173 |
 | `npm test` | Run the core UI/API reference suite |
@@ -124,6 +142,8 @@ api-workshop/            Four advanced API starters and worked solutions
 workplace/              Incident, gate, refactoring, builder, preflight, recovery, and job workshops
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
+local-data/             SQLite learner storage, backup/import CLI, persistence tests
+AGENTS.md               Instructions for Codex in any account
 server.mjs              Local HTTP server and session-isolated API
 tests/                  UI, API, and portal verification
 exercises/              Starter assignments; remove test.skip as you work
@@ -142,7 +162,7 @@ Demo login: **demo@forge.test / Playwright123!**. Discount code: **SAVE10**.
 
 Read `docs/lab-api.md` for the exact endpoint and data contract. The lesson pages and practice lab map each EX/SK ID to its starter, solution, and run command. Read `docs/BROWSER-SKILLS.md` for the supplemental browser features and optional cross-browser matrix. Sessions are isolated with a `lab_session` cookie or `x-lab-session` header. Use unique session IDs per API test. Browser tests get a fresh context. Data is in memory and resets when the server restarts. The demo credentials, reset endpoint, and simplified state are for local training; this is not a production commerce service.
 
-The server binds to `127.0.0.1`. To choose another port, set `PORT` and use the same setting for the tests. Avoid pointing destructive reset tests at any external environment.
+The server binds to `127.0.0.1`. To choose another workshop port, set `PORT`. Tests own a separate server; if overriding their `PORT`, choose an unused port rather than the running workshop port. Avoid pointing destructive reset tests at any external environment.
 
 ## Accessibility and visual workshops
 
@@ -154,9 +174,20 @@ The controlled-defect command is supposed to exit unsuccessfully. Its screenshot
 
 ## Learning progress and privacy
 
-The portal stores progress and notes in this browser’s `localStorage`. There is no learner account, analytics service, cloud sync, grading backend, or external AI request. Export progress from **My progress** before changing browsers or clearing data. Import replaces the current record after confirmation.
+`npm run local` stores completion, exercise checkboxes, notes, quiz selections and
+the last lesson in **`~/.forge-playwright-academy/progress.sqlite`**. This survives
+browser/server restarts, new Git checkouts and OpenAI account changes on the same
+OS profile. `FORGE_DATA_DIR` selects a separate learner directory. Wait for the
+**Saved locally · SQLite** indicator before closing; failed saves keep a browser
+draft, with explicit retry and conflict recovery. See [Local data](docs/LOCAL-DATA.md).
 
-The hosted portal and local portal have different browser origins, so export/import is how to transfer progress between them. Google Fonts is used for the presentation with system font fallbacks; original lesson content is local. Linked external resources require internet access.
+The hosted site and static preview use that browser origin's `localStorage`.
+Export from **My progress** and import at the destination when changing sites,
+computers, or from hosted to local. SQLite is not cloud synchronization. Source
+ZIPs and GitHub contain code, not your learner record. Export/import replaces a
+record after confirmation; keep a backup before replacing it.
+
+There is no learner login, analytics, grading backend, or external AI request. Google Fonts is used for the presentation with system font fallbacks; original lesson content is local. Linked external resources require internet access.
 
 ## Working with AI
 

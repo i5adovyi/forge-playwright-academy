@@ -18,3 +18,20 @@ playwright/.auth/
 
 # Separate visual comparison output (reviewed baseline PNGs are tracked).
 quality-results/
+
+# Personal learner data belongs outside source control.
+.forge-data/
+.forge-playwright-academy/
+learning-data/
+progress-backups/
+backups/
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+forge-learning-progress*.json
+forge-progress*.json
+learning-progress*.json
+progress-backup*.json

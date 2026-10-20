@@ -5,7 +5,7 @@
   "type": "module",
   "description": "An original, local-first Playwright training academy with UI and API practice labs.",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.13"
   },
   "scripts": {
     "dev": "node server.mjs",
@@ -68,7 +68,14 @@
     "test:jobs:proof": "node workplace/jobs/run.mjs --proof",
     "local": "node server.mjs",
     "preview": "node scripts/preview.mjs",
-    "test:hosting": "playwright test --config=playwright.hosting.config.ts"
+    "test:hosting": "playwright test --config=playwright.hosting.config.ts",
+    "data:status": "node local-data/cli.mjs status",
+    "data:export": "node local-data/cli.mjs export",
+    "data:import": "node local-data/cli.mjs import",
+    "test:data": "node --test local-data/*.test.mjs",
+    "account:copy": "node scripts/new-account-copy.mjs",
+    "test:portability": "node --test tests/portability/*.test.mjs",
+    "test:persistence": "playwright test --config=playwright.persistence.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

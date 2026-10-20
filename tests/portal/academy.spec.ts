@@ -43,7 +43,7 @@ test('run anywhere explains local commands, private source, hosting and progress
   await expect(page.locator('.prose')).toContainText('npm run local');
   await expect(page.locator('.prose')).toContainText('npm run preview');
   await expect(page.locator('.prose')).toContainText('git push origin main');
-  await expect(page.locator('.prose')).toContainText('GitHub stores code, not your notes');
+  await expect(page.locator('.prose')).toContainText('GitHub and source ZIPs contain code, not learner data');
   await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', './docs/RUN-ANYWHERE.md');
 });
 
@@ -275,7 +275,10 @@ test('an old failed manual request cannot replace the newly opened page', async 
   await expect(page.locator('.lesson-row')).toHaveCount(61);
 });
 
-test('import discards unknown exercise checks and impossible quiz choices', async ({ page }) => {
+test('invalid import preserves the original record instead of discarding unknown data', async ({ page }) => {
+  await page.goto('/#/lesson/01-01');
+  await page.getByLabel('Your field notes').fill('Keep my original investigation.');
+  const original = await page.evaluate(() => localStorage.getItem('forge-academy-v1'));
   await page.goto('/#/progress');
   page.on('dialog', dialog => dialog.accept());
   await page.locator('#progress-file').setInputFiles({
@@ -287,12 +290,8 @@ test('import discards unknown exercise checks and impossible quiz choices', asyn
       notes: {}, lastLesson: 'missing',
     })),
   });
-  await expect(page.getByRole('status')).toContainText('restored');
-  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('forge-academy-v1')!));
-  expect(stored.completed).toEqual(['01-01']);
-  expect(stored.checks).toEqual({});
-  expect(stored.quizzes).toEqual({});
-  expect(stored.lastLesson).toBeNull();
+  await expect(page.getByRole('status')).toContainText('not a valid Forge progress export');
+  expect(await page.evaluate(() => localStorage.getItem('forge-academy-v1'))).toBe(original);
 });
 
 test('closed mobile navigation is outside the keyboard path and restores focus after Escape', async ({ page }) => {
