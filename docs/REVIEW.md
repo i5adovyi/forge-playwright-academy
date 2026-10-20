@@ -20,6 +20,7 @@ A second review examined the lessons, runnable exercises, portal, shop/API, conf
 | Skip link and malformed fragments could blank the portal | Navigation and reload were fragile | SPA-safe skip behavior, malformed-route fallback, and regressions |
 | Slow manual failures could overwrite a later route | A completed navigation could be replaced by an unrelated error | Rendering checks a route version on both success and failure |
 | Continue learning ignored the last open unfinished lesson | Returning learners lost their current position | Resume uses the saved last lesson when appropriate |
+| Five manuals overflowed a phone-width viewport | Long code fragments and tables made reading require whole-page horizontal scrolling | Constrained the reading column and allowed long inline text to wrap; all 14 manuals checked at phone and desktop widths |
 | Hidden mobile navigation remained focusable | Keyboard and assistive-technology users could reach offscreen links | Hidden navigation/background are inert at the appropriate times, with managed focus |
 | Progress imports accepted nonexistent checks and invalid quiz choices | Corrupt records could produce misleading progress | Imported keys and answers are validated against actual content |
 | EX-16 checked too little state after rejected requests | A rejection response could hide an unwanted mutation | Each rejection compares the complete seeded cart before/after |
