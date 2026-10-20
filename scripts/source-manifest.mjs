@@ -11,7 +11,7 @@ export const sourceEntries = [
   'playwright.matrix.config.ts', 'playwright.visual.config.ts',
   'playwright.state-auth.config.ts', 'playwright.hosting.config.ts',
   'playwright.persistence.config.ts', 'tsconfig.json', 'server.mjs', 'README.md',
-  'AGENTS.md', '.github', '.gitignore', '.nvmrc', 'LICENSE',
+  'AGENTS.md', 'CLAUDE.md', '.github', '.gitignore', '.nvmrc', 'LICENSE',
 ];
 const excludedDirectories = new Set([
   '.git', '.openai', '.codex', 'node_modules', 'dist', '.auth', '.forge-data',

@@ -133,7 +133,7 @@ lesson edits, using the same allowlist as the downloadable project. Review your
 work before running it if you want a particular Git revision.
 
 The new copy includes lessons, lab servers, starters, solutions, tests, manuals,
-`AGENTS.md`, and deployment tooling. It excludes Git metadata, dependencies,
+`README.md`, `AGENTS.md`, `CLAUDE.md`, and deployment tooling. It excludes Git metadata, dependencies,
 runtime databases, progress exports, secrets, reports, generated archives, and
 the old `.openai` identity. The original checkout and data are unchanged.
 

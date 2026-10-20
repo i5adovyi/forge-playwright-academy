@@ -4,6 +4,82 @@ A complete, hands-on test automation workshop: a learning portal, a real shop an
 
 Built for deliberate practice in **TypeScript + Playwright**. Everything needed for the original learning content lives in this repository. You do not need an AI subscription to use the academy. External courses, books, and optional AI tools have their own availability and terms.
 
+## Project idea and learning goals
+
+Forge began as a personal academy for learning test automation and preparing for
+the situations encountered in interviews and day-to-day engineering work. The
+aim is a polished, reusable training product with substantial original teaching,
+a useful study portal, and experiments learners can run and explain themselves.
+
+The central learning cycle is **understand → attempt → observe → diagnose →
+compare → explain**. Each practical topic should connect a lesson to a realistic
+scenario, an unfinished starter, a worked solution, and explicit acceptance
+evidence. Written design exercises have a reference approach and rubric instead
+of pretending to be executable tests.
+
+Prioritize the problems that make real automation difficult: misleading green
+runs, incorrect setup, shared state, timing races, rejected writes, lost
+responses, asynchronous work, wrong environments, and incomplete CI evidence.
+For a test to be convincing, show both its successful control and the specific
+defect it detects. Teach what the evidence leaves uncertain.
+
+The academy covers UI and API testing, fixtures and browser state, accessibility,
+visual baselines, framework design, CI, workplace diagnosis, and AI-assisted
+testing. AI agents are learning partners: learners still need to understand the
+test, review changes, and verify its behavior. Preserve a coherent learning path,
+clear explanations and usable navigation as the project grows.
+
+## Start a new development or AI session
+
+This repository carries the project context; previous chat history is optional.
+Use these entry points before making changes:
+
+| Read | What it establishes |
+| --- | --- |
+| This README | Product purpose, current inventory, runtime modes, commands and source map |
+| [AGENTS.md](AGENTS.md) | Shared instructions for maintaining lessons, code, data and deployments |
+| [CLAUDE.md](CLAUDE.md) | Claude's entry point to the same shared context |
+| [Verification record](docs/VERIFICATION.md) | Checks actually executed, their scope and historical limitations |
+| [Academy review](docs/REVIEW.md) and [workplace roadmap](docs/INTERVIEW-AND-WORKPLACE.md) | Delivered improvements and explicitly proposed future work |
+| [Account handoff](docs/ACCOUNT-HANDOFF.md) | Continue under another account and create a separately owned site |
+| [Local data](docs/LOCAL-DATA.md) | Preserve learning records, handle conflicts, back up and restore |
+
+Start by checking the checkout, branch and uncommitted work. Read the relevant
+workbook and source before treating a roadmap item as implemented. The latest
+user request defines the task; the roadmap provides context for that request.
+
+Copyable session prompt:
+
+> Read README.md and AGENTS.md, then inspect the current branch, git status,
+> relevant source and docs/VERIFICATION.md. Explain the existing architecture
+> and which parts of my request already exist. Continue the requested work
+> while preserving learner edits, lesson IDs, SQLite data and this deployment's
+> identity. Validate the affected behavior and report exactly what changed,
+> what ran, and whether GitHub and the hosted portal were updated.
+
+## How the project fits together
+
+The portal uses browser ES modules, plain HTML/CSS and hash-based routes.
+`server.mjs` serves it locally alongside Forge Shop and the practice API.
+TypeScript Playwright tests exercise those local fixtures. The standalone
+workplace runners own their services and deliberate faults. Keep this structure
+understandable; inspect existing modules before introducing new infrastructure.
+
+| Layer | Source of truth | Persistence or delivery |
+| --- | --- | --- |
+| Lessons and quizzes | `portal/content/curriculum.js`, plus its workplace/systems lesson modules | Versioned source |
+| Starter/solution mapping | `portal/content/practice.js` and the mapped files | Versioned source; executable proof is separate from completion marks |
+| Articles and external references | `portal/content/library.js`, `docs/` | Original writing plus links to legitimate resources |
+| Portal presentation | `portal/app.js`, `portal/styles.css`, `portal/index.html` | Local server or built static site |
+| Personal study record | `portal/progress-store.js`, `local-data/` | Local SQLite; static sites use browser storage |
+| Training business data | `server.mjs` and standalone workshop services | Temporary, isolated fixture state |
+| Portable distribution | `scripts/build.mjs`, `scripts/source-manifest.mjs`, `scripts/new-account-copy.mjs` | Static `dist/`, source/manual ZIPs, and account-neutral copies |
+
+Edit source files, then rebuild generated output. `dist/`, `portal/docs/` and
+`portal/downloads/` are generated; editing them directly will not survive the
+next build. GitHub stores source, Sites serves a deployment, and the learner's
+database stores progress. Updating one does not automatically update the others.
+
 ## Start in five minutes
 
 Requirements: **Node.js 22.13+** (Node 24 recommended; `.nvmrc` is included), npm, and a supported Playwright operating system. Install from the project folder:
@@ -143,7 +219,8 @@ workplace/              Incident, gate, refactoring, builder, preflight, recover
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 local-data/             SQLite learner storage, backup/import CLI, persistence tests
-AGENTS.md               Instructions for Codex in any account
+AGENTS.md               Shared project context and agent maintenance instructions
+CLAUDE.md               Claude entry point to the shared instructions
 server.mjs              Local HTTP server and session-isolated API
 tests/                  UI, API, and portal verification
 exercises/              Starter assignments; remove test.skip as you work
