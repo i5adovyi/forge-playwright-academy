@@ -26,6 +26,13 @@ Reviewed references are in `quality/visual/baselines/`, with their environment a
 
 Linux candidates were generated from commit `6a8adb9a5d604a6643853b5aa17c55f78ffad231` by the [manual candidate workflow](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39448007032). All four Linux PNGs were inspected before committing them. Candidate generation is not counted as a passing comparison.
 
+The [ordinary Linux verification run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39449034919) passed at commit `1680203e0bee0e89ee68cd40a2517d2bfad3893b`:
+
+- Main verification: **102 passed, 34 intentionally skipped**, approximately one minute; validation, build, syntax/discovery, and TypeScript checks also passed.
+- Reviewed visual comparison: **4 passed**, 4.6 seconds, against committed Linux references with no update flag and no retries.
+
+Subsequent edits record this evidence and add AI review prompts to the manual; they do not change the tested fixtures or comparison configuration.
+
 The previous shop matrix passed **45 tests on Linux**, 15 per engine (Chromium, Firefox, WebKit), at commit `087b1633373de98e987b45af7f29bda28fdc6ae6`: [three-engine run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688299). This historical matrix does not imply the new accessibility and visual exercises were run on every engine; those new tracks target Chromium.
 
 ## Reproducibility and limits
