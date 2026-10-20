@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 104 lesson challenges.
+/** Executable drills complement (and do not replace) the 106 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -82,3 +82,15 @@ export const stateTracks = [
   stateDrill(10, 'An authenticated fixture with a guest control', ['05-06', '05-09', '05-10']),
 ];
 export const docsLessonIds = ['03-08', '03-09', '03-10', '05-06', '05-07', '05-08', '05-09', '05-10'];
+
+const apiDrill = (number, title, lessons) => {
+  const id = `AP-${String(number).padStart(2, '0')}`;
+  return {id, title, lessons, file:'api-workshop/practice.spec.ts', solution:'api-workshop/worked.spec.ts', command:`npm run test:api:practice -- --grep ${id}`};
+};
+export const apiTracks = [
+  apiDrill(1, 'Request policy and response ownership', ['04-01', '04-06']),
+  apiDrill(2, 'JSON bytes and rejected-body boundaries', ['04-03', '04-06']),
+  apiDrill(3, 'Receipts belong to a session', ['04-04', '04-05']),
+  apiDrill(4, 'Orders remain immutable after later purchases', ['04-05']),
+];
+export const apiLessonIds = ['04-01', '04-02', '04-03', '04-04', '04-05', '04-06'];

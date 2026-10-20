@@ -22,3 +22,9 @@ The solution is one defensible approach, not the only one. A passing test is ins
 - **EX-24:** reset is a session-local fixture convenience, and its contract includes authentication and history.
 
 No fixed sleeps, global shared user cart, conditional assertions, or forced clicks are needed. If your solution does need one, first inspect whether it is hiding a missing state transition.
+
+The advanced AP-01–04 examples are in `api-workshop/worked.spec.ts` and run with
+`npm run test:api:workshop`. They cover response ownership, raw JSON and byte
+boundaries, session-owned receipts, and immutable orders after later purchases.
+Their skipped counterparts are in `api-workshop/practice.spec.ts`; the portal's
+API track and `docs/API-TESTING.md` explain the route and expected evidence.

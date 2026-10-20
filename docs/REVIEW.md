@@ -89,3 +89,29 @@ lesson examples were also compiled and executed. The
 - Download bundles and the default test suite include the new track. The study plans account for its additional guided time.
 
 This expansion concentrates on the requested documentation areas. It does not claim to replace every Playwright guide or establish production authentication security. See [Verification](VERIFICATION.md) for executed checks.
+
+## API track review
+
+Three focused reviews examined teaching accuracy, executable API evidence, and
+the learner's route. Five existing lessons were revised, and 04-06 adds request
+controls and response ownership. The academy now has **53 lessons, 106 written
+challenges, 53 quizzes, and 52 executable starters**. Existing lesson IDs and
+progress records remain valid.
+
+| Gap found | Improvement |
+| --- | --- |
+| Rejected writes were often checked against an empty cart | Seeded discounted carts must remain fully unchanged after invalid quantities, bodies, products, and promotions |
+| Authentication examples emphasized status over state | Exact error codes, guest/member identity, retained carts, and independent session controls are asserted |
+| Catalog loops could accept an empty collection or wrong membership | Runtime array checks, exact IDs, known products, independent sorting values, and total consistency are explicit |
+| “Immutable orders” were compared only immediately after creation | Later cart changes and a second different purchase must leave the first complete order and receipt unchanged |
+| The hybrid lesson stopped after setup | A real UI checkout now connects its visible total and order ID with the POST response, stored order, and completely cleared cart |
+| Request serialization, policy and lifetime were missing | AP-01/02 and lesson 04-06 distinguish raw JSON, UTF-8 byte boundaries, HTTP errors, failed requests, response disposal, and client disposal |
+| Receipt ownership existed mainly in reference tests | AP-03 provides a starter and solution for text headers/body, guest and missing-order errors, overlapping IDs, and independent authenticated controls |
+| API practice was scattered across the academy | A focused API portal route joins six lessons, twelve API drills, the hybrid exercise, and a new workbook |
+
+AP-01–04 are complete starter/solution pairs in `api-workshop/`; they complement
+the eight strengthened EX-09–16 starters. The workbook includes independent
+expected values, controlled faults, cleanup boundaries, and evidence criteria.
+Polling is taught as a bounded read-only design for services that require it;
+Forge's synchronous mutation contract does not need retries to become correct.
+The [verification record](VERIFICATION.md) records the executed checks.

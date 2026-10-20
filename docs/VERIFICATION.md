@@ -2,6 +2,27 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
+## API testing track review
+
+- Content validation: **53 lessons, 106 written challenges, 39 resources, 8 articles, and 52 executable starter mappings**. The guided estimates total **53 hours 55 minutes**.
+- `npm run typecheck`, `npm run check`, `npm run validate`, and `git diff --check`: passed after integration.
+- `PORT=14827 npm run test:all`: **122 passed, 48 intentionally skipped**, 170 discovered, zero failures, 20.5 seconds. This includes four new AP worked cases, strengthened API reference/EX solutions, and 22 portal cases. Four visual starters run separately, bringing the unfinished starter inventory to 52.
+- EX-17's hybrid purchase and EX-20's shared checkout/download helper passed a focused run, then passed again in the complete suite. The hybrid check ties the displayed total and confirmation ID to the order POST response, stored order, and cleared cart.
+- All **six extracted API lesson examples** compiled under strict TypeScript and passed headless execution against the local app.
+- **Five controlled faults** were tested in isolated scratch copies and rejected by the intended assertion, with no runner errors: omitted response disposal, destructive rejection, counting characters instead of UTF-8 bytes, reading another session's matching receipt ID, and modifying an existing order during a later purchase.
+- The API route and all six lessons rendered at **390px and 1440px** without page errors or document-level horizontal overflow; screenshots were inspected. **18 manuals × two widths** also passed those checks.
+- The rebuilt source/manual archives include `api-workshop/`, the API workbook, revised lessons, stronger EX starters/solutions, and runner integration. Archive contents are compared with the local source, and validation is run after extraction.
+
+The new AP checks are API-only. The six-lesson track demonstrates the actual
+synchronous Forge contract, including session-local ownership, JSON parsing,
+read-only receipt access, and immutable order snapshots. It does not claim
+production account/role authorization, OAuth, eventual consistency, or a safe
+idempotent-write retry protocol. Written design exercises and skipped starters
+are not counted as passing coverage. Existing visual references were not changed.
+
+The earlier records below retain the counts, commands, and scope of their own
+verification runs.
+
 ## Fixtures and browser state: second review
 
 - `npm run validate`, `npm run typecheck`, `npm run check`, and `git diff --check`: passed. Inventory remains **52 lessons, 104 written challenges, 48 executable starters**, including ten FS starters.

@@ -27,3 +27,12 @@ Run the reference suite with `npm test`; run all worked examples with `npm run t
 - **2**: you can explain the failure modes and why the test belongs at this layer.
 
 The fixture in `tests/support/fixtures.ts` creates a unique `x-lab-session` for every test, shared by browser and API. Do not replace it with a shared global session. It also exports `credentials`, `shipping`, and setup helpers. You may use helpers after you have implemented the underlying requests yourself once.
+
+## Continue into the API workshop
+
+After EX-09–16, read `docs/API-TESTING.md` and implement AP-01–04 in
+`api-workshop/practice.spec.ts`. Compare with `api-workshop/worked.spec.ts` only
+after attempting the task. Run `npm run test:api:practice -- --grep AP-01` for
+one starter and `npm run test:api:workshop -- --grep AP-01` for its example.
+Use EX-17 for the API/UI checkout connection. These four AP drills are additional
+to the 24 shop starters above.

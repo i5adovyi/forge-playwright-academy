@@ -90,7 +90,7 @@ Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons
 
 ## A focused Playwright Docs path
 
-The complete 52-lesson program now contains **52 hours 40 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+The complete 53-lesson program now contains **53 hours 55 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
 
 | Session block | Lessons | Evidence to keep |
 |---|---|---|
@@ -101,3 +101,13 @@ The complete 52-lesson program now contains **52 hours 40 minutes of guided work
 | Docs-guided review | 05-10 | A diagnosis citing the contract, a minimal repair, and rerun evidence |
 
 Use [Fixtures & browser state](FIXTURES-AND-STATE.md) alongside the portal's **PW Docs track**. Run one FS drill at a time. Compare a result with your prediction before reading the worked solution; marking a lesson complete is not a substitute for explaining the ownership boundary.
+
+## Strengthen your API evidence
+
+The six API lessons total **6 hours of guided work**. Keep the first five in
+Stage 04, add the 75-minute request-controls lesson 04-06, and schedule separate
+practice time for AP-01–04. Open the API track in the portal and use the
+[API testing workbook](API-TESTING.md) to choose one focused experiment per
+session. Existing EX-09–16 now require stronger evidence; revisit completed
+assignments if they only checked status or an empty cart. Finish with EX-17's
+API/UI/persistence chain before continuing to the framework stage.

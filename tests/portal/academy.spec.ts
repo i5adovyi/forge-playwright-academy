@@ -11,9 +11,9 @@ test('overview introduces the academy and opens the first lesson', async ({ page
 
 test('curriculum search and filters narrow real lesson content', async ({ page }) => {
   await page.goto('/#/curriculum');
-  await expect(page.locator('.lesson-row')).toHaveCount(52);
+  await expect(page.locator('.lesson-row')).toHaveCount(53);
   await page.getByLabel('Stage', { exact: true }).selectOption('api');
-  await expect(page.locator('.lesson-row')).toHaveCount(5);
+  await expect(page.locator('.lesson-row')).toHaveCount(6);
   await page.getByLabel('Search lessons', { exact: true }).fill('zz-no-match');
   await expect(page.getByText('No lessons match those filters.')).toBeVisible();
 });
@@ -28,7 +28,7 @@ test('lesson notes, exercise checklists, and completion survive reload', async (
   await expect(page.locator('.acceptance input').first()).toBeChecked();
   await expect(page.getByRole('button', { name: 'Completed · mark incomplete' })).toBeVisible();
   await page.getByRole('link', { name: 'My progress' }).click();
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 52');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 53');
 });
 
 test('quiz gives meaningful feedback and retains the chosen answer', async ({ page }) => {
@@ -69,7 +69,7 @@ test('resource format and price filters show only the selected shelf', async ({ 
   await expect(page.getByText('Nothing on this shelf matches yet.')).toBeVisible();
 });
 
-test('all 52 lesson routes render without runtime errors', async ({ page }) => {
+test('all 53 lesson routes render without runtime errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/#/curriculum');
@@ -104,7 +104,7 @@ test('export contains saved progress and invalid import is rejected', async ({ p
   expect(JSON.parse(Buffer.concat(chunks).toString()).completed).toEqual(['01-01']);
   await page.locator('#progress-file').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"wrong":true}')});
   await expect(page.getByRole('status')).toContainText('not a valid Forge');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 52');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 53');
 });
 
 test('valid import restores notes and escapes user-supplied text', async ({ page }) => {
@@ -112,7 +112,7 @@ test('valid import restores notes and escapes user-supplied text', async ({ page
   page.on('dialog', dialog=>dialog.accept());
   await page.locator('#progress-file').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({completed:['01-01'],notes:{'01-01':'<img src=x onerror=alert(1)>'},checks:{},quizzes:{},lastLesson:'01-01'}))});
   await expect(page.getByRole('status')).toContainText('restored');
-  await expect(page.locator('.metric-card').first()).toContainText('1 / 52');
+  await expect(page.locator('.metric-card').first()).toContainText('1 / 53');
   await expect(page.locator('main img')).toHaveCount(0);
   await page.goto('/#/lesson/01-01');
   await expect(page.getByLabel('Your field notes')).toHaveValue('<img src=x onerror=alert(1)>');
@@ -125,7 +125,7 @@ test('mobile navigation works without horizontal overflow', async ({ page }) => 
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Toggle navigation' }).click();
   await page.getByRole('link', { name: 'Learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(52);
+  await expect(page.locator('.lesson-row')).toHaveCount(53);
   await expect(page.getByRole('button', { name: 'Toggle navigation' })).toHaveAttribute('aria-expanded','false');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -147,7 +147,7 @@ test('invalid encoded routes recover and legacy content fragments still render',
   await page.goto('/#/lesson/%E0%A4%A');
   await expect(page.getByRole('heading', { name: 'That page is not in the workshop.' })).toBeVisible();
   await page.getByRole('link', { name: 'Open the learning path' }).click();
-  await expect(page.locator('.lesson-row')).toHaveCount(52);
+  await expect(page.locator('.lesson-row')).toHaveCount(53);
   await page.goto('/#main');
   await expect(page.getByRole('heading', { name: 'Ship confidence. Not just tests.' })).toBeVisible();
   expect(errors).toEqual([]);
@@ -184,7 +184,7 @@ test('an old failed manual request cannot replace the newly opened page', async 
   // Let the browser render the fetch completion before checking the active route.
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
   await expect(page.getByRole('heading', { name: 'From curious to capable.' })).toBeVisible();
-  await expect(page.locator('.lesson-row')).toHaveCount(52);
+  await expect(page.locator('.lesson-row')).toHaveCount(53);
 });
 
 test('import discards unknown exercise checks and impossible quiz choices', async ({ page }) => {
@@ -298,6 +298,36 @@ test('PW Docs track connects shared lesson progress, the workbook, and all ten s
   await expect(starter.locator('pre')).toHaveText('npm run test:state:practice -- --grep FS-06');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/#/docs');
+  await expect(page.locator('main h1')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('API track connects six lessons, twelve drills, shared progress, and its workbook', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'API testing track', exact: true }).click();
+  await expect(page.locator('main h1')).toHaveText('Test the contract. Prove the state.');
+  await expect(page.locator('.api-lessons .lesson-row')).toHaveCount(6);
+  await expect(page.locator('[data-practice-id^="EX-"]')).toHaveCount(8);
+  await expect(page.locator('[data-practice-id^="AP-"]')).toHaveCount(4);
+  await expect(page.locator('main')).toContainText('A skipped result is unfinished work.');
+  await page.getByRole('link', { name: 'Begin the API track' }).click();
+  await expect(page).toHaveURL(/#\/lesson\/04-01$/);
+  await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await page.getByRole('navigation', { name: 'API lesson navigation' })
+    .getByRole('link', { name: 'API track overview' }).click();
+  await expect(page.locator('.api-lessons .lesson-row[href="#/lesson/04-01"] .lesson-status')).toHaveClass(/done/);
+  const drill = page.locator('[data-practice-id="AP-02"]');
+  await drill.locator('summary').first().click();
+  await expect(drill.locator('pre')).toHaveText('npm run test:api:practice -- --grep AP-02');
+  await page.getByRole('link', { name: 'Read the API workbook' }).click();
+  await expect(page.locator('main h1')).toHaveText('API testing workbook');
+  await expect(page.locator('.prose')).toContainText('npm run test:api:workshop');
+  await page.goto('/#/lesson/04-06');
+  await page.getByRole('navigation', { name: 'API lesson navigation' })
+    .getByRole('link', { name: 'Review your API evidence' }).click();
+  await expect(page).toHaveURL(/#\/manual\/API-TESTING$/);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/#/api');
   await expect(page.locator('main h1')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

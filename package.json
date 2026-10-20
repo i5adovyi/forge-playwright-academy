@@ -38,7 +38,9 @@
     "test:state": "playwright test --project=state",
     "test:state:practice": "playwright test --project=state-practice",
     "test:state:auth": "node state/project-auth/run.mjs",
-    "test:state:auth:gate": "node state/project-auth/run.mjs --prove-gate"
+    "test:state:auth:gate": "node state/project-auth/run.mjs --prove-gate",
+    "test:api:workshop": "playwright test --project=api-workshop",
+    "test:api:practice": "playwright test --project=api-practice"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

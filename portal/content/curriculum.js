@@ -418,105 +418,206 @@ E('03-10-a','Restore a draft before app startup','Implement FS-07 and demonstrat
 E('03-10-b','A snapshot is not a server clone','Implement FS-09 and challenge the assumption that restored contexts have independent carts.',['Authenticate in one cookie-only context and restore its snapshot elsewhere.','Mutate a cart through one context and observe it from the other.','Log out or reset the shared session and check both identities again.'],['The same server identity is demonstrated by a shared effect.','A third context starts guest, then its independent login and seeded cart survive the copied-session logout.','Old snapshot restoration does not falsely promise restored server data.'],'The lab cookie is a pointer to server state, not a copy of that state.','Prove both contexts can see the same p1 line, then sign out through one and assert the other becomes guest. A subsequent reset clears only that session. Start a distinct fresh control as guest, then log it in independently and seed p2 quantity one. After the copied session logs out, require the control to remain signed in with its $89 cart. An always-empty guest cannot reveal an overbroad logout that clears every session. Explain why independent checkout tests should not reuse the same saved mutable session.')
 ],Q('Why can two fresh browser contexts created from the same auth snapshot interfere in Forge?',['Browser contexts always share every cookie','The copied lab_session cookie can identify the same mutable server-side cart','storageState resets the server before each test'],1,'Client isolation does not duplicate the backend resource identified by a copied cookie. Choose server-state ownership separately.'),[R('Browser state and initialization APIs','api/class-browsercontext'),R('Authentication and saved state','auth'),R('Explicit option inheritance','test-use-options#explicit-context-creation-and-option-inheritance'),R('API request cookie sharing','api/class-apirequestcontext')]),
 L('04-01','api','HTTP as a testable contract','Read status, headers, shape, and meaning as separate layers of evidence.',50,['API','HTTP'],
-['Send API requests using the built-in fixture','Validate status, content type, and meaningful fields','Avoid relying on status alone'],[
-S('A 200 response can still be wrong','A server can return 200 with an empty object, a broken price, or the wrong product. Treat a response as several claims: status is appropriate, content type is usable, structure matches the contract, and values satisfy the business rule. Assert only the fields your scenario actually needs.'),
-S('Inspect the real catalog','Forge prices are integer USD cents. The catalog wrapper contains products and total. Check both the wrapper and one known product, then inspect all prices for valid integer representation. Do not cast the JSON and assume that validates it.',`import { test, expect } from '@playwright/test';
-test('catalog exposes known products in cents', async ({ request }) => {
+['Send requests with deliberate configuration','Validate response structure at runtime','Build oracles that reject plausible wrong data'],[
+S('Start with a claim, not a status','A catalog check should explain what a shopper relies on: the correct products, meaningful prices and a usable response. A 200 with an empty object or a duplicated product is still broken. Check status, media type, structure, then business values. Read docs/lab-api.md before choosing those expectations; the workbook docs/API-TESTING.md maps each lesson to its runnable drill.'),
+S('Know which client the test receives','The built-in request fixture uses configured baseURL and request options and has its own cookie jar. It is not automatically page.request. In exercises/02-api.spec.ts, the imported repository fixture deliberately gives the API and browser the same unique x-lab-session header. That header selects server state and overrides the lab cookie. Keep that import when implementing EX-09 through EX-16; use a browser-associated client for cookie-only UI setup.'),
+S('Inspect the real catalog','This complete test can live in tests/api/catalog-contract.example.spec.ts. Shape assertions happen before iteration, and exact membership prevents an empty or duplicated response from satisfying an every-product check. Type annotations help the editor; the assertions validate the actual JSON.',`import { test, expect } from '@playwright/test';
+
+test('catalog has the six documented products and integer prices', async ({ request }) => {
   const response = await request.get('/api/products');
   expect(response.status()).toBe(200);
   expect(response.headers()['content-type']).toContain('application/json');
   const body = await response.json();
+  expect(Array.isArray(body.products)).toBe(true);
+  expect(body.products).toHaveLength(6);
+  expect(body.total).toBe(6);
+  expect(body.products.map((p: { id: string }) => p.id).sort())
+    .toEqual(['p1', 'p2', 'p3', 'p4', 'p5', 'p6']);
   expect(body.products).toEqual(expect.arrayContaining([
-    expect.objectContaining({ id: 'p1', name: 'Studio Headphones', price: 12900 })
+    expect.objectContaining({ id: 'p2', name: 'Mechanical Keyboard', price: 8900, category: 'Desk' })
   ]));
-  expect(body.total).toBe(body.products.length);
   for (const product of body.products) {
-    expect(Number.isInteger(product.price)).toBe(true);
-    expect(product.price).toBeGreaterThanOrEqual(0);
+    expect(Number.isInteger(product.price), 'integer price for ' + product.id).toBe(true);
+    expect(product.price, 'positive price for ' + product.id).toBeGreaterThan(0);
+    expect(Number.isInteger(product.stock), 'integer stock for ' + product.id).toBe(true);
+    expect(product.stock, 'nonnegative stock for ' + product.id).toBeGreaterThanOrEqual(0);
   }
 });`),
-S('Failure messages are part of design','A giant deep equality assertion can hide which rule matters. Use exact equality for stable contract fields and partial matching when extra fields are allowed. Give loops useful labels or include the product ID in assertion messages so failures identify the offending record.')
+S('Parsing is not validation','response.json() parses a JSON body; it does not prove the application schema. A TypeScript assertion such as body as Product[] also adds no runtime check. Here targeted assertions keep the business contract visible. For a larger service, a runtime schema validator can cover structure while scenario assertions cover meaning. Avoid comparing every metadata field merely because it exists.'),
+S('Distinguish an HTTP rejection from a failed request','By default a 400 or 500 produces an APIResponse that your test can inspect. failOnStatusCode changes that policy; lesson 04-06 and AP-01 exercise it. response.ok() and await expect(response).toBeOK() concern the successful status range, not the payload. Choose an exact status when the contract requires 201 or a specific error, and read the appropriate body format: receipts use text(), not json().')
 ],[
-E('04-01-a','Catalog contract test','Assert a real catalog response at four layers.',['Check status and content type.','Check wrapper fields and nonempty products.','Verify p2 has the documented price and category.'],['At least one known value is verified.','Prices are validated at runtime.'],'p2 is Mechanical Keyboard, 8900 cents, Desk.','Assert status 200, JSON content type, array structure, total consistency, and an objectContaining({id:"p2",price:8900,category:"Desk"}) in products.'),
-E('04-01-b','Find a weak contract assertion','Strengthen a test that checks only response.ok().',['List three incorrect bodies that still pass.','Write assertions for two meaningful invariants.','Explain which extra fields you intentionally permit.'],['The test rejects wrong data despite 200.','Assertions avoid unnecessary whole-response coupling.'],'An empty list may be a valid shape but wrong fixture data.','Counterexamples: {}, products with string prices, missing p1. Add array/nonempty checks and a known product assertion; allow harmless future metadata by using objectContaining.')
-],Q('Does response.ok() validate the JSON body?',['Yes','No; it reflects a successful HTTP status','Only for GET'],1,'A successful status says nothing about the correctness of response fields.'),[R('API testing','api-testing'),R('APIRequestContext','api/class-apirequestcontext')]),
+E('04-01-a','Catalog contract test','Implement EX-09 with separate structure and business claims.',['Check status and JSON media type before reading the body.','Assert the exact six unique IDs, total consistency, integer positive prices and nonnegative integer stock.','Verify p2 has its documented name, price and category.'],['An empty array, duplicated ID and string price each fail an explicit assertion.','Harmless extra metadata remains allowed.'],'p2 is Mechanical Keyboard, 8900 cents, Desk; p5 legitimately has zero stock.','Use Array.isArray before iteration, sorted exact IDs, total 6, and objectContaining for p2. For each product assert Number.isInteger on price and stock plus the documented bounds. Keep product IDs in failure messages.'),
+E('04-01-b','Disprove a weak contract assertion','Turn three plausible bad responses into a small oracle review.',['Start with a check that only asserts response.ok().','Write three JSON counterexamples: no products, a string price, and duplicated product IDs.','List the exact added assertion that rejects each counterexample without rejecting an extra metadata field.'],['Each counterexample has a named failing oracle.','Parsing and TypeScript casts are not credited as schema validation.'],'A loop that checks every product passes vacuously when there are no products.','Empty products fails exact membership/cardinality; a string price fails Number.isInteger; a duplicated ID fails the expected ID list. An additional generatedAt field is permitted because it is outside this scenario’s contract.')
+],Q('Does a successful status or a TypeScript cast validate the JSON payload?',['Both validate every field','Neither; the runtime body still needs assertions','A cast validates only numeric fields'],1,'Status and static typing answer different questions from runtime response correctness.'),[R('API testing','api-testing'),R('APIRequestContext','api/class-apirequestcontext'),R('APIResponse parsing and status','api/class-apiresponse'),R('API response assertions','api/class-apiresponseassertions')]),
 L('04-02','api','Query parameters, sorting, and invariants','Test the result set and its ordering with independent expectations.',50,['API','filtering'],
-['Send encoded query parameters through params','Verify filtering excludes unrelated records','Check sorting without assuming a single hardcoded response'],[
-S('The query is part of the contract','Search and category filters should compose. A test that verifies only one expected item misses leaked unrelated items. Forge’s Desk category contains p2, p4, and p6. Price ascending should produce 5900, 7900, and 8900 cents for that set.'),
-S('Use params instead of hand-built URLs','The params option keeps query values separate from URL construction and handles encoding. Check both membership and ordering. For a general sort assertion, compare a copied numeric list with its independently sorted copy; never mutate the original list before comparing.',`const response = await request.get('/api/products', {
+['Send encoded query parameters through params','Separate empty results from invalid requests','Check membership, cardinality and numeric ordering'],[
+S('The query is part of the contract','Forge search is a case-insensitive substring of the product name; category is exact. Audio plus HEAD yields only p1. Desk contains p2, p4 and p6. An unknown category or unmatched search is a valid 200 empty result. An unsupported sort is a different contract: 400 INVALID_SORT. A helper that treats all of these as an empty array would hide defects.'),
+S('Use params instead of hand-built URLs','This fragment belongs inside an imported test with request and expect available. Query values stay separate from URL construction. Exact IDs catch leaked or missing products; the independent numeric prices establish the intended order.',`const response = await request.get('/api/products', {
   params: { category: 'Desk', sort: 'price-asc' }
 });
 expect(response.status()).toBe(200);
-const { products } = await response.json();
+const { products, total } = await response.json();
+expect(Array.isArray(products)).toBe(true);
+expect(total).toBe(3);
 expect(products.map((p: { id: string }) => p.id)).toEqual(['p4', 'p6', 'p2']);
+expect(products.every((p: { category: string }) => p.category === 'Desk')).toBe(true);
 const prices = products.map((p: { price: number }) => p.price);
+expect(prices).toEqual([5900, 7900, 8900]);
 expect(prices).toEqual([...prices].sort((a, b) => a - b));`),
-S('Metamorphic checks expose consistency','When exact data is dynamic, relationships can still be stable: ascending and descending should contain the same IDs; adding a category filter should not introduce a product outside that category. These relationships complement known-value examples, but they can all pass on an empty result, so require meaningful cardinality.')
+S('Use relationships without accepting two wrong results','Ascending and descending responses should contain the same IDs and reverse the price sequence. That relationship alone passes if both lists are empty or both omit p2. Add an independent cardinality or known-member check first. Do not mutate the observed array with sort() before constructing the expected value. If prices tie, compare price order and membership instead of inventing an undocumented ID tie-breaker.'),
+S('Keep every branch observable','EX-10 includes composed filters and a valid empty result. Add a separate invalid-sort case with exact status and error.code. Check each response status before inspecting its JSON so a parsing error or a wrong endpoint does not become the apparent cause. This API has no pagination contract; total means the count in the returned filtered set.')
 ],[
-E('04-02-a','Exact Desk ordering','Verify all Desk products appear in ascending price order.',['Request category Desk and price-asc.','Assert exactly three IDs.','Assert their expected order and category.'],['No Audio or Video item leaks into results.','Order is p4, p6, p2.'],'Default string sorting is wrong for general numeric lists.','Use params and assert IDs ["p4","p6","p2"], every category Desk, and numeric prices [5900,7900,8900].'),
-E('04-02-b','A relationship-based sort check','Compare ascending and descending catalogs.',['Request both sorts independently.','Check nonempty equal membership.','Verify reverse ordering when prices are distinct.'],['Both requests return the same products.','A reversed order assertion is based on documented distinct prices.'],'If equal prices are later added, compare price sequences instead of tie order.','Compare sorted ID sets; compare descending prices to [...ascendingPrices].reverse(). Do not require a particular order among equal-price products without a tie-break rule.')
-],Q('Why copy an array before sort() in an oracle?',['sort() mutates its array','Playwright requires copies','JSON arrays cannot be sorted'],0,'Mutating the observed array can make the expected and actual values identical by construction.'),[R('APIRequestContext.get','api/class-apirequestcontext#api-request-context-get')]),
+E('04-02-a','Exact Desk ordering','Verify a useful result and two deliberately different empty or error outcomes.',['Request category Desk and price-asc using params.','Assert exact IDs, categories, prices and total.','Compare an impossible search returning 200 empty with an unsupported sort returning 400 INVALID_SORT.'],['No Audio or Video item leaks into the three Desk results.','A valid empty result cannot be mistaken for a failed request.'],'Desk order is p4, p6, p2; use an unmistakably unsupported sort such as sideways.','Expect IDs ["p4","p6","p2"], prices [5900,7900,8900] and total 3. Impossible search must equal {products:[],total:0}; unsupported sort must have error.code INVALID_SORT and status 400.'),
+E('04-02-b','A relationship-based sort check','Compare independent ascending and descending reads without a self-comparison.',['Fetch both sorts and assert both statuses.','Assert the known nonempty membership and total of each response.','Compare numeric descending prices with a reversed copy of ascending prices.'],['Deleting p2 from both responses would still fail the test.','The observed arrays are never mutated to construct their own oracle.'],'A pair of consistently wrong responses can satisfy a relationship.','Require the documented six catalog IDs in each response, then compare descending prices to [...ascendingPrices].reverse(). Keep ordering among tied prices unspecified unless the contract supplies a tie-breaker.')
+],Q('Why is reversing one response insufficient on its own?',['Two empty or incomplete responses could still agree','Playwright cannot compare arrays','Every API must use a fixed ID sort'],0,'A relationship needs an independent membership or cardinality anchor to catch consistently wrong results.'),[R('APIRequestContext.get','api/class-apirequestcontext#api-request-context-get')]),
 L('04-03','api','Mutations, invalid input, and unchanged state','Test cart updates as transitions with before-and-after evidence.',60,['API','negative-testing'],
-['Distinguish set quantity from increment quantity','Verify rejection without partial mutation','Test stock and identity failures'],[
-S('Read the verb’s actual semantics','Forge POST /api/cart sets the chosen product quantity; sending quantity 2 twice leaves quantity 2, not 4. HTTP method names do not fully define business semantics. Write tests from the documented operation and verify the resulting state.'),
-S('Capture state before a rejected operation','For a negative case, first establish a known cart. Send the invalid request, assert the specific documented status, then inspect the cart again. Comparing relevant fields catches implementations that mutate state and only then return an error.',`await request.post('/api/reset');
-await request.post('/api/cart', { data: { productId: 'p1', quantity: 2 } });
-const before = await (await request.get('/api/cart')).json();
+['Distinguish replacement from increment and deletion','Use seeded state to expose destructive rejection','Send invalid JSON and byte-boundary cases deliberately'],[
+S('Read the operation’s actual semantics','Forge POST /api/cart sets one product quantity. Sending quantity 2 twice leaves quantity 2, not 4. DELETE /api/cart/p1 removes that line and recalculates totals; repeating the deletion returns 404 CART_ITEM_NOT_FOUND. The second response differs, but the absent line must stay absent and unrelated lines must survive. HTTP verbs alone do not specify these business rules.'),
+S('A useful negative precondition has something to lose','An empty-cart check misses a bug that wipes every cart line on rejection. Seed p2 and apply SAVE10 first, verify that precondition, then snapshot the whole cart. Items, subtotal, discount, total and promoCode all belong to the preservation claim. EX-12, EX-16 and AP-02 use this stronger pattern.'),
+S('Check setup, exact error, then persisted state','Place this fragment inside a test imported from tests/support/fixtures so it receives a unique session. The reset is scoped to that session. Setup assertions prevent a failed seed from producing a misleading unchanged-empty comparison.',`expect((await request.post('/api/reset')).status()).toBe(200);
+expect((await request.post('/api/cart', { data: { productId: 'p2', quantity: 1 } })).status()).toBe(200);
+expect((await request.post('/api/cart/promo', { data: { code: 'SAVE10' } })).status()).toBe(200);
+const beforeResponse = await request.get('/api/cart');
+expect(beforeResponse.status()).toBe(200);
+const before = await beforeResponse.json();
+expect(before).toMatchObject({ subtotal: 8900, discount: 890, total: 8010, promoCode: 'SAVE10' });
+expect(before.items).toEqual([expect.objectContaining({ productId: 'p2', quantity: 1 })]);
 const rejected = await request.post('/api/cart', {
-  data: { productId: 'p1', quantity: 0 }
+  data: { productId: 'p1', quantity: 0 }, failOnStatusCode: false
 });
 expect(rejected.status()).toBe(400);
-const after = await (await request.get('/api/cart')).json();
-expect(after.items).toEqual(before.items);
-expect(after.total).toBe(25800);`),
-S('Different failures deserve separate cases','Unknown product, out-of-stock product, invalid quantity, and malformed JSON can produce different errors. Use the published contract’s statuses rather than treating every 4xx as interchangeable. A 404 can hide a routing mistake when you expected a 400 validation response.')
+expect((await rejected.json()).error.code).toBe('INVALID_QUANTITY');
+const after = await request.get('/api/cart');
+expect(after.status()).toBe(200);
+expect(await after.json()).toEqual(before);`),
+S('Parameterize the reasons, not only the numbers','Quantity must be a JSON number and an integer from 1 through 99, but stock imposes another limit: p1 has 12. Zero, negative, fractional, string, missing and 100 are 400 INVALID_QUANTITY; p1 quantity 13 and sold-out p5 are 409 INSUFFICIENT_STOCK; unknown product is 404 PRODUCT_NOT_FOUND. Include valid 1 and 12 controls in your boundary reasoning so a server that rejects everything cannot look correct.'),
+S('Distinguish an invalid object from invalid JSON','data: {productId:"p1",quantity:0} sends a JSON object whose value breaks a business rule. To test parsing, send a raw string such as data: "{broken" with headers: {"Content-Type":"application/json"}. Without that explicit header a string body uses a different default media type. Valid JSON that is null, an array, a boolean or a number is also rejected here with 400 INVALID_BODY. Do not stringify an object accidentally and call it a malformed-JSON test.'),
+S('Count bytes and protect existing discounts','The local body limit is 16,384 UTF-8 bytes, not JavaScript string length. AP-02 covers the exact accepted boundary, one byte over, and a multibyte payload. It also proves each rejected body leaves a populated discounted cart intact. Unknown promo is 422 INVALID_PROMO: apply SAVE10 first, reject the bad promo, and verify the previous discount and code survive. Full-body equality is appropriate for this stable local Cart contract; volatile real-service fields need an explicit stable-field projection.')
 ],[
-E('04-03-a','Set, do not increment','Prove repeated identical cart updates are stable.',['Set p1 quantity to two.','Repeat the identical POST.','Read the cart and assert quantity and total.'],['Quantity remains two.','Total remains 25800.'],'The endpoint replaces that product’s quantity.','Send the same {productId:"p1",quantity:2} twice, assert exactly one p1 line with quantity 2 and lineTotal 25800.'),
-E('04-03-b','Reject without damage','Test zero quantity and out-of-stock p5.',['Seed a valid p1 cart.','Send each invalid mutation in an independent test.','Assert the documented error and unchanged p1 state.'],['Both failure reasons are covered.','No rejected product appears in the cart.'],'Reset and reseed per test; do not chain failures in one shared state.','Quantity zero should return the documented validation status; p5 should return the documented stock status. In both cases compare items and total with the before snapshot.')
-],Q('Why inspect the cart after a rejected mutation?',['To slow down the test','To detect partial or unintended state changes','To refresh the access token'],1,'An error response alone does not guarantee atomic rejection.'),[R('API testing','api-testing')]),
+E('04-03-a','Set, delete, repeat','Extend EX-11 into a small cart transition table.',['Set p1 quantity two twice and assert one line with total 25800.','Add p2 quantity one, delete p1 and assert only p2 remains with total 8900.','Delete p1 again and assert 404 CART_ITEM_NOT_FOUND plus unchanged p2 state.'],['Repeated POST does not increment quantity.','Rejected repeated DELETE cannot remove an unrelated line.'],'Observe both mutation responses and later GET /api/cart state.','Use exact one-line identity/quantity assertions after each transition. Snapshot the p2-only cart before the second DELETE, inspect the error code, then compare the following GET with that snapshot.'),
+E('04-03-b','Reject without damage','Use independent cases to reject zero quantity, sold-out stock and an invalid replacement promo.',['Seed p2 quantity one and SAVE10 in every case, verify total 8010, and snapshot the cart.','Send p1 quantity zero, p5 quantity one, or promo INVALID in its own test.','Check exact status/code and compare the complete persisted cart.'],['Cases return 400 INVALID_QUANTITY, 409 INSUFFICIENT_STOCK and 422 INVALID_PROMO respectively.','The existing p2 line and SAVE10 discount survive every rejection.'],'A seeded discounted cart exposes more damage than an empty cart.','Create a case table with the appropriate endpoint and data. Each test starts fresh, confirms setup responses, stores the same-session cart, sends one rejected operation, then compares items, subtotal, discount, total and promoCode. Use AP-02 for parser and byte-limit variants.')
+],Q('Which precondition best exposes unintended mutation during rejection?',['An empty cart with no promo','A populated cart with a verified active promo','No state read before the request'],1,'Known existing lines and totals make accidental clearing or discount loss observable.'),[R('API testing','api-testing'),R('Request data and JSON encoding','api/class-apirequestcontext#api-request-context-post')]),
 L('04-04','api','Authentication and session boundaries','Prove both access and isolation using separate customers.',60,['API','auth','isolation'],
-['Test authenticated and guest order access','Create isolated API contexts','Dispose contexts and keep state local'],[
-S('Authentication and isolation answer different questions','Authentication asks who may perform an operation. Isolation asks whose cart and orders are affected. The practice lab uses session IDs to make experiments independent; its demo login is intentionally simple and is not a production security model. Keep the distinction explicit in your test strategy.'),
-S('Build two explicit customers','A unique x-lab-session header makes server-state ownership visible. Create separate contexts with different headers and dispose them after use. A logged-in context must not accidentally lend its cookies or headers to a guest check.',`const alice = await playwright.request.newContext({
-  baseURL: 'http://127.0.0.1:' + (process.env.PORT || '4173'),
-  extraHTTPHeaders: { 'x-lab-session': 'alice-' + crypto.randomUUID() }
-});
-try {
-  const login = await alice.post('/api/login', {
-    data: { email: 'demo@forge.test', password: 'Playwright123!' }
+['Control all prerequisites of a guest rejection','Separate client cookies from server session identity','Verify independent cart, login and receipt ownership'],[
+S('Authentication and isolation answer different questions','Authentication asks whether this session is signed in. Isolation asks which session owns a cart or order. Forge deliberately has one demo account and session-local records: two sessions may sign in with the same email while retaining different carts. This is an educational contract, not a production authorization design. A different JavaScript APIRequestContext alone does not prove different server identity.'),
+S('Build two explicit customers','This complete test uses the configured baseURL and independent session headers. It clears inherited storage and gives cleanup to the code that creates each client. Enter the first try before allocating the second client, so a second allocation failure cannot leak the first.',`import { test, expect } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
+
+test('member A cannot lend identity or cart contents to guest B', async ({ playwright, baseURL }) => {
+  const options = () => ({
+    baseURL, storageState: { cookies: [], origins: [] },
+    extraHTTPHeaders: { 'x-lab-session': 'lesson-' + randomUUID() }
   });
-  expect(login.status()).toBe(200);
-  const session = await (await alice.get('/api/session')).json();
-  expect(session.user.email).toBe('demo@forge.test');
-} finally {
-  await alice.dispose();
-}`),
-S('Authorization checks need an unchanged-state oracle','For an unauthenticated order attempt, verify rejection and no order creation. If a filled cart is required to reach the authentication branch, seed one first. Otherwise the request may fail for the wrong reason and never exercise the access rule.')
+  const alice = await playwright.request.newContext(options());
+  try {
+    const guest = await playwright.request.newContext(options());
+    try {
+      const login = await alice.post('/api/login', {
+        data: { email: 'demo@forge.test', password: 'Playwright123!' }
+      });
+      expect(login.status()).toBe(200);
+      expect((await login.json()).user.email).toBe('demo@forge.test');
+      expect((await alice.post('/api/cart', { data: { productId: 'p1', quantity: 1 } })).status()).toBe(200);
+      const ownCart = await alice.get('/api/cart');
+      expect(ownCart.status()).toBe(200);
+      expect(await ownCart.json()).toMatchObject({ total: 12900, items: [expect.objectContaining({ productId: 'p1' })] });
+      const session = await guest.get('/api/session');
+      expect(session.status()).toBe(200);
+      expect((await session.json()).user).toBeNull();
+      const otherCart = await guest.get('/api/cart');
+      expect(otherCart.status()).toBe(200);
+      expect((await otherCart.json()).items).toEqual([]);
+      const denied = await guest.get('/api/orders');
+      expect(denied.status()).toBe(401);
+      expect((await denied.json()).error.code).toBe('AUTH_REQUIRED');
+    } finally {
+      try { expect((await guest.post('/api/reset')).status()).toBe(200); }
+      finally { await guest.dispose(); }
+    }
+  } finally {
+    try { expect((await alice.post('/api/reset')).status()).toBe(200); }
+    finally { await alice.dispose(); }
+  }
+});`),
+S('Keep the negative case on its intended branch','A guest checkout test supplies a filled cart and valid shipping so missing authentication is the variable. After 401 AUTH_REQUIRED, inspect the preserved cart and user:null. Orders are protected, so a second 401 from GET /api/orders cannot prove no order was created. Log in to that same session and assert its order list is empty. A fresh unrelated session would answer the wrong question.'),
+S('Logout, disposal and reset have different effects','POST /api/logout removes authentication but keeps the cart. APIRequestContext.dispose releases the client and its retained response bodies; it does not send a server logout or delete records. POST /api/reset clears this session’s cart, promo, user, orders and counter. EX-13 checks exact authentication errors and the preserved cart; EX-15 populates both sessions before proving that resetting one cannot change the other.'),
+S('A public catalog is a weak authorization target','Catalog access is intentionally public. Protected order history and receipts are stronger targets. AP-03 first checks a guest receipt request is 401 AUTH_REQUIRED, then signs the other session in and expects 404 ORDER_NOT_FOUND. After both sessions create their own ORD-0001, their receipt bodies must reflect their own items and totals. Matching IDs do not imply shared ownership.'),
+S('Carry the boundary into browser tests','page.request and context.request use their browser context’s cookie jar; an independently created API client owns a separate jar. A copied authenticated cookie can still point two clients at one mutable server session. The supplied shop fixture’s shared header is intentional; clear inherited extraHTTPHeaders and storageState for a cookie-only independent control. Lessons 03-08 through 03-10 and FS-08/FS-09 expand that distinction.')
 ],[
-E('04-04-a','Guest checkout rejection','Attempt order creation with a filled guest cart.',['Create a fresh guest session.','Add p1, then POST valid shipping data to /api/orders.','Assert unauthorized status and preserved cart.'],['Failure is authentication-related.','No order was created and the cart remains intact.'],'Provide otherwise valid input so auth is the variable.','Seed p1, post valid name/address/city/postalCode, assert 401 AUTH_REQUIRED, then verify the cart still has p1 and the session remains guest. Finally log in to the same session and assert GET /api/orders returns an empty list: a 401 alone cannot prove no order was accidentally created.'),
-E('04-04-b','Cross-session independence','Authenticate A, leave B guest, and prove cart separation.',['Create contexts with unique session headers.','Log in and mutate A.','Inspect B’s session and cart, then dispose both.'],['B remains guest.','B cannot see A’s cart contents.'],'Use a different random identifier for each context.','A /api/session returns the demo user; B returns user:null. A cart has p1; B items is empty. Cleanup belongs in finally even when an assertion fails.')
-],Q('Why give a guest order test valid shipping data?',['To bypass authentication','To ensure rejection tests the access rule rather than unrelated validation','To create a real shipment'],1,'Control other variables so the failure has the intended cause.'),[R('Authentication','auth'),R('APIRequest.newContext','api/class-apirequest#api-request-new-context')]),
+E('04-04-a','Guest checkout rejection','Attempt order creation with a filled guest cart and prove no hidden order was created.',['Seed p1 and snapshot a verified guest cart.','POST valid shipping and assert 401 AUTH_REQUIRED, user:null and the unchanged cart.','Sign in to the same session and assert GET /api/orders returns an empty list.'],['The rejection tests authentication rather than empty-cart or address validation.','The hidden-order check inspects the originally rejected session.'],'A protected endpoint returning 401 says nothing about whether a buggy mutation already happened.','Use valid name/address/city/postalCode. Assert the exact error, then compare the complete cart. Login through the same request client and inspect its now-readable orders; do not create a fresh client for that last observation.'),
+E('04-04-b','Cross-session ownership','Implement EX-15, then extend its evidence with AP-03 receipts.',['Authenticate and populate A; populate B with a different item and keep its own identity explicit.','Reset only A and verify B’s cart and login state are unchanged.','In AP-03 create overlapping local order IDs and compare receipt contents, then dispose all owned clients.'],['Two populated sessions make cross-session clearing detectable.','A receipt is authorized by session ownership, not an ID string alone.'],'For the receipt case, sign both sessions in and purchase different products.','Use different random session headers and explicit fresh storage. Record A’s empty guest state after reset while B still owns its expected line and user. AP-03 adds 401 guest, 404 authenticated non-owner, then distinct own-receipt body assertions for the same ORD-0001.')
+],Q('After a guest order POST is rejected, how can you verify no hidden order exists?',['Read orders in a new unrelated session','Log in to the same session and inspect its order list','Treat another 401 as proof that no record exists'],1,'The follow-up must gain read access to the same server state that the rejected mutation could have changed.'),[R('Authentication','auth'),R('APIRequest.newContext','api/class-apirequest#api-request-new-context'),R('API request cookie ownership','api/class-apirequestcontext')]),
 L('04-05','api','Hybrid testing and order invariants','Set up quickly through the API, then verify the customer-facing result.',65,['hybrid','orders','money'],
-['Use API setup without losing UI coverage','Verify order snapshots and cart clearing','Test discounts with an independent calculation'],[
-S('Spend UI time on the claim','If your test is about the order confirmation, repeating login and product browsing through the UI adds unrelated failure points. Establish those preconditions through the API in the browser’s session, then use the UI for the behavior under test. Retain a separate full journey to cover the wiring.'),
-S('Treat an order as a snapshot','An order should preserve the items and totals at purchase time. The cart can be cleared or rebuilt afterward without changing that order. This is a more valuable invariant than asserting only that the order list has one extra element.'),
-S('Compute the discount yourself','SAVE10 applies the lab’s documented ten-percent rule. For one p1, subtotal is 12900, discount is 1290, total is 11610 cents. Check the API and UI agree with those independent numbers. Read the contract for rounding before testing prices that produce fractional cents.',`// Set up through the browser-owned request context before navigation.
-const login = await page.request.post('/api/login', { data: {
+['Use API preconditions and a real browser checkout','Correlate confirmation with the persisted order','Verify immutable monetary snapshots and receipt contents'],[
+S('State the UI claim before choosing setup','If the claim is that checkout confirms the intended purchase, set up login and cart through the API, then submit checkout through the browser. Ending after a visible Sign out button proves only that setup reached the UI. EX-17 is the runnable hybrid starter and solution. Keep the separate full UI journey for product selection and login wiring.'),
+S('Prepare the browser’s own session','The next two code fragments form one test body with page and expect available. API calls complete before navigation so the first page load reads prepared state. Every setup response is checked; the known p1 price and chosen quantity provide an independent monetary oracle.',`const login = await page.request.post('/api/login', { data: {
   email: 'demo@forge.test', password: 'Playwright123!'
 }});
 expect(login.status()).toBe(200);
-const added = await page.request.post('/api/cart', { data: { productId: 'p1', quantity: 1 } });
-expect(added.status()).toBe(200);
-const promo = await page.request.post('/api/cart/promo', { data: { code: 'SAVE10' } });
-expect(promo.status()).toBe(200);
-const cart = await (await page.request.get('/api/cart')).json();
-expect(cart).toMatchObject({ subtotal: 12900, discount: 1290, total: 11610 });
-await page.goto('/lab/'); // Let the UI read the prepared state.
-await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();`)
+expect((await page.request.post('/api/cart', { data: { productId: 'p1', quantity: 1 } })).status()).toBe(200);
+expect((await page.request.post('/api/cart/promo', { data: { code: 'SAVE10' } })).status()).toBe(200);
+const prepared = await page.request.get('/api/cart');
+expect(prepared.status()).toBe(200);
+expect(await prepared.json()).toMatchObject({ subtotal: 12900, discount: 1290, total: 11610 });
+await page.goto('/lab/');
+await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+await page.getByRole('button', { name: 'Cart (1)', exact: true }).click();
+const cart = page.getByRole('dialog', { name: 'Your cart', exact: true });
+await expect(cart.getByTestId('cart-total')).toHaveText('$116.10');`),
+S('Finish the behavior and correlate the evidence','Continue in the same test. Arm the method-and-path response wait before Place order. Forge confirmation exposes an order ID and a receipt link, so assert that actual UI contract rather than inventing a confirmation total. API history supplies the persisted monetary evidence.',`await cart.getByRole('button', { name: 'Continue to checkout' }).click();
+const checkout = page.getByRole('dialog', { name: 'The details.' });
+await checkout.getByLabel('Full name').fill('Alex Tester');
+await checkout.getByLabel('Street address').fill('1 Test Lane');
+await checkout.getByLabel('City', { exact: true }).fill('London');
+await checkout.getByLabel('Postal code').fill('SW1A 1AA');
+const createdPromise = page.waitForResponse(response =>
+  new URL(response.url()).pathname === '/api/orders' && response.request().method() === 'POST'
+);
+await checkout.getByRole('button', { name: 'Place order' }).click();
+const created = await createdPromise;
+expect(created.status()).toBe(201);
+const { order } = await created.json();
+expect(order).toMatchObject({ subtotal: 12900, discount: 1290, total: 11610 });
+expect(order.items).toEqual([expect.objectContaining({ productId: 'p1', quantity: 1, lineTotal: 12900 })]);
+const confirmation = page.getByRole('dialog', { name: "You're all set." });
+await expect(confirmation).toContainText(order.id);
+await expect(confirmation.getByRole('link', { name: 'Download receipt' }))
+  .toHaveAttribute('href', '/api/orders/' + order.id + '/receipt');
+const history = await page.request.get('/api/orders');
+expect(history.status()).toBe(200);
+expect((await history.json()).orders).toEqual([order]);
+const cleared = await page.request.get('/api/cart');
+expect(cleared.status()).toBe(200);
+expect(await cleared.json()).toEqual({ items: [], subtotal: 0, discount: 0, total: 0, promoCode: null });`),
+S('An order is a snapshot, not a view of today’s cart','AP-04 creates one discounted order, rebuilds the cart and places a second purchase. The first order’s business fields must still match its original snapshot, the new order must have a different ID, and the history must contain both. Checking only history length misses altered line items or totals. Verify complete cart and promo clearing after each accepted purchase.'),
+S('A receipt has its own contract','AP-03 checks status, text/plain content type, attachment filename and meaningful receipt text for the selected order. Read text() rather than json(). A 200 containing the wrong customer’s receipt is a failure. EX-20 separately covers the browser download event and saved content; an API receipt check does not replace that browser behavior.'),
+S('Use independent numbers and describe the lab limits','For p1 quantity one, SAVE10 gives 12900 subtotal, 1290 discount and 11610 total in integer cents. The contract rounds ten percent using Math.round; the current catalog’s prices do not exercise fractional-cent rounding. Stock is a per-order validation ceiling and is not decremented globally. Do not claim these examples prove inventory concurrency, payment processing or production idempotency.')
 ],[
-E('04-05-a','Discounted order evidence','Create a discounted order and verify its monetary snapshot.',['Log in, add p1, and apply SAVE10 in one session.','Submit valid shipping data.','Verify order subtotal/discount/total and empty cart.'],['Total is exactly 11610 cents.','The order retains its purchased item after cart clearing.'],'Use the returned order ID to identify the record.','Assert POST /api/orders succeeds with order fields matching 12900/1290/11610; GET orders contains the same ID; GET cart has no items.'),
-E('04-05-b','Order immutability probe','Show that a later cart change does not rewrite an existing order.',['Create an order and capture its relevant fields.','Add p2 to the now-empty cart.','Read the original order again and compare its snapshot.'],['The existing order is unchanged.','The new cart independently contains p2.'],'Compare business fields, not volatile response metadata.','Store original order ID, items and totals. After adding p2, locate the same order and assert those fields are identical; assert cart total 8900.')
-],Q('What should API setup replace in a confirmation-page test?',['The confirmation assertions','Unrelated prerequisite clicks','Every UI test in the suite'],1,'Use faster setup for prerequisites while preserving browser evidence for the behavior being tested.'),[R('API testing','api-testing')]),
+E('04-05-a','Discounted hybrid checkout evidence','Implement EX-17 with API preconditions and a browser-owned purchase.',['Set up login, p1 quantity one and SAVE10 in the browser’s session.','Assert the visible $116.10 cart, fill checkout, and arm POST /api/orders observation before submission.','Match the 201 order ID to confirmation and persisted history, then verify the empty cart and cleared promo.'],['Checkout is submitted through the UI, not an API helper.','The chosen item, independent money values and same order ID connect all observations.'],'The confirmation has an ID and receipt link; the cart is where the UI exposes its total.','Assert API subtotal/discount/total 12900/1290/11610, visible cart $116.10, exact POST201, intended p1 line, confirmation ID and receipt URL, GET orders containing that order, and a fully cleared Cart object.'),
+E('04-05-b','Order immutability through a later purchase','Complete AP-04 and explain what each observation protects.',['Create and capture the first discounted order’s items, shipping and monetary fields.','Add p2 to the cleared cart and complete another purchase with valid shipping.','Find both IDs in history and compare the original snapshot after the second purchase.'],['The second order has a different ID and independent expected total.','Neither adding new cart lines nor clearing the later cart rewrites the first order.'],'Do not compare only the number of orders; identify each record.','Check first-order stable fields against the original captured values and known amounts. Assert the second order’s intended product and total, distinct IDs, both records in history, and empty items/zero totals/null promoCode after checkout. AP-03 supplies the corresponding receipt ownership exercise.')
+],Q('Which evidence makes this a hybrid checkout test?',['API creation followed only by Sign out visibility','API preconditions, a UI checkout action, and correlated UI/API outcomes','Replacing every browser action with a POST'],1,'The browser still performs and verifies the behavior under test; the API establishes preconditions and confirms persistence.'),[R('API setup and postconditions','api-testing'),R('APIResponse text and body lifetime','api/class-apiresponse'),R('Waiting for responses','api/class-page#page-wait-for-response')]),
+L('04-06','api','Request controls, response ownership, and safe retries','Know what failed, what may repeat, and which resource your test owns.',75,['API','timeouts','retries','polling'],
+['Separate HTTP responses from request exceptions','Choose request, polling and test budgets deliberately','Release client resources and keep mutations out of polling loops'],[
+S('A response and an exception are different evidence','A server returning 400 has answered your request. A timeout or broken connection may prevent you from receiving a usable APIResponse at all. That does not prove the server did nothing: a write may have committed before its reply was lost. Negative contract tests normally keep failOnStatusCode false and inspect exact status and body. AP-01 makes the policy difference executable against the real local API.'),
+S('Make request policy visible','This complete test can live in tests/api/request-policy.example.spec.ts. The first call inspects the 400 response; the second deliberately opts into throwing for the same rejection. The assertions are about the policy you chose, not a product recovery mechanism.',`import { test, expect } from '@playwright/test';
+
+test('invalid sort can be inspected or rejected by client policy', async ({ request }) => {
+  const options = { params: { sort: 'sideways' }, timeout: 3000, maxRetries: 0 };
+  const response = await request.get('/api/products', { ...options, failOnStatusCode: false });
+  expect(response.status()).toBe(400);
+  expect((await response.json()).error.code).toBe('INVALID_SORT');
+  await expect(request.get('/api/products', { ...options, failOnStatusCode: true }))
+    .rejects.toThrow(/400/);
+});`),
+S('Separate three repetition mechanisms','Request maxRetries concerns a limited network-error recovery policy; in the installed Playwright version it retries ECONNRESET, not HTTP 429 or 503. Playwright Test retries rerun a failed test and its fixtures. expect.poll calls your callback repeatedly until its assertion succeeds or its budget ends. A completed response object is a captured result: toBeOK does not issue a new HTTP request, and polling a previously read body cannot discover later server changes.'),
+S('Budget the operation you intend to observe','Choose a finite timeout for each request, then a polling budget long enough for several reads, all inside the test timeout. For example, use 1000 ms per read, 5000 ms for a readiness observation and a 15000 ms test budget. A slow callback can consume the remaining poll budget, so do not treat poll timeout as cancellation of an in-flight HTTP call. This shop commits writes immediately; normal order tests should assert their postconditions directly instead of adding speculative polling or sleeps.'),
+S('Poll observations, not the action that creates the thing','For a genuinely asynchronous service, submit the operation once, retain its returned operation ID, and make bounded GET requests for that same operation inside expect.poll. Check its final business state as well as identity. Never put order creation, login-plus-reset or other mutations inside a polling callback just to obtain a green result. If a write response is lost, inspect using a documented operation key or follow the service’s idempotency contract before deciding whether to retry. Forge provides no idempotency-key protocol.'),
+S('Dispose the resource you created','AP-01 distinguishes APIResponse.dispose, which releases that response body, from APIRequestContext.dispose, which ends the owned client. An already captured status is not proof that a disposed body is still readable. The runner owns its request fixture; manually created clients belong in try/finally, and their accumulated response bodies remain associated with them until released. Client disposal does not reset the lab’s server records. Use a session-scoped reset when your fixture owns that cleanup, collect useful failure evidence first, and never log authentication snapshots or cookie values.'),
+S('Use the method that matches the payload','A JSON object belongs in data; raw invalid JSON needs a string and an explicit JSON header; form and multipart are different encodings for endpoints that actually accept them. Forge shop mutations accept JSON and its receipts return text. AP-02 demonstrates parser and UTF-8 byte limits; it does not establish a form-upload or streaming contract. The APIRequestContext and APIResponse references below are the source of truth when you investigate another service.')
+],[
+E('04-06-a','Client policy and ownership experiment','Complete AP-01 and produce an evidence note for each boundary.',['Create a client with failOnStatusCode true; override it for guest GET /api/orders to inspect 401 AUTH_REQUIRED, then prove the default throwing policy rejects that request.','Log in, read and release one APIResponse; prove its body cannot be reused while its client can still make an authenticated request.','Capture state in memory, dispose the client, then prove that client rejects new work while an observer using the copied state is still signed in.'],['A failed request is not silently converted into an empty body or a fake status.','Response-body disposal, client disposal and server logout have distinct observations.'],'Use the supplied AP-01 scaffold and compare its worked solution only after removing every sentinel.','Inspect 401 AUTH_REQUIRED with the per-call false override and assert rejection when the client’s true default applies. After login, body disposal must block body reuse while a fresh authenticated request succeeds. After client disposal, requests through that client fail, but the independent observer still sees the same authenticated server session. Reset owned server state and dispose every manual client in finally.'),
+E('04-06-b','Repair a dangerous retry plan','Review a proposed polling loop that creates an order every time it checks for confirmation.',['Write down what repeats when POST /api/orders sits inside expect.poll or expect.toPass.','Rewrite the design as one mutation followed by bounded GET observations tied to one returned operation or order ID.','State the policy for a lost write response and three separate timeout budgets.'],['The polling callback contains no mutation.','The design acknowledges that Forge has immediate writes and no production idempotency-key protocol.','A timeout is not claimed as evidence that the server rolled back.'],'A real asynchronous API needs a documented operation identifier; inventing one in the test does not create that server contract.','In Forge, POST once, assert 201, save order.id, then directly GET history and check that same record. For an asynchronous service, retain its documented operation ID and poll only the GET endpoint with finite per-request/poll/test budgets. A lost reply requires a documented lookup or idempotency strategy; blindly resending the POST is not justified.')
+],Q('What does request maxRetries automatically retry in the installed Playwright version?',['HTTP 429 and 503 responses','Every failing test assertion','The supported ECONNRESET network error, not HTTP status codes'],2,'Request-level network retries, test retries and observation polling have different triggers and different risks.'),[R('APIRequestContext request options','api/class-apirequestcontext'),R('APIResponse lifetime','api/class-apiresponse'),R('API response assertions','api/class-apiresponseassertions'),R('Polling assertions','test-assertions#expectpoll'),R('Test retries','test-retries'),R('Test timeouts','test-timeouts')]),
 L('05-01','architecture','Fixtures that own their cleanup','Make setup dependencies explicit and resources short-lived.',60,['fixtures','architecture'],
 ['Create a typed test-scoped fixture','Place teardown after use()','Prevent hidden global state'],[
 S('A fixture is a lifecycle boundary','A helper performs an operation. A fixture owns a resource for a defined scope: create it, make it available, and release it. A session-specific API context is a natural fixture because every test needs predictable ownership and disposal. Avoid stuffing unrelated setup into an automatic fixture. Lessons 05-06 through 05-10 extend this introduction with dependency graphs, worker scope, options, authentication strategies and a docs-guided investigation.'),

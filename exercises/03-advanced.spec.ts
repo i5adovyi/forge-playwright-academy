@@ -1,8 +1,13 @@
 import { test, expect, addProduct, login, shipping } from '../tests/support/fixtures';
 
 test.skip('EX-17 · Hybrid checkout', async ({ page, request }) => {
-  // TODO: arrange login and cart through request; checkout through UI;
-  // inspect GET /api/orders through request to verify persisted shipping.
+  // TODO: API login, p1 quantity1 and SAVE10; assert setup responses succeed.
+  // Open the shop, observe signed-in UI and cart total $116.10; fill checkout.
+  // Arm a POST /api/orders response listener BEFORE Place order; assert201.
+  // Independently assert subtotal12900, discount1290, total11610 and p1 line.
+  // Confirmation and receipt URL must identify this same response order.
+  // Read GET /api/orders and compare the stored order, including shipping.
+  // GET /api/cart must be fully empty, with zero totals and promoCode:null.
   // Shared fixtures provide the same session header to browser and API.
   expect(false, 'Implement every acceptance criterion before removing this sentinel').toBe(true);
 });

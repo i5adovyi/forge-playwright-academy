@@ -2,24 +2,44 @@ import { readFile } from 'node:fs/promises';
 import type { Page } from '@playwright/test';
 import { test, expect, login, addProduct, shipping, openCart } from '../tests/support/fixtures';
 
-async function checkout(page: Page) {
+async function checkout(page: Page, expectedTotal = '$129.00') {
   const cart = await openCart(page);
+  await expect(cart.getByTestId('cart-total')).toHaveText(expectedTotal);
   await cart.getByRole('button', { name: 'Continue to checkout' }).click();
   const form = page.getByRole('dialog', { name: 'The details.' });
   await form.getByLabel('Full name').fill(shipping.name);
   await form.getByLabel('Street address').fill(shipping.address);
   await form.getByLabel('City', { exact: true }).fill(shipping.city);
   await form.getByLabel('Postal code').fill(shipping.postalCode);
+  const responsePromise = page.waitForResponse(response =>
+    new URL(response.url()).pathname === '/api/orders' && response.request().method() === 'POST');
   await form.getByRole('button', { name: 'Place order' }).click();
-  await expect(page.getByRole('dialog', { name: "You're all set." })).toBeVisible();
+  const response = await responsePromise;
+  expect(response.status()).toBe(201);
+  const { order } = await response.json();
+  const confirmation = page.getByRole('dialog', { name: "You're all set." });
+  await expect(confirmation).toBeVisible();
+  await expect(confirmation).toContainText(order.id);
+  await expect(confirmation.getByRole('link', { name: 'Download receipt' }))
+    .toHaveAttribute('href', `/api/orders/${order.id}/receipt`);
+  return order;
 }
 test('EX-17 solution · API setup UI action API evidence', async ({ page, request }) => {
-  await login(request); await addProduct(request, 'p4');
+  await login(request); await addProduct(request, 'p1');
+  expect((await request.post('/api/cart/promo', { data: { code: 'SAVE10' } })).status()).toBe(200);
   await page.goto('/lab/');
-  await checkout(page);
-  const { orders } = await (await request.get('/api/orders')).json();
-  expect(orders).toHaveLength(1);
-  expect(orders[0]).toMatchObject({ total: 5900, shipping });
+  await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeVisible();
+  const order = await checkout(page, '$116.10');
+  expect(order).toMatchObject({
+    subtotal: 12900, discount: 1290, total: 11610, promoCode: 'SAVE10', shipping,
+    items: [{ productId: 'p1', price: 12900, quantity: 1, lineTotal: 12900 }],
+  });
+  const history = await request.get('/api/orders');
+  expect(history.status()).toBe(200);
+  expect((await history.json()).orders).toEqual([order]);
+  const cleared = await request.get('/api/cart');
+  expect(cleared.status()).toBe(200);
+  expect(await cleared.json()).toEqual({ items: [], subtotal: 0, discount: 0, total: 0, promoCode: null });
 });
 test('EX-18 solution · UI handles an outage and recovers', async ({ page }) => {
   await page.route('**/api/products?*', route => route.fulfill({ status: 503, json: { error: { code: 'UNAVAILABLE', message: 'Catalog unavailable.' } } }));

@@ -8,9 +8,11 @@ This is an original educational application. No real payments, shipping, user re
 
 ## Session isolation
 
-The first API response sets an HttpOnly `lab_session` cookie. A browser keeps its cart across reloads within that session. A new browser context gets independent state. Alternatively send `x-lab-session: <unique-name>` on every request. The header takes precedence over the cookie and accepts 1–100 ASCII letters, digits, `_`, and `-`. This is a testing convenience, not a secure identity token.
+The first API response sets an HttpOnly `lab_session` cookie. A browser keeps its cart across reloads within that session. A new browser context starts an independent session only when it does not restore a copied session cookie or send a shared/inherited session header. For an anonymous control, explicitly use `storageState: { cookies: [], origins: [] }` and `extraHTTPHeaders: {}`. Alternatively send `x-lab-session: <unique-name>` on every request. The header takes precedence over the cookie and accepts 1–100 ASCII letters, digits, `_`, and `-`. This is a testing convenience, not a secure identity token.
 
-All mutations, orders, and reset operations affect only that session. Idle sessions expire after roughly 12 hours. The supplied test fixture generates a fresh UUID for each test, including retries, and shares it between the request fixture and page context. Do not reset a single global session from parallel tests.
+All mutations, orders, and reset operations affect only that session. Idle sessions expire after roughly 12 hours. The supplied test fixture generates a fresh UUID for each test, including retries, and shares it between the request fixture and page context. Do not reset a single global session from parallel tests. Separate sessions can use the same demo email without sharing orders; this is session ownership, not a model of roles or account-level authorization. Disposing a request context frees its client resources; it does not call logout or reset on the server.
+
+For the API learning route, negative controls, and AP-01–04 starters and solutions, use the [API testing workbook](API-TESTING.md).
 
 ## Catalog
 
@@ -100,6 +102,10 @@ IDs increment within a session. Creating an order snapshots the cart and empties
 - Error envelope: `{ "error": { "code": "STABLE_MACHINE_CODE", "message": "Human-readable explanation." } }`.
 - Malformed JSON, non-object JSON → `400 INVALID_BODY`; request bodies above 16 KiB of UTF-8 bytes → `413 INVALID_BODY`.
 - Unknown endpoints → `404 NOT_FOUND`. Unsupported API methods currently follow this same 404 contract.
+
+The byte limit is **16,384 bytes**, not JavaScript string length. Exactly that many bytes are accepted by the parser when they form a JSON object; field validation still applies afterward. The lab parses JSON objects for supported mutations and has no form or multipart endpoint. To send intentionally malformed JSON with Playwright, pass the raw string as `data` and explicitly set `Content-Type: application/json`. Passing an object as `data` serializes valid JSON instead.
+
+Successful cart and order mutations are visible to the next same-session read. This lab does not model eventual consistency. Polling or retrying a write is not needed to observe a successful mutation.
 
 ## UI locator contract
 

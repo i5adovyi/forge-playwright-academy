@@ -32,11 +32,11 @@ The test runner starts the local server automatically if it is not already runni
 
 ## What is inside
 
-- **8 stages / 52 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **104 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **52 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 53 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **106 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **53 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **48 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **52 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -70,6 +70,8 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:api` | Run HTTP API reference tests |
 | `npm run test:portal` | Verify portal navigation and learning tools |
 | `npm run test:solutions` | Run executable shop worked solutions |
+| `npm run test:api:workshop` | Run four advanced request, body-boundary, receipt, and persistence examples |
+| `npm run test:api:practice` | Run the advanced API starters after implementing them |
 | `npm run test:state` | Run fixture lifecycle, context, storage, and authentication examples |
 | `npm run test:state:practice` | Run the fixtures-and-state starters you implement |
 | `npm run test:state:auth` | Run the optional authentication setup, member, guest, and cleanup projects |
@@ -98,10 +100,11 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 52 lessons, exercises, knowledge checks
+  content/curriculum.js 53 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
+api-workshop/           Four advanced API starters and worked solutions
 state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
@@ -164,3 +167,26 @@ The local `/state/` workbench makes browser storage observable. Compare same-con
 The 14 worked cases cover lazy setup, reverse teardown, worker reuse, options, popup copying, reload persistence, and independently observed cleanup. Controlled setup/body failure probes reject additional errors, so an unrelated failure cannot satisfy the exercise. The portal preserves a focused “Next in this track” route between all eight lessons.
 
 The FS drills keep snapshots in memory. Lesson 05-09 also provides an optional project-dependency reference in `state/project-auth/`: `npm run test:state:auth` runs setup, a read-only member, an independent guest, and cleanup. `npm run test:state:auth:gate` proves setup failure blocks the member while the guest and cleanup still pass. This separate example writes a transient synthetic auth file to its own ignored run directory, verifies its removal, and retains reports without raw snapshots. It is an extension of a written challenge, not an extra starter.
+
+## API testing track
+
+Open **API testing track** in the portal (`#/api`). Six lessons connect the eight
+EX-09–16 foundations to four advanced AP drills and the EX-17 hybrid checkout.
+The [API workbook](docs/API-TESTING.md) gives a route, exact run commands, evidence
+criteria, and deliberate faults. The [endpoint contract](docs/lab-api.md)
+describes the actual local backend.
+
+```sh
+npm run test:api
+npm run test:solutions -- --grep 'EX-(09|1[0-6])'
+npm run test:api:workshop
+# Implement AP-01 before removing its .skip and failing sentinel.
+npm run test:api:practice -- --grep AP-01
+```
+
+The revised examples check existing discounted carts after rejections, complete
+order arithmetic and persistence, independent sessions, response/client
+ownership, JSON byte limits, and text receipt ownership. AP starters and worked
+solutions live in `api-workshop/`. Existing lesson IDs and progress remain valid;
+04-06 adds request controls, disposal, and the distinctions between request
+errors, HTTP errors, polling, and retries.

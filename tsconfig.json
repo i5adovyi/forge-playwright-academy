@@ -21,6 +21,7 @@
     "quality/**/*.ts",
     "playwright.visual.config.ts",
     "state/**/*.ts",
-    "playwright.state-auth.config.ts"
+    "playwright.state-auth.config.ts",
+    "api-workshop/**/*.ts"
   ]
 }

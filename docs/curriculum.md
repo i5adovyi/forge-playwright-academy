@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 52 lessons, 104 written exercises, and 52 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **52 hours 40 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 53 lessons, 106 written exercises, and 53 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **53 hours 55 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **104 written exercises** are separate from **48 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, and 10 fixtures/state drills in `state/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+The **106 written exercises** are separate from **52 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, and 4 advanced API drills in `api-workshop/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
 
 ## The Playwright Docs specialization
 
@@ -203,6 +203,7 @@ Test the real API, explore invalid inputs, isolate sessions, and combine fast se
 | 04-03 | Mutations, invalid input, and unchanged state | 60 min |
 | 04-04 | Authentication and session boundaries | 60 min |
 | 04-05 | Hybrid testing and order invariants | 65 min |
+| 04-06 | Request controls, response ownership, and safe retries | 75 min |
 
 Stage output: API contract tests for filtering, mutations, access rules, discounts, and order invariants.
 
@@ -284,3 +285,27 @@ The accessibility and visual extension also uses [Playwright accessibility testi
 Use the installed package and lockfile as the execution baseline. Agent definitions and optional features can change; confirm the installed version and current official instructions before initializing or refreshing agents. The official planner/generator/healer workflow is taught with explicit review of business expectations and execution evidence.
 
 The shop uses in-memory state, simplified demo authentication, integer-cent prices, and no real payments. It is a teaching target, not a reference implementation for production security or inventory management. Broader production concerns belong in the capstone's limitations section.
+
+## API testing specialization
+
+Open **API testing track** in the sidebar. The five existing Stage 04 lessons retain their
+original IDs; 04-06 adds a sixth lesson for request controls and resource ownership. Work
+through EX-09–16 first, then AP-01–04. EX-17 connects API setup with an observed UI
+purchase and persisted evidence. Read the [API workbook](API-TESTING.md) for the
+claim, negative control, and fault experiment for each drill.
+
+| Drill | Practice | Lessons | Starter |
+| --- | --- | --- | --- |
+| AP-01 | Request policy and response ownership | 04-01, 04-06 | `api-workshop/practice.spec.ts` |
+| AP-02 | JSON bytes and rejected-body boundaries | 04-03, 04-06 | `api-workshop/practice.spec.ts` |
+| AP-03 | Receipts belong to a session | 04-04, 04-05 | `api-workshop/practice.spec.ts` |
+| AP-04 | Orders remain immutable after later purchases | 04-05 | `api-workshop/practice.spec.ts` |
+
+```sh
+npm run test:api:workshop
+npm run test:api:practice -- --grep AP-01
+```
+
+Each command selecting a starter remains skipped until you implement its
+criteria, replace its sentinel, and remove `.skip`. A passing worked example
+is a comparator for your reasoning, not evidence that you completed the assignment.
