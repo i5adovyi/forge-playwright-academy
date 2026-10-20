@@ -32,11 +32,11 @@ The test runner starts the local server automatically if it is not already runni
 
 ## What is inside
 
-- **8 stages / 44 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **88 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **44 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 52 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **104 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **52 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **38 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
+- **48 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills), reference tests, and executable solutions. Starter exercises intentionally use `test.skip` until you implement them.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -70,11 +70,13 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:api` | Run HTTP API reference tests |
 | `npm run test:portal` | Verify portal navigation and learning tools |
 | `npm run test:solutions` | Run executable shop worked solutions |
+| `npm run test:state` | Run fixture lifecycle, context, storage, and authentication examples |
+| `npm run test:state:practice` | Run the fixtures-and-state starters you implement |
 | `npm run test:skills` | Run timer, auth-state, upload, iframe, popup, and dialog examples |
 | `npm run test:skills:practice` | Run the browser-skills starters you implement |
 | `npm run test:matrix` | Opt-in shop UI run on Chromium, Firefox, and WebKit; install all engines first |
 | `npm run test:exercises` | Discover/run the starter exercises you implement |
-| `npm run test:all` | Core, browser-skills, accessibility, and portal projects; visual comparisons run separately |
+| `npm run test:all` | Core, browser-skills, accessibility, fixtures/state, and portal projects; visual comparisons run separately |
 | `npm run test:a11y` | Axe scans, defect detection, keyboard flows, and form recovery |
 | `npm run test:a11y:practice` | Accessibility starters you implement |
 | `npm run test:visual` | Compare against committed references for your platform; never create them silently |
@@ -94,10 +96,11 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 44 lessons, exercises, knowledge checks
+  content/curriculum.js 52 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
+state/                  Fixture lifecycles, storage workbench, 10 starters and solutions
 quality/                Accessibility and visual labs, starters, solutions, baselines
 server.mjs              Local HTTP server and session-isolated API
 tests/                  UI, API, and portal verification
@@ -144,3 +147,14 @@ Official Playwright agent tooling depends on the installed version and your chos
 `npm run build` generates a standalone static learning portal in `dist/`. You can host that directory on a static host. The **real shop and HTTP API remain local**; the hosted portal offers the source download and setup guide. No learner data is uploaded by the portal.
 
 The original project and writing are MIT licensed. Third-party resources, trademarks, videos, and books remain their authors’ property. Bundled Atkinson Hyperlegible fonts have their own [SIL Open Font License](quality/visual/fonts/OFL.txt). Forge is independent and is not an official Microsoft, Playwright, or OpenAI training program. Commercial reuse is permitted for the original work; conduct your own editorial, accessibility, and product review before presenting it as a commercial course.
+
+## Playwright Docs track: fixtures, contexts, and state
+
+Open **PW Docs track** in the portal sidebar (`#/docs`). Eight added lessons—03-08 through 03-10 and 05-06 through 05-10—connect official guides and API references to ten FS experiments. The [fixtures and state workbook](docs/FIXTURES-AND-STATE.md) includes a reading map, ownership model, storage matrix, debugging guide, and authentication strategy decisions.
+
+```sh
+npm run test:state
+npm run test:state:practice -- --grep FS-01
+```
+
+The local `/state/` workbench makes browser storage observable. Compare same-context tabs with independent contexts; save and restore IndexedDB deliberately; prove that copied login cookies do not clone server data. Fixture examples expose lazy setup, reverse teardown, worker lifetime, options, and automatic evidence. Run the completed examples first, attempt the skipped starters, then compare your reasoning with the solutions. Authentication snapshots stay in memory in this track.

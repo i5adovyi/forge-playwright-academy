@@ -79,3 +79,7 @@ Older videos remain useful for concepts, but use current official documentation 
 - **[Playwright · Episode 3: Running Tests](https://www.youtube.com/watch?v=DcVYaZ8QDsw)** — Visual Studio Code · Microsoft. Video; Beginner; Free. Official YouTube walkthrough of headed and headless execution and the trace viewer. Published 2023; compare UI details with current documentation.
 
 - **[Playwright · Episode 6: Running Tests on CI](https://www.youtube.com/watch?v=gRXPp6RuExU)** — Visual Studio Code · Microsoft. Video; Intermediate; Free. Official YouTube introduction to running Playwright in GitHub Actions. Use the current official CI docs for maintained workflow syntax.
+
+## Fixtures and browser-state extension
+
+Checked on 20 October 2026 against Playwright 1.64.1. The added workbook, scenarios, and teaching prose are original. The primary references are the official [fixture guide](https://playwright.dev/docs/test-fixtures), [isolation guide](https://playwright.dev/docs/browser-contexts), [BrowserContext API](https://playwright.dev/docs/api/class-browsercontext), [authentication guide](https://playwright.dev/docs/auth), [use options](https://playwright.dev/docs/test-use-options), [setup and teardown dependencies](https://playwright.dev/docs/test-global-setup-teardown), [parallelism guide](https://playwright.dev/docs/test-parallel), and [APIRequestContext API](https://playwright.dev/docs/api/class-apirequestcontext). Follow the topic map in [Fixtures & browser state](FIXTURES-AND-STATE.md) and each lesson's source links.

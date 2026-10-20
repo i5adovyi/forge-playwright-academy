@@ -2,7 +2,7 @@
 
 Choose a cadence that leaves time to debug. Reading a lesson is the start; reproducing its result and explaining a failure are the work. The estimates below include exercises and capstone practice. If you are new to programming, allow additional time for Stage 1.
 
-## The eight-week path · about 6–9 hours per week
+## The eight-week path · about 10–12 hours per week
 
 | Week | Stage | Practical output | Gate |
 |---|---|---|---|
@@ -17,7 +17,7 @@ Choose a cadence that leaves time to debug. Reading a lesson is the start; repro
 
 Suggested week: two 60-minute lessons, one 90-minute lab, one 90-minute debugging/review session, and a longer build session. Adjust the total to your available energy. If a gate fails, use the next session to repair the gap instead of pretending the calendar establishes mastery.
 
-## The twelve-week path · about 4–6 hours per week
+## The twelve-week path · about 7–9 hours per week
 
 | Weeks | Focus |
 |---|---|
@@ -87,3 +87,17 @@ During Stage 3, attempt SK-01 and SK-03–06 from [Browser Skills](BROWSER-SKILL
 ## Accessibility and visual workshop extension
 
 Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons 06-06 and 06-07 after learning CI evidence. The four guided lesson estimates add 4 hours 30 minutes. Budget extra time for implementing eight starters and reviewing failures. Attempt AX-01–04 before reading their worked solutions, then VS-01–04. Keep the axe report, a keyboard observation, an expected/actual/diff image set, and a written baseline approval reason in your portfolio. See [Accessibility labs](ACCESSIBILITY-LABS.md) and [Visual baselines](VISUAL-BASELINES.md).
+
+## A focused Playwright Docs path
+
+The complete 52-lesson program now contains **52 hours 40 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The new track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+
+| Session block | Lessons | Evidence to keep |
+|---|---|---|
+| Context ownership | 03-08, 03-09 | Tab-versus-context comparison and a storage matrix you can justify |
+| State transfer | 03-10 | Default and IndexedDB snapshots; missing sessionStorage explained |
+| Fixture lifetimes | 05-06, 05-07 | Dependency trace, reverse teardown, and fresh mutable resources |
+| Options and authentication | 05-08, 05-09 | Typed override, correct API cookie ownership, independent guest control |
+| Docs-guided review | 05-10 | A diagnosis citing the contract, a minimal repair, and rerun evidence |
+
+Use [Fixtures & browser state](FIXTURES-AND-STATE.md) alongside the portal's **PW Docs track**. Run one FS drill at a time. Compare a result with your prediction before reading the worked solution; marking a lesson complete is not a substitute for explaining the ownership boundary.

@@ -19,6 +19,7 @@
     "skills/**/*.ts",
     "playwright.matrix.config.ts",
     "quality/**/*.ts",
-    "playwright.visual.config.ts"
+    "playwright.visual.config.ts",
+    "state/**/*.ts"
   ]
 }

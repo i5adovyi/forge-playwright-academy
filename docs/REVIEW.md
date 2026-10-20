@@ -37,7 +37,7 @@ A second review examined the lessons, runnable exercises, portal, shop/API, conf
 
 ## Accessibility and visual extensions now implemented
 
-The first two recommendations have become complete workshops: **four new lessons, eight written challenges, and eight executable starter/solution pairs**. The academy now has 44 lessons, 88 written challenges, and 38 executable starters.
+The first two recommendations have become complete workshops: **four new lessons, eight written challenges, and eight executable starter/solution pairs**. That extension brought the academy to 44 lessons, 88 written challenges, and 38 executable starters. The later Docs extension below adds to those totals.
 
 - [Accessibility labs](ACCESSIBILITY-LABS.md): scoped axe evidence, a controlled naming defect and repair, keyboard dialog behavior, and form-error/contrast investigation.
 - [Visual baseline workshop](VISUAL-BASELINES.md): deterministic desktop/mobile images, narrow volatile-content masking, controlled-regression evidence, and deliberate review of platform-specific baseline updates.
@@ -53,3 +53,15 @@ These are advanced branches after the core capstone, rather than prerequisites f
 3. **Real-device and performance evidence.** Browser engines and viewport emulation do not establish device behavior, throughput, or production latency. Define a separate environment and workload before making those claims.
 
 The first practical improvement for a learner is to complete one mapped exercise, produce a deliberate failure, and explain its oracle. More content is useful only when it leads to better evidence.
+
+## Playwright Docs extension
+
+The fixtures/context/state gap now has a focused eight-lesson path and ten FS starter/solution pairs. The complete academy has **52 lessons, 104 written challenges, 52 quizzes, and 48 executable starters**. Existing lesson IDs, notes, and progress remain valid.
+
+- A dedicated **PW Docs track** page connects the official references, shared lesson progress, and the [fixtures and state workbook](FIXTURES-AND-STATE.md).
+- Lessons cover dependency graphs, lazy and automatic fixtures, reverse teardown, test/worker scope, typed options, context ownership, storage snapshots, and authentication strategy.
+- The `/state/` workbench makes localStorage, sessionStorage, IndexedDB, and guest/member state observable. Cookie values are not displayed.
+- FS experiments distinguish browser isolation from server-side state ownership, include independent guest controls, and keep authentication snapshots in memory.
+- Download bundles and the default test suite include the new track. The study plans account for its additional guided time.
+
+This expansion concentrates on the requested documentation areas. It does not claim to replace every Playwright guide or establish production authentication security. See [Verification](VERIFICATION.md) for executed checks.

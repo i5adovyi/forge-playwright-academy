@@ -2,7 +2,22 @@
 
 Verified on October 20, 2026. The project supports Node.js 22+. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
-## Accessibility and visual workshop extension
+## Fixtures, contexts, and state extension
+
+- `npm run validate`: **8 stages, 52 lessons, 104 written challenges, 39 resources, 8 articles, and 48 executable drill mappings**. Local documentation references validate.
+- `npm run typecheck`, `npm run check`, and `git diff --check`: passed after integration.
+- `PORT=14827 npm run test:all`: **114 passed, 44 intentionally skipped**, 158 discovered, zero failures, 23.1 seconds. This includes 11 worked cases for the ten FS drills and 21 portal integration tests. FS-02 has two independently valid cases.
+- `PORT=14829 npm run test:visual`: **4 passed**, 2.9 seconds, using the existing reviewed macOS references without updates. Four separate visual learner starters remain intentionally skipped; the combined starter inventory is 48.
+- An earlier run during the interrupted session reported four portal timeouts and unusually long elapsed times. A complete fresh run passed without changing assertions, timeouts, or retries.
+- **17 manuals at two widths (390px and 1440px)** rendered without page errors or document-level horizontal overflow. The new Docs track and state workbench were also checked at both widths and visually inspected.
+- The Docs route has eight lesson links and shares completion with the main curriculum. The portal regression checks the workbook, ten FS mappings, starter command, and mobile overflow.
+- The downloaded source includes `state/`, its starter/solution and fixture/helper files, the new workbook, updated lessons, and runner configuration. Source and manual archives are checked against their local files and the extracted content validator.
+
+The new state track runs against the local synthetic shop and workbench in Chromium. It checks actual storage restoration and independent guest controls, not only serialized object shapes. Authentication snapshots stay in memory; selected evidence excludes cookie values and raw storage state. Lifecycle checks inspect reverse fixture teardown, and explicitly created contexts have cleanup boundaries around each successful allocation.
+
+The full program now contains 52 hours 40 minutes of guided lesson estimates. Written challenges and skipped starters remain learner work, not additional passing test coverage. The historical accessibility, visual, and browser-matrix evidence below retains its original commit and scope.
+
+## Previous accessibility and visual workshop verification
 
 - `npm run validate`: **8 stages, 44 lessons, 88 written challenges, 34 resources, 8 articles, and 38 executable drill mappings**; document links validated.
 - `npm run typecheck`, `npm run check`, and `git diff --check`: passed. Normal visual discovery lists only four worked examples and four starters; the separate defect configuration lists exactly one intentional failure.
@@ -31,7 +46,7 @@ The [ordinary Linux verification run](https://github.com/i5adovyi/forge-playwrig
 - Main verification: **102 passed, 34 intentionally skipped**, approximately one minute; validation, build, syntax/discovery, and TypeScript checks also passed.
 - Reviewed visual comparison: **4 passed**, 4.6 seconds, against committed Linux references with no update flag and no retries.
 
-Subsequent edits record this evidence and add AI review prompts to the manual; they do not change the tested fixtures or comparison configuration.
+That run predates the fixtures-and-state extension above; it establishes the recorded accessibility and visual baseline evidence at its cited commit.
 
 The previous shop matrix passed **45 tests on Linux**, 15 per engine (Chromium, Firefox, WebKit), at commit `087b1633373de98e987b45af7f29bda28fdc6ae6`: [three-engine run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688299). This historical matrix does not imply the new accessibility and visual exercises were run on every engine; those new tracks target Chromium.
 
@@ -43,4 +58,4 @@ Firefox could not launch in the earlier local macOS review (`Could not find prof
 
 A clean axe scan is partial evidence for the scanned state and scope. Manual screen-reader, zoom, and assistive-technology review remain necessary for broader accessibility claims. Screenshot comparisons protect reviewed pixels in a specific rendering environment; they do not establish functional correctness, accessibility conformance, real-device behavior, load capacity, or production security.
 
-The 88 written challenges include design and investigation work and are not all independently executed specifications. Runnable examples are in `tests/`, `solutions/`, `skills/`, and `quality/`. The shop and quality fixtures use synthetic local data. No real account, registration, payment, or external service is created by these labs.
+The 104 written challenges include design and investigation work and are not all independently executed specifications. Runnable examples are in `tests/`, `solutions/`, `skills/`, `quality/`, and `state/`. The shop and quality fixtures use synthetic local data. No real account, registration, payment, or external service is created by these labs.

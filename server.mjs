@@ -154,7 +154,7 @@ const server = http.createServer(async (req, res) => {
     const pathname = decodeURIComponent(url.pathname);
     let base = 'portal';
     let relative = pathname.slice(1);
-    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions', 'skills', 'quality']) {
+    for (const mount of ['lab', 'docs', 'curriculum', 'exercises', 'solutions', 'skills', 'quality', 'state']) {
       if (pathname === `/${mount}` || pathname.startsWith(`/${mount}/`)) { base = mount; relative = pathname.slice(mount.length + 2); break; }
     }
     const basePath = path.resolve(root, base);

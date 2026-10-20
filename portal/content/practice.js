@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 88 lesson challenges.
+/** Executable drills complement (and do not replace) the 104 lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -64,3 +64,21 @@ export const visualTracks = [
   qualityDrill('VS', 3, 'Mask only volatile metadata', 'visual', ['06-07'], 'visual'),
   qualityDrill('VS', 4, 'Review a controlled visual regression', 'visual', ['06-07', '08-03'], 'visual'),
 ];
+
+const stateDrill = (number, title, lessons) => {
+  const id = `FS-${String(number).padStart(2, '0')}`;
+  return {id, title, lessons, file:'state/practice.spec.ts', solution:'state/worked.spec.ts', command:`npm run test:state:practice -- --grep ${id}`};
+};
+export const stateTracks = [
+  stateDrill(1, 'Trace fixture setup and reverse teardown', ['05-01', '05-06']),
+  stateDrill(2, 'Worker lifetime, fresh test resources', ['05-04', '05-07']),
+  stateDrill(3, 'Options, automatic evidence, and lazy fixtures', ['05-08']),
+  stateDrill(4, 'Two tabs, one context', ['03-08', '03-09']),
+  stateDrill(5, 'Separate contexts, separate storage', ['03-08', '03-09']),
+  stateDrill(6, 'Storage snapshots and IndexedDB', ['03-09', '03-10']),
+  stateDrill(7, 'Restore tab state before application startup', ['03-10']),
+  stateDrill(8, 'Browser-owned and standalone API cookies', ['03-08', '04-04', '05-09']),
+  stateDrill(9, 'Copied authentication is not a cloned account', ['03-10', '05-09', '05-10']),
+  stateDrill(10, 'An authenticated fixture with a guest control', ['05-06', '05-09', '05-10']),
+];
+export const docsLessonIds = ['03-08', '03-09', '03-10', '05-06', '05-07', '05-08', '05-09', '05-10'];

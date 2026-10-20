@@ -21,3 +21,17 @@
 .practice-drill-body .code-block{margin:15px 0}
 @media(max-width:720px){.sidebar:not(.open){visibility:hidden}}
 @media print{.practice-drill{break-inside:avoid}}
+
+/* The documentation track reuses the academy's editorial components. */
+.sidebar { overflow-y:auto; }
+.sidebar > * { flex-shrink:0; }
+.docs-feature { margin-top:28px; margin-bottom:32px; }
+.docs-ownership { margin-bottom:36px; }
+.docs-ownership h3,.docs-source h3 { margin-top:16px; }
+.docs-lessons { margin-top:18px; }
+.docs-lessons .lesson-row small { color:var(--muted); }
+.docs-workshop { margin:36px 0; }
+.docs-workshop .editorial-card { min-width:0; }
+.docs-workshop .code-block { margin:20px 0; }
+.docs-source { text-decoration:none; color:inherit; }
+.docs-source:hover { border-color:var(--accent); }

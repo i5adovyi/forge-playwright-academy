@@ -27,6 +27,8 @@ export default defineConfig({
     { name: 'skills-practice', testMatch: /skills\/practice\.spec\.ts/ },
     { name: 'accessibility', testMatch: /quality\/accessibility\/worked\.spec\.ts/ },
     { name: 'accessibility-practice', testMatch: /quality\/accessibility\/practice\.spec\.ts/ },
+    { name: 'state', testMatch: /state\/worked\.spec\.ts/ },
+    { name: 'state-practice', testMatch: /state\/practice\.spec\.ts/ },
     { name: 'portal', testMatch: /tests\/portal\/.*\.spec\.ts/ },
   ],
   webServer: {

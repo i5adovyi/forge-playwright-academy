@@ -1,6 +1,86 @@
 // Original academy content. External resources checked on 2026-10-20.
 export const resources = [
   {
+    "id": "pw-contexts",
+    "title": "Browser contexts and isolation",
+    "type": "Documentation",
+    "author": "Playwright team",
+    "level": "Intermediate",
+    "description": "Predict whether two tabs or two customers should share state before writing setup.",
+    "url": "https://playwright.dev/docs/browser-contexts",
+    "tags": [
+      "context",
+      "isolation",
+      "state"
+    ],
+    "cost": "Free",
+    "verified": "2026-10-20"
+  },
+  {
+    "id": "pw-context-api",
+    "title": "BrowserContext API reference",
+    "type": "Documentation",
+    "author": "Playwright team",
+    "level": "Intermediate",
+    "description": "Inspect cookies, storage snapshots, initialization scripts, and context ownership in the API contract.",
+    "url": "https://playwright.dev/docs/api/class-browsercontext",
+    "tags": [
+      "context",
+      "storageState",
+      "IndexedDB"
+    ],
+    "cost": "Free",
+    "verified": "2026-10-20"
+  },
+  {
+    "id": "pw-use-options",
+    "title": "Context configuration and use options",
+    "type": "Documentation",
+    "author": "Playwright team",
+    "level": "Intermediate",
+    "description": "Trace the settings supplied to fixtures and newly created contexts.",
+    "url": "https://playwright.dev/docs/test-use-options",
+    "tags": [
+      "fixtures",
+      "configuration",
+      "context"
+    ],
+    "cost": "Free",
+    "verified": "2026-10-20"
+  },
+  {
+    "id": "pw-setup-dependencies",
+    "title": "Project setup and teardown dependencies",
+    "type": "Documentation",
+    "author": "Playwright team",
+    "level": "Intermediate",
+    "description": "Connect authentication setup to consuming projects and understand the dependency lifecycle.",
+    "url": "https://playwright.dev/docs/test-global-setup-teardown",
+    "tags": [
+      "auth",
+      "projects",
+      "fixtures"
+    ],
+    "cost": "Free",
+    "verified": "2026-10-20"
+  },
+  {
+    "id": "pw-request-context",
+    "title": "APIRequestContext and cookie ownership",
+    "type": "Documentation",
+    "author": "Playwright team",
+    "level": "Intermediate",
+    "description": "Choose a browser-associated or standalone API context for the session experiment you need.",
+    "url": "https://playwright.dev/docs/api/class-apirequestcontext",
+    "tags": [
+      "API",
+      "cookies",
+      "state"
+    ],
+    "cost": "Free",
+    "verified": "2026-10-20"
+  },
+  {
     "id": "pw-start",
     "title": "Playwright: installation & first run",
     "type": "Documentation",

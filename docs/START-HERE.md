@@ -58,3 +58,7 @@ A local server is required for the live practice API. A static copy of the porta
 - [Assessment](ASSESSMENT.md): stage gates and scoring.
 - [Glossary](GLOSSARY.md): the vocabulary used throughout the project.
 - [Local API contract](lab-api.md): exact payloads and status codes.
+
+## Continue into fixtures and browser state
+
+Choose **PW Docs track** in the sidebar for an eight-lesson route through the official docs. Open [the fixtures and state workbook](FIXTURES-AND-STATE.md), run `npm run test:state`, and explore `http://127.0.0.1:4173/state/` after starting the server. Use your chosen port if different. The FS-01–FS-10 starters live in `state/practice.spec.ts`; remove one skip and implement its acceptance criteria before comparing `state/worked.spec.ts`.

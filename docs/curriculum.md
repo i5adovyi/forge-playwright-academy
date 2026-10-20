@@ -1,6 +1,6 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 44 lessons, 88 written exercises, and 44 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **42 hours 50 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 52 lessons, 104 written exercises, and 52 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **52 hours 40 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
 Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
 
@@ -14,7 +14,18 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **88 written exercises** are separate from **38 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, and 4 visual drills in `quality/visual/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+The **104 written exercises** are separate from **48 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, and 10 fixtures/state drills in `state/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. All starters are intentionally skipped until you implement them. Those counts describe different practice formats and should not be conflated.
+
+## The Playwright Docs specialization
+
+Open **PW Docs track** in the portal sidebar for eight connected lessons, with the same progress and notes as the main path. Start at 03-08 after the isolation introduction (03-03), then continue through 03-10. Work through 05-06 to 05-10 after the fixture introduction (05-01). The [fixtures and state workbook](FIXTURES-AND-STATE.md) supplies the official reading map, storage and ownership tables, FS drill sequence, and debugging cases.
+
+```sh
+npm run test:state
+npm run test:state:practice -- --grep FS-01
+```
+
+FS-01–FS-03 explain fixture lifecycle, worker resources, and options; FS-04–FS-07 explore tab, context, and storage boundaries; FS-08–FS-10 connect API cookies, shared server sessions, and authenticated fixture ownership. These ten drills are included in `test:all`. Use the local `/state/` workbench to inspect storage before automating it.
 
 ## Before lesson 01-02
 
@@ -98,6 +109,23 @@ The [accessibility manual](ACCESSIBILITY-LABS.md) covers scans, keyboard behavio
 
 The [browser-skills manual](BROWSER-SKILLS.md) explains the local `/skills/` harness and six additional drills. Uploads, frames, popups, and native dialogs have explicit teaching fixtures there; they are not invented shop features. Clock and authentication drills exercise observable timer boundaries and real session cookies.
 
+### Fixtures and state drill map
+
+| Drill | Focus | Lessons | Starter |
+|---|---|---|---|
+| FS-01 | Trace fixture setup and reverse teardown | 05-01, 05-06 | `state/practice.spec.ts` |
+| FS-02 | Worker lifetime, fresh test resources | 05-04, 05-07 | `state/practice.spec.ts` |
+| FS-03 | Options, automatic evidence, and lazy fixtures | 05-08 | `state/practice.spec.ts` |
+| FS-04 | Two tabs, one context | 03-08, 03-09 | `state/practice.spec.ts` |
+| FS-05 | Separate contexts, separate storage | 03-08, 03-09 | `state/practice.spec.ts` |
+| FS-06 | Storage snapshots and IndexedDB | 03-09, 03-10 | `state/practice.spec.ts` |
+| FS-07 | Restore tab state before application startup | 03-10 | `state/practice.spec.ts` |
+| FS-08 | Browser-owned and standalone API cookies | 03-08, 04-04, 05-09 | `state/practice.spec.ts` |
+| FS-09 | Copied authentication is not a cloned account | 03-10, 05-09, 05-10 | `state/practice.spec.ts` |
+| FS-10 | An authenticated fixture with a guest control | 05-06, 05-09, 05-10 | `state/practice.spec.ts` |
+
+Worked solutions for this track are in `state/worked.spec.ts`. Run a single completed example with `npm run test:state -- --grep FS-06`; implement the corresponding starter before running `npm run test:state:practice -- --grep FS-06`.
+
 ## Evidence gates before advancing
 
 | After stage | Demonstrate before marking the stage complete |
@@ -158,8 +186,11 @@ Replace fragile waits with observable conditions. Control dependencies, audit me
 | 03-05 | Visual and accessibility checks with judgment | 60 min |
 | 03-06 | Accessibility audits grounded in UI state | 65 min |
 | 03-07 | Keyboard journeys and accessible recovery | 70 min |
+| 03-08 | Browser, context, and page ownership | 65 min |
+| 03-09 | Know which storage owns your state | 70 min |
+| 03-10 | Restore state without losing the boundary | 75 min |
 
-Stage output: controlled network experiments, independent browser sessions, a receipt check, scoped axe reports with incomplete checks retained, a keyboard/modal journey, and name/contrast defect-detection evidence with a manual investigation note.
+Stage output: controlled network experiments, independent browser sessions, a receipt check, scoped axe reports with incomplete checks retained, a keyboard/modal journey, and name/contrast defect-detection evidence with a manual investigation note. Also demonstrate tab/context boundaries, storage snapshots, and origin-guarded tab-state restoration.
 
 ### 4. Go below the UI
 
@@ -186,8 +217,13 @@ Create focused fixtures, typed helpers, data builders, project boundaries, and p
 | 05-03 | Data builders and parameterized tests | 55 min |
 | 05-04 | Parallel-safe by construction | 60 min |
 | 05-05 | Projects, configuration, and suite boundaries | 55 min |
+| 05-06 | Read a fixture dependency graph | 75 min |
+| 05-07 | Worker scope, retries, and unique ownership | 70 min |
+| 05-08 | Options, overrides, and automatic evidence | 75 min |
+| 05-09 | Authentication setup that fits the workload | 80 min |
+| 05-10 | A docs-guided fixture and state investigation | 80 min |
 
-Stage output: typed fixtures, focused page objects, data builders, and independent parallel execution.
+Stage output: typed fixtures, focused page objects, data builders, and independent parallel execution. Trace dependency teardown, distinguish worker/test lifetime, apply typed options, and defend authentication ownership.
 
 ### 6. Ship reliable signals
 
