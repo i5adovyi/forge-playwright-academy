@@ -15,3 +15,10 @@ All four PNGs were inspected: both products and amounts are legible, SAVE10 prod
 An unchanged comparison passed all four cases with zero differing pixels allowed. The controlled defect failed against the unchanged summary reference; a missing-reference probe failed without creating a new reference. These checks verify detection behavior, not the universal correctness of the design.
 
 For future updates, explain the intended change, generate candidates in the intended environment, review every affected image, update these review notes, and run ordinary comparison without an update flag. Do not copy images between operating systems or replace the reference with an image of the intentional defect. See `docs/VISUAL-BASELINES.md` at the repository root.
+
+
+## Linux reference environment
+
+The four Linux images came from the **ubuntu-24.04 GitHub-hosted runner**, using the workflow's Node.js 22 environment and locked Playwright 1.64.1 / Chromium 156.0.8078.4. They were generated from source commit `6a8adb9a5d604a6643853b5aa17c55f78ffad231` in [candidate run 39448007032](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39448007032), artifact `linux-visual-baseline-candidates`.
+
+Codex inspected all four candidate PNGs before adding them to version control. Desktop and mobile content, amounts, expanded details, mask boundary, and summary hierarchy match the intended design. Font rasterization and some wrapping differ from macOS, which is why these images were generated independently. They were not copied from the macOS reference directory. Generation is separate from the subsequent ordinary Linux comparison job.

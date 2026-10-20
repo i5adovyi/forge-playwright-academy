@@ -24,6 +24,8 @@ VS-03 verifies a changing metadata badge against the same narrow mask while sepa
 
 Reviewed references are in `quality/visual/baselines/`, with their environment and review notes in its README. Normal comparison uses committed references and never updates them. The separate manual candidate workflow generates images for review; its success alone is not regression evidence.
 
+Linux candidates were generated from commit `6a8adb9a5d604a6643853b5aa17c55f78ffad231` by the [manual candidate workflow](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39448007032). All four Linux PNGs were inspected before committing them. Candidate generation is not counted as a passing comparison.
+
 The previous shop matrix passed **45 tests on Linux**, 15 per engine (Chromium, Firefox, WebKit), at commit `087b1633373de98e987b45af7f29bda28fdc6ae6`: [three-engine run](https://github.com/i5adovyi/forge-playwright-academy/actions/runs/39444688299). This historical matrix does not imply the new accessibility and visual exercises were run on every engine; those new tracks target Chromium.
 
 ## Reproducibility and limits

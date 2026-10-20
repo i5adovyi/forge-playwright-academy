@@ -68,3 +68,32 @@ jobs:
           name: browser-matrix-failures
           path: test-results/
           retention-days: 7
+
+  visual:
+    name: Compare reviewed Linux visual baselines
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Compare committed references without updating
+        run: npm run test:visual
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: visual-comparison-report
+          path: quality-results/visual-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-comparison-failures
+          path: quality-results/visual/
+          retention-days: 7
