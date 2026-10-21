@@ -26,6 +26,7 @@
     "ui-workshop/**/*.ts",
     "workplace/**/*.ts",
     "playwright.hosting.config.ts",
-    "playwright.persistence.config.ts"
+    "playwright.persistence.config.ts",
+    "beginner/**/*.ts"
   ]
 }

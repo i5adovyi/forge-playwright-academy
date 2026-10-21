@@ -75,7 +75,9 @@
     "test:data": "node --test local-data/*.test.mjs",
     "account:copy": "node scripts/new-account-copy.mjs",
     "test:portability": "node --test tests/portability/*.test.mjs",
-    "test:persistence": "playwright test --config=playwright.persistence.config.ts"
+    "test:persistence": "playwright test --config=playwright.persistence.config.ts",
+    "test:beginner": "playwright test --project=beginner",
+    "test:beginner:practice": "playwright test --project=beginner-practice"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

@@ -54,6 +54,7 @@ confirmation. Use subagents for independent reviews when requested.
 | Exercise mapping | `portal/content/practice.js` maps stable drill IDs to lessons, files and commands |
 | Library | `portal/content/library.js` holds resource links and original articles |
 | Manuals | Edit `docs/`; register new portal manuals in the `manuals` list in `portal/app.js` |
+| Beginner entry | `portal/content/beginner-lessons.js`, `beginner/`, `docs/BEGINNER-START.md`; additive 00-01–00-06 runway before the original path |
 | Main training app/API | `server.mjs`, `lab/`, `tests/`, `exercises/`, `solutions/` |
 | Specialist labs | `skills/`, `state/`, `api-workshop/`, `ui-workshop/`, `quality/` |
 | Workplace/systems labs | `workplace/`; each subfolder's README explains its runner and faults |

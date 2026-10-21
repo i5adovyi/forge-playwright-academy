@@ -1,4 +1,4 @@
-/** Executable drills complement (and do not replace) the 122 lesson challenges.
+/** Executable drills complement (and do not replace) the written lesson challenges.
  * Lesson IDs refer to curriculum.js; paths are relative to the downloaded repository.
  */
 const drill = (number, title, file, lessons) => ({
@@ -142,3 +142,88 @@ export const realWorldTracks = [
   realWorldDrill('AJ-03', 'Bound stalled observation and reject false results', 'jobs', '04-08', 'jobs'),
 ];
 export const realWorldLessonIds = ['06-10', '04-07', '04-08'];
+
+// Optional beginner runway: eight smaller steps before the original drills.
+export const beginnerTracks = [
+  {
+    "id": "BG-01",
+    "title": "Values, types and an independent total",
+    "lessons": [
+      "00-02"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-01"
+  },
+  {
+    "id": "BG-02",
+    "title": "Read objects and arrays",
+    "lessons": [
+      "00-02"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-02"
+  },
+  {
+    "id": "BG-03",
+    "title": "A function and its boundary decisions",
+    "lessons": [
+      "00-02"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-03"
+  },
+  {
+    "id": "BG-04",
+    "title": "Await a value before using it",
+    "lessons": [
+      "00-04"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-04"
+  },
+  {
+    "id": "BG-05",
+    "title": "Open the shop and check its heading",
+    "lessons": [
+      "00-04"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-05"
+  },
+  {
+    "id": "BG-06",
+    "title": "Empty search and visible recovery",
+    "lessons": [
+      "00-04"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-06"
+  },
+  {
+    "id": "BG-07",
+    "title": "Read and check a catalog response",
+    "lessons": [
+      "00-05"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-07"
+  },
+  {
+    "id": "BG-08",
+    "title": "Reject zero without changing the cart",
+    "lessons": [
+      "00-05"
+    ],
+    "file": "beginner/practice.spec.ts",
+    "solution": "beginner/worked.spec.ts",
+    "command": "npm run test:beginner:practice -- --grep BG-08"
+  }
+];
+export const beginnerLessonIds = ["00-01", "00-02", "00-03", "00-04", "00-05", "00-06"];

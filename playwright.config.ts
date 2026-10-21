@@ -19,6 +19,8 @@ export default defineConfig({
     ...devices['Desktop Chrome'],
   },
   projects: [
+    { name: 'beginner', testMatch: /beginner\/worked\.spec\.ts/ },
+    { name: 'beginner-practice', testMatch: /beginner\/practice\.spec\.ts/ },
     { name: 'ui', testMatch: /tests\/ui\/.*\.spec\.ts/ },
     { name: 'ui-workshop', testMatch: /ui-workshop\/worked\.spec\.ts/ },
     { name: 'ui-practice', testMatch: /ui-workshop\/practice\.spec\.ts/ },

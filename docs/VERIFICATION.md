@@ -1,5 +1,45 @@
 # Verification record
 
+## Beginner runway — October 21, 2026
+
+The academy now has **67 lessons, 134 written challenges, 67 quizzes, 82 executable
+assignment IDs, 42 external resources, 8 original articles and 27 portal manuals**.
+The six new lessons and eight BG micro-drills precede the original curriculum.
+
+- Compared all 61 original lesson objects against the pre-change source: titles,
+  sections, exercises, acceptance keys, quizzes and references are unchanged.
+  No original starter or worked solution was removed or edited.
+- Content validation, TypeScript and syntax checks passed.
+- Main suite: **196 passed, 64 intentionally skipped**, 260 discovered. The
+  additional skipped cases are the eight unfinished beginner starters. An initial
+  new navigation test matched two legitimate links; scoping it to the lesson
+  list resolved the ambiguity, followed by the complete successful rerun.
+- Beginner controls: **8 passed**. Untouched starters: **8 skipped**. Temporarily
+  enabled untouched starters: **8 assignment-specific sentinel failures**.
+  Eight deliberate code/expectation mistakes each failed the intended assertion;
+  no unrelated setup errors counted as detection. Evidence is in
+  `quality-results/beginner-review/run-zLcuQl/summary.json` (generated, not in Git).
+- SQLite/backend: **13 passed**. Persistence UI: **15 passed**, including new
+  beginner notes/completion/quiz/checks coexisting with original notes across a
+  real server restart. Every database was disposable; learner data was untouched.
+- Portability: **14 passed**. Static hosting: **2 passed**.
+- Ten representative routes at 390 and 1440 px: **20 renders**, no observed
+  runtime errors or horizontal overflow. Beginner track and guide screenshots
+  were inspected at desktop/mobile sizes. All 27 manuals also rendered at both
+  widths (54 renders) without observed runtime errors or horizontal overflow.
+- Both download ZIPs validate; all 220 distributable source files match the
+  checkout byte-for-byte. The original site identity is excluded. The prepared
+  account copy was updated only after checking for independent edits and retains
+  neutral hosting identity.
+
+The setup guide includes macOS/Linux and Windows PowerShell instructions.
+Local execution was on macOS with Node 24.22.0; written Windows guidance is not
+an executed Windows-install claim. Beginner suitability was reviewed through
+content, examples and navigation, not measured in a study with novice learners.
+The existing CI workflow exercises this expanded suite on Linux; inspect the
+current commit's actual run before claiming that result. The October 20
+closeout below remains a historical record.
+
 Verified on October 20, 2026. The project now requires Node.js 22.13+ for built-in SQLite. Local checks used Node.js 24.22.0, Playwright 1.64.1, axe-core/playwright 4.14.0, and Chromium 156.0.8078.4 on macOS arm64.
 
 ## Project closeout

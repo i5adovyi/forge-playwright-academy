@@ -7,7 +7,7 @@ test('built static portal has lessons and downloads without advertising an unava
   await expect(page.locator('a[href="/lab/"]')).toHaveCount(0);
   await expect(page.locator('a[href="./downloads/forge-academy.zip"]').first()).toBeVisible();
   await page.goto('/#/curriculum');
-  await expect(page.locator('.lesson-row')).toHaveCount(61);
+  await expect(page.locator('.lesson-row')).toHaveCount(67);
   await page.goto('/#/manual/RUN-ANYWHERE');
   await expect(page.locator('.prose')).toContainText('npm run local');
   const zip = await request.get('/downloads/forge-academy.zip');

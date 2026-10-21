@@ -5,7 +5,7 @@ import path from 'node:path';
 // Shared by download packaging and the new-account copy. Only source belongs
 // here: credentials, personal records and generated test output are not assets.
 export const sourceEntries = [
-  'portal', 'lab', 'skills', 'quality', 'state', 'api-workshop', 'ui-workshop',
+  'portal', 'lab', 'beginner', 'skills', 'quality', 'state', 'api-workshop', 'ui-workshop',
   'workplace', 'local-data', 'tests', 'exercises', 'solutions', 'scripts', 'docs',
   'package.json', 'package-lock.json', 'playwright.config.ts',
   'playwright.matrix.config.ts', 'playwright.visual.config.ts',

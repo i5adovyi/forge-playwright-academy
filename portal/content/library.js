@@ -1,5 +1,53 @@
 // Original academy content. External resources checked on 2026-10-20.
 export const resources = [
+{
+  "id": "mdn-js-start",
+  "title": "MDN: JavaScript from the beginning",
+  "type": "Documentation",
+  "author": "MDN contributors",
+  "level": "Absolute beginner",
+  "description": "Read values, variables, arrays and functions alongside BG-01\u2013BG-04. Use the exercises to explain each small expression before moving to browser tests.",
+  "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting",
+  "tags": [
+    "beginner",
+    "javascript",
+    "foundations"
+  ],
+  "cost": "Free",
+  "verified": "2026-10-21"
+},
+{
+  "id": "ts-new-programmer",
+  "title": "TypeScript for the New Programmer",
+  "type": "Documentation",
+  "author": "TypeScript team",
+  "level": "Absolute beginner",
+  "description": "Understand how JavaScript, TypeScript and runtime execution relate. Read after your first values and functions, before the deeper TypeScript lesson.",
+  "url": "https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html",
+  "tags": [
+    "beginner",
+    "typescript",
+    "language"
+  ],
+  "cost": "Free",
+  "verified": "2026-10-21"
+},
+{
+  "id": "git-first-snapshot",
+  "title": "Pro Git: Recording Changes",
+  "type": "Book",
+  "author": "Scott Chacon and Ben Straub",
+  "level": "Beginner",
+  "description": "A legal, free online chapter for understanding tracked files, staging and commits. Optional after your first test; Git history is separate from portal progress.",
+  "url": "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository",
+  "tags": [
+    "beginner",
+    "git",
+    "workflow"
+  ],
+  "cost": "Free",
+  "verified": "2026-10-21"
+},
   {
     "id": "pw-contexts",
     "title": "Browser contexts and isolation",

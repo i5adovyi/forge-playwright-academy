@@ -336,3 +336,26 @@ test('an incompatible import cannot partially replace the committed learner reco
     expect(await record(page, academy.url)).toEqual(before);
   }
 });
+
+test('beginner progress is saved alongside original lesson records through a server restart', async ({ page, academy }) => {
+  await page.goto(`${academy.url}/#/lesson/01-01`);
+  await page.getByLabel('Your field notes').fill('Keep my original lesson notes.');
+  await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await saved(page);
+  await page.goto(`${academy.url}/#/lesson/00-05`);
+  await page.getByLabel('Your field notes').fill('A correct negative test passes.');
+  await page.getByRole('button', { name: 'Mark lesson complete' }).click();
+  await page.locator('[data-quiz="0"]').click();
+  await page.locator('[data-check]').first().check();
+  await saved(page);
+  const before = await record(page, academy.url);
+  await academy.restart();
+  await page.reload();
+  await saved(page);
+  expect(await record(page, academy.url)).toEqual(before);
+  await expect(page.getByLabel('Your field notes')).toHaveValue('A correct negative test passes.');
+  await expect(page.getByRole('button', { name: 'Completed · mark incomplete' })).toBeVisible();
+  await page.goto(`${academy.url}/#/lesson/01-01`);
+  await expect(page.getByLabel('Your field notes')).toHaveValue('Keep my original lesson notes.');
+  await expect(page.getByRole('button', { name: 'Completed · mark incomplete' })).toBeVisible();
+});

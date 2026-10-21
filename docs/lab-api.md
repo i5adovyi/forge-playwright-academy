@@ -2,7 +2,7 @@
 
 Start with `npm run dev`. Portal: `http://127.0.0.1:4173/`; shop: `http://127.0.0.1:4173/lab/`. The server binds to loopback only. `PORT=4174 npm run dev` changes the port; the Playwright config honors the same environment variable.
 
-If you see `EADDRINUSE`, another application already owns that port. Leave it running and choose an unused port, for example `PORT=14827 npm run dev` and `PORT=14827 npm test`. The test runner probes `/api/forge-health` so it cannot accidentally reuse a different application's generic health endpoint.
+If you see `EADDRINUSE`, another application already owns that port. Leave it running and choose an unused port, for example `PORT=14827 npm run dev` for personal exploration and a different unused `PORT=14828 npm test` for the tests. Main tests own their server and refuse to reuse an existing service. The test runner probes `/api/forge-health` to verify its target. See [the beginner guide](BEGINNER-START.md) for PowerShell syntax.
 
 This is an original educational application. No real payments, shipping, user registration, or persistent database exists. State lives in memory and disappears on server restart. Product stock is a per-order validation ceiling, not a globally decremented inventory system. Authentication is intentionally simplified and is **not a production security reference**. Do not use personal information.
 

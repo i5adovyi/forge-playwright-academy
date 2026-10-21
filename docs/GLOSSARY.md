@@ -51,3 +51,26 @@
 | Worker | A separate execution process used by the runner | Mutable shared state can collide across workers |
 
 These short explanations are study aids. Use the linked official documentation in the portal for exact API semantics.
+
+## Before the testing vocabulary
+
+| Term | Plain-language meaning | Example |
+| --- | --- | --- |
+| Terminal / shell | A place to type commands / the program interpreting them | npm run test:beginner |
+| Working directory | The folder a command currently runs in | Folder containing package.json |
+| Source file / save | Code on disk / writing editor changes to that file | beginner/practice.spec.ts |
+| Node.js / npm | JavaScript runtime / project package and script tool | node --version; npm ci |
+| Variable / value | A name / the data it refers to | const quantity = 2 |
+| String / number / boolean | Text / numeric data / true or false | '2', 2, true |
+| Object / array | Named fields / an ordered collection | product.name; names[0] |
+| Function / argument / return | Reusable instructions / an input / the result | lineTotal(12900, 2) |
+| Promise | A value representing eventual completion or failure | Await a request before using its response |
+| HTML / CSS / DOM | Document structure / styling / browser document tree | A labeled button in a page |
+| JSON | A text representation of data | A response with a products array |
+| URL / port / path | Resource address / service number / resource location | http://127.0.0.1:4173/lab/ |
+| Request / response | A message to a service / its answer | GET products, receive status and body |
+| Spec / runner | File of tests / program executing selected tests | worked.spec.ts; Playwright Test |
+| Skipped | Not executed | A starter still using test.skip |
+| Git commit / push | Record a source snapshot / copy commits to a remote | Independent of portal study progress |
+
+Use [Start from zero](BEGINNER-START.md) to practice these terms one at a time.

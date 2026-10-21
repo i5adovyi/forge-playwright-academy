@@ -2,6 +2,16 @@
 
 Choose a cadence that leaves time to debug. Reading a lesson is the start; reproducing its result and explaining a failure are the work. The estimates below include exercises and capstone practice. If you are new to programming, allow additional time for Stage 1.
 
+## Before week one: an optional beginner runway
+
+If terms such as terminal, object, function or HTTP are unfamiliar, spend
+two or three weeks of short sessions on lessons 00-01–00-06. Follow
+[the complete beginner guide](BEGINNER-START.md) and BG-01–BG-08. Setup alone
+can take the first session. Move on when you can independently run and explain
+one UI and one API check, diagnose a deliberate wrong expectation, and save
+your work. This preparation adds 5 hours 25 minutes of guided estimates plus
+your own practice. The schedules below can begin afterward; they are not deadlines.
+
 ## The eight-week path · about 10–12 hours per week
 
 | Week | Stage | Practical output | Gate |
@@ -90,7 +100,7 @@ Complete lessons 03-06 and 03-07 after the first resilience lessons, and lessons
 
 ## A focused Playwright Docs path
 
-The complete 61-lesson program now contains **64 hours 55 minutes of guided work**. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The fixtures and state track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
+The original 61-lesson path contains **64 hours 55 minutes of guided work**. With the six beginner lessons, the complete 67-lesson program has **70 hours 20 minutes** of guided estimates. Add independent debugging, the supplemental drills, and capstone time; adjust the schedules above to your pace. The fixtures and state track contributes 9 hours 50 minutes of guided lessons, so give it two additional weeks if your previous schedule was already full.
 
 | Session block | Lessons | Evidence to keep |
 |---|---|---|

@@ -1,8 +1,23 @@
 # Forge Academy curriculum map
 
-An original practice-first program: **8 stages, 61 lessons, 122 written exercises, and 61 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **64 hours 55 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
+An original practice-first program: **8 stages, 67 lessons, 134 written exercises, and 67 knowledge checks**. Each lesson contains objectives, original explanations, a code or workflow example, two distinct assignments with acceptance criteria, hints and worked guidance, and primary-source reading. The guided estimates total **70 hours 20 minutes**. Budget additional time for independent implementation, debugging, and the **12–20 hour capstone**; these are planning estimates rather than a completion guarantee.
 
-Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. If the default port is occupied, set the same `PORT` for server and test commands. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
+Start the portal with `npm run dev`, then open the local academy. The practice application is `/lab/`. The repository browser project is named **ui** and runs Chromium; `chromium` is the browser install name. The personal server uses 4173 and tests own an isolated service on 4175. If overriding `PORT`, choose separate unused ports for the personal server and tests. See [the exact lab contract](lab-api.md) before implementing endpoint assertions.
+
+## Start from zero: the optional beginner runway
+
+All original lesson IDs and exercises remain. The six additions live inside
+the foundation stage, before 01-01, and have the same notes, quizzes and
+completion tracking. Read [the beginner guide](BEGINNER-START.md).
+
+| Lesson | Topic | Practice |
+| --- | --- | --- |
+| 00-01 | Your computer is the workshop | Setup log and one known run |
+| 00-02 | Read small pieces of JavaScript | BG-01–03: values, containers, functions |
+| 00-03 | Between a click and a response | Manual Network investigation |
+| 00-04 | Your first browser test, line by line | BG-04–06: await, heading, search recovery |
+| 00-05 | Your first API test and rejected input | BG-07–08: catalog and unchanged cart |
+| 00-06 | Get unstuck and save your work | Failure diagnosis and exit gate |
 
 ## How to use a lesson
 
@@ -14,7 +29,7 @@ Start the portal with `npm run dev`, then open the local academy. The practice a
 
 Lesson code blocks are teaching fragments unless a complete test or configuration is explicitly shown. They assume the relevant `test`, `expect`, fixtures and imports are available. Some examples intentionally require setup described in the surrounding text. Instructions containing a placeholder path must be adapted using `npx playwright test --list`. Follow the repository configuration rather than overwriting it with an illustrative config. The runnable reference suite, starter specs and solutions provide complete examples.
 
-The **122 written exercises** are separate from **74 executable starter drills**: 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, 4 UI transition drills in `ui-workshop/`, 9 workplace assignments and 9 real-world systems assignments in `workplace/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. Most starters are skipped until implemented. Incident starters use an explicit enable flag; CI gate modules reject with an unfinished sentinel. The workplace workbook explains each mode. Those counts describe different practice formats and should not be conflated.
+The **134 written exercises** are separate from **82 executable starter drills**: 8 beginner drills in `beginner/`, 24 shop challenges in `exercises/`, 6 browser-skills drills in `skills/`, 4 accessibility drills in `quality/accessibility/`, 4 visual drills in `quality/visual/`, 10 fixtures/state drills in `state/`, 4 advanced API drills in `api-workshop/`, 4 UI transition drills in `ui-workshop/`, 9 workplace assignments and 9 real-world systems assignments in `workplace/`. Shop starters have worked examples in `solutions/`; the other tracks keep `practice.spec.ts` and `worked.spec.ts` together in their respective directories. Most starters are skipped until implemented. Incident starters use an explicit enable flag; CI gate modules reject with an unfinished sentinel. The workplace workbook explains each mode. Those counts describe different practice formats and should not be conflated.
 
 ## The Playwright Docs specialization
 
@@ -357,7 +372,7 @@ in their natural architecture/delivery stages in the complete curriculum.
 | DB-01–02 | Nested data ownership and field boundaries | `workplace/builders/practice.spec.ts`, `builders.starter.ts` |
 
 The nine IDs describe assignments. RF-01 expands to two consumers; DB-02 expands
-to 48 separately registered cases. Do not equate the 74 assignment IDs with a
+to 48 separately registered cases. Do not equate the 82 assignment IDs with a
 Playwright report's discovered or skipped test count.
 
 ## Real-world systems specialization

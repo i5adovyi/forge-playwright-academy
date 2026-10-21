@@ -214,3 +214,31 @@ actual static files and both ZIPs. Normal Playwright runs own a browser-only
 server; persistence tests use disposable directories. See [Verification](VERIFICATION.md)
 for executed evidence and limits. There is no automatic cross-device sync or
 multi-user database service in this release.
+
+## Complete beginner review — October 21, 2026
+
+The original foundation path was a useful introduction for someone already
+comfortable with a computer's developer tools, but not a complete zero-code
+entry point. It moved from setup directly into typed case matrices and async
+loops, assumed terminal/editor familiarity, and offered little support for
+interpreting the first failed or skipped run.
+
+Added six preparatory lessons (00-01–00-06), eight paired BG starters/solutions,
+a Start from zero portal route and a detailed OS-aware setup workbook. The
+additions teach values, objects, arrays, functions, web/HTTP/JSON vocabulary,
+line-by-line test anatomy, await, UI recovery, status/body checking, rejected
+input with unchanged state, failure diagnosis and saving source versus progress.
+Updated setup entry points and clarified separate personal/test ports.
+
+All original 61 lessons, their exercise acceptance keys, quizzes, starter files
+and worked solutions remain. The overall inventory is now 67 lessons, 134 written
+challenges and 82 executable assignment IDs. Existing completion IDs remain
+valid; percentages can change because the curriculum grew. The October 20
+closeout/tag/archive remain historical records, not the current inventory.
+
+The beginner route has explain-back and practical exit gates. Suitability was
+reviewed from the written flow and executed examples; no observed cohort study
+of complete beginners has been conducted. A next useful evaluation is to watch
+a new learner attempt setup and one starter without coaching, then adjust the
+wording around their actual obstacles. This is future usability research, not
+a reason to remove or weaken the advanced material.

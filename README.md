@@ -29,6 +29,25 @@ testing. AI agents are learning partners: learners still need to understand the
 test, review changes, and verify its behavior. Preserve a coherent learning path,
 clear explanations and usable navigation as the project grows.
 
+## Completely new to coding or test automation?
+
+Start with the portal’s **Start from zero** route and the
+[complete beginner guide](docs/BEGINNER-START.md). Six preparatory lessons
+(00-01–00-06) explain the terminal/editor, JavaScript, the web, first UI/API tests
+and failure diagnosis. Eight micro-exercises in `beginner/` have unfinished
+starters and worked solutions. The original 61 lessons remain intact.
+
+After following the setup guide, run one known example:
+
+```sh
+npm run test:beginner -- --grep BG-05
+```
+
+Then attempt one starter with `npm run test:beginner:practice -- --grep BG-05`.
+The guide explains every command, what success looks like and how to recover
+from common setup errors. No paid tools or GitHub account are required for a
+downloaded copy. Existing learners can continue directly at lesson 01-01.
+
 ## Start a new development or AI session
 
 This repository carries the project context; previous chat history is optional.
@@ -131,11 +150,11 @@ of the OpenAI login and does not require an API key.
 
 ## What is inside
 
-- **8 stages / 61 original lessons**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
-- **122 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
-- **61 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
+- **8 stages / 67 original lessons (including six beginner runway lessons)**, from testing fundamentals and TypeScript to resilient browser tests, API testing, framework design, CI, AI agents, and a capstone.
+- **134 lesson challenges**, each with a brief, steps, acceptance criteria, a hint, and a worked solution or reference approach.
+- **67 knowledge checks**, lesson notes, exercise checklists, completion tracking, and progress import/export.
 - **Forge Shop**, a local app with products, search, cart, discounts, login, checkout, and a real HTTP API.
-- **74 executable starter exercises** (24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills + 9 workplace assignments + 9 real-world systems assignments), reference tests, and executable solutions. Most starter specs use `test.skip` until implemented; incident enable flags and unfinished CI gate modules are explained in the workplace workbook.
+- **82 executable starter exercises** (8 beginner drills + 24 shop drills + 6 browser-skills drills + 4 accessibility labs + 4 visual-baseline exercises + 10 fixtures-and-state drills + 4 advanced API drills + 4 UI transition drills + 9 workplace assignments + 9 real-world systems assignments), reference tests, and executable solutions. Most starter specs use `test.skip` until implemented; incident enable flags and unfinished CI gate modules are explained in the workplace workbook.
 - **An original article collection and manuals**, plus a curated external library of documentation, books, courses, and videos.
 - **A reproducible CI workflow** with HTML reports, traces on failure, and useful artifacts.
 - **A portfolio capstone** with deliverables, review criteria, and a release decision.
@@ -173,6 +192,8 @@ Read a lesson, attempt its exercises, run the relevant code, compare with the so
 | `npm run test:portability` | Verify handoff and download data exclusions |
 | `npm run preview` | Preview built static hosting output on port 4174 |
 | `npm run dev` | Serve the portal, shop, and API on port 4173 |
+| `npm run test:beginner` | Run eight small worked examples for new programmers |
+| `npm run test:beginner:practice` | Run the beginner starters after implementing one at a time |
 | `npm test` | Run the core UI/API reference suite |
 | `npm run test:ui` | Run browser UI reference tests |
 | `npm run test:ui:workshop` | Run four form, recovery, failed-save, and stale-response examples |
@@ -210,8 +231,9 @@ The download packager uses the standard `zip` command (available on macOS and Li
 
 ```text
 portal/                 Learning portal and content modules
-  content/curriculum.js 61 lessons, exercises, knowledge checks
+  content/curriculum.js 67 lessons, exercises, knowledge checks
   content/library.js    Curated resources and original articles
+beginner/               Eight beginner starters and worked examples
 lab/                    Accessible Forge Shop UI
 skills/                 Six browser-feature drills, harness, starters, solutions
 ui-workshop/            UI transition starters and worked examples

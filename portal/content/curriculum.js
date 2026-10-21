@@ -1,3 +1,4 @@
+import { beginnerLessons } from './beginner-lessons.js';
 import { realWorldLessons } from './real-world-lessons.js';
 import { workplaceLessons } from './workplace-lessons.js';
 /** Original Forge Academy curriculum. Snippets are lesson fragments unless imports are shown.
@@ -20,6 +21,7 @@ const S = (heading,body,code) => ({heading,body,...(code?{code}:{})});
 const Q = (question,options,answer,explanation) => ({question,options,answer,explanation});
 const L = (id,stage,title,summary,minutes,tags,objectives,sections,exercises,quiz,resources) => ({id,stage,title,summary,minutes,level:Number(id.slice(0,2))<3?'Foundation':Number(id.slice(0,2))<6?'Intermediate':'Advanced',tags,objectives,sections,exercises,quiz,resources});
 export const lessons = [
+...beginnerLessons,
 L('01-01','foundations','The automation engineer’s mindset','Choose checks that answer a business question before choosing a tool.',35,['strategy','risk'],
 ['Separate a test action from a test oracle','Prioritize checkout risks by impact and uncertainty','Describe evidence a reviewer can reproduce'],[
 S('Start with a claim','A passing script proves only the claims it actually checks. Clicking Add to cart proves very little if you never inspect the cart. A useful claim is specific: adding two units of an available product increases the cart quantity by two and calculates the matching line total. The action creates the situation; the oracle tells you whether the result is acceptable.'),

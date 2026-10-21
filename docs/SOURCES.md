@@ -110,3 +110,21 @@ The revised UI lessons and original UI-01–04 exercises were checked against
 The shop contract and local execution supply the product-specific expected
 values. The response-consumption probe in UI-04 is a documented, test-only
 experiment for this app, not a general Playwright network-idle guarantee.
+
+## Beginner runway additions — October 21, 2026
+
+The six introductory lessons and complete beginner guide add primary-source
+reading without removing the original library. New shelf entries are:
+
+- [MDN JavaScript learning path](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting): values, variables, containers and functions.
+- [TypeScript for the New Programmer](https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html): language/runtime context before the deeper handbook.
+- [Pro Git: Recording Changes](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository): legal free online reading about staged files and commits.
+
+Setup and runner guidance was checked against [Node downloads](https://nodejs.org/en/download),
+[npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci/),
+[Playwright installation](https://playwright.dev/docs/intro),
+[writing tests](https://playwright.dev/docs/writing-tests),
+[assertions](https://playwright.dev/docs/test-assertions) and
+[API testing](https://playwright.dev/docs/api-testing). The first-test examples
+use this repository's actual local fixture and installed dependency.
+External pages can change; the per-resource verified date identifies this review.

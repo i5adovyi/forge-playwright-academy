@@ -11,6 +11,9 @@ solutions and deliberate defect proofs. Its focus includes interview readiness
 and difficult workplace situations: state ownership, races, failed writes,
 diagnosis, recovery and trustworthy CI evidence.
 
+For complete beginners, the additive Start from zero route is documented in
+[BEGINNER-START.md](docs/BEGINNER-START.md); keep the original curriculum intact.
+
 Start with the user's current task, inspect the checkout and existing changes,
 then read the relevant workbook and implementation. Continue the existing
 project. Preserve learner attempts and stable lesson IDs. Keep reference
