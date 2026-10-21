@@ -24,6 +24,45 @@ You do not need to learn fixtures, CI, page objects or AI agents in your first
 session. Start with one readable test. Return to those tracks when the exit
 gate below feels comfortable.
 
+An automated **test** is a repeatable setup, action and check. For your first
+one, the setup is the local shop, the action opens its page, and the check asks
+whether its expected heading is visible. The runner reports what happened.
+
+### From the download button to an open folder
+
+If you already have an edited copy, reopen that copy. A fresh download does not
+contain your earlier exercise edits; do not extract it over your working folder.
+
+1. On **Start from zero**, select **Download the runnable project**. The file is
+   `forge-academy.zip`. The separate `forge-manuals.zip` contains reading material
+   only, so it cannot run the exercises.
+2. Find the ZIP in your browser's downloads or your computer's Downloads folder.
+   On Windows, right-click it and choose **Extract All**, then choose a destination.
+   On macOS, double-click the ZIP in Finder. On Linux, use your archive manager's
+   extract action and choose a destination. Follow the official
+   [Windows extraction guide](https://support.microsoft.com/en-us/windows/experience/storage-filemanagement/zip-and-unzip-files)
+   or [macOS extraction guide](https://support.apple.com/guide/mac-help/zip-and-unzip-files-and-folders-on-mac-mchlp2528/mac)
+   if the archive is unfamiliar.
+3. Open the resulting ordinary folder. Find **package.json, README.md and
+   server.mjs together**, with a `beginner` folder beside them. That is the folder
+   to open; its name can differ from an example in this guide.
+4. If you need an editor, install the desktop version of **Visual Studio Code**
+   using its [official setup guide](https://code.visualstudio.com/docs/getstarted/overview).
+   Its browser version is not the local editor/terminal workflow described here.
+5. In VS Code, use **File → Open Folder** and select the folder from step 3. In
+   the Explorer file list, expand `beginner` and open `worked.spec.ts`. This shows
+   the existing course files; you do not need to create a blank project.
+   See the [editor tutorial](https://code.visualstudio.com/docs/editing/getting-started/editor-tutorial).
+   If a trust prompt appears, confirm the folder is the academy copy you intended
+   to open before allowing its code to run.
+6. Use **Terminal → New Terminal** in VS Code. A panel with a command prompt
+   opens. Click inside that panel before entering commands. A second terminal
+   can be opened with the panel's **+** button. See
+   [terminal basics](https://code.visualstudio.com/docs/terminal/basics).
+7. Follow the Node installation and location checks below before running tests.
+   Keep a short note of this folder's location so you can reopen the same copy
+   next time. Editor extensions, AI chat and a Git account can wait.
+
 ## Four places you will use
 
 | Place | What belongs there | Example |
@@ -38,6 +77,13 @@ A **directory** is a folder. A **path** identifies a file or folder. The
 A **spec** is a file of test cases, here ending in `.spec.ts`. A **command prompt**
 is the marker where your terminal accepts the next command. Do not copy prompt
 symbols such as `$`, `>` or `PS C:\...>` from examples into commands.
+
+**Commands, examples and output are different.** Copy a Terminal command into
+the terminal, then press Enter. Code examples belong in the editor only where
+the lesson tells you to edit a starter; some show only part of a test. Output
+such as `1 passed` is what you read after a run, not another command to enter.
+The portal's Copy button copies text; it does not run a test or save a source
+file. Keep the page open for reading while using the editor and terminal locally.
 
 ## 1. Install and find the project
 
@@ -92,6 +138,13 @@ folder. If Node is missing, fix installation before attempting npm commands.
 If the version is below 22.13, select/install a supported version. The included
 `.nvmrc` is for people already using a Node version manager; you do not need to
 learn one to get started.
+
+For example, a supported Node installation may print a version beginning with
+`v24.`; the remaining digits and npm version can vary. Record the actual output.
+If your initial setup log says **not installed yet**, that is a useful observation,
+not a failed assignment. Complete installation, reopen the terminal and check
+again. When `ls` or `Get-ChildItem` shows only another folder, open that folder
+and check again until the three root files are together.
 
 ## 2. Install the project's dependencies and browser
 
@@ -174,6 +227,36 @@ Stop terminal A with Control+C. Starting `npm run local` again keeps committed
 study progress in SQLite, but the shop's temporary cart/order state resets.
 Wait for the portal's save indicator before closing it.
 
+### Follow one request in the browser
+
+For lesson 00-03, start the local server again if you stopped it, then open
+**http://127.0.0.1:4173/lab/** in a browser with developer tools. This is the shop,
+not the hosted lesson page. The following is observation, with no code to paste:
+
+1. Open developer tools. In Edge, right-click the page and choose **Inspect**,
+   then select **Network**. In Firefox, open **Network** from Web Developer
+   Tools, or use Control+Shift+E (Command+Option+E on macOS).
+   Official walkthroughs: [Edge Network](https://learn.microsoft.com/en-us/microsoft-edge/devtools/network/)
+   and [Firefox Network Monitor](https://firefox-source-docs.mozilla.org/devtools-user/network_monitor/index.html).
+2. Leave Network open. In the **shop's Search products box**, clear any earlier
+   text and enter `head`. The Network filter box and the shop search box have
+   different jobs; only the shop search asks for new products.
+3. In Network's filter box, enter `products`. Select the request whose URL
+   includes `/api/products` and `search=head`. There may be several rows from
+   typing; inspect the matching completed request, not merely the top row.
+4. In **Headers**, read its request URL, method **GET** and status **200**. In
+   **Response**, read the JSON: `total` is `1`, and the first product's `name`
+   is `Studio Headphones`. Expand collapsed objects/arrays if needed. See
+   [Firefox request details](https://firefox-source-docs.mozilla.org/devtools-user/network_monitor/request_details/index.html).
+5. Compare that with the one Studio Headphones card visible in the shop. Record
+   the search text, URL, status, response name and displayed name in your lesson
+   notes. These are observations of the same search, not guesses from the lesson.
+
+If there are no rows, keep the tools open and repeat the search. Clear the
+Network filter if it hides everything. If only a portal document appears, check
+the `/lab/` address. A browser with different menus can use its own Network
+tool; no browser extension or paid tool is needed for this observation.
+
 ## 5. Make your first change safely
 
 1. Open `beginner/practice.spec.ts`. Find BG-05.
@@ -193,6 +276,57 @@ without saving it does not change the version the runner reads. Removing a
 skip while leaving the sentinel makes the case intentionally fail until you
 implement its criteria. This prevents an unfinished body from appearing green.
 
+### Find the exact edit and keep the surrounding test
+
+In the editor's file list, expand `beginner`, open **practice.spec.ts**, and
+click in the code. Use **Find** (Command+F on macOS; Control+F on Windows/Linux),
+enter `BG-05`, then press Escape after locating its test. The file tab must say
+`practice.spec.ts`, not `worked.spec.ts`. Find searches text; it does not change
+anything. The editor's [basic editing guide](https://code.visualstudio.com/docs/editing/codebasics)
+covers Find and saving.
+
+A **TODO** comment names the work still to do. A **sentinel** here is an
+intentionally impossible assertion: `expect(false, '...').toBe(true)`. It makes
+an enabled but unfinished test fail clearly. `false` cannot equal `true`; the
+message between quotes tells you which assignment is unfinished.
+
+Make this change to the **start of BG-05's existing test line**:
+
+```text
+Before: test.skip('BG-05 · Open the shop and check its heading', async ({ page }) => {
+After:  test('BG-05 · Open the shop and check its heading', async ({ page }) => {
+```
+
+The words `Before:` and `After:` explain the edit; do not type them into the file.
+Keep the first import at the top, the existing `await page.goto('/lab/');` line,
+and this test's closing `});`. Add your heading assertion **inside** this test,
+after navigation and before that closing line. Delete only BG-05's sentinel
+assertion when replacing it with the real check. Leave the other seven tests
+and their skips alone. Do not add a second BG-05 test or a second import.
+
+Try to write the assertion from lesson 00-04. If you need a comparison, the
+matching BG-05 in `worked.spec.ts` shows the complete test. Compare that one
+test without replacing the whole practice file. Save with the editor's **File
+→ Save** command or the save shortcut, then run the **practice** command. A
+successful `test:beginner` command still runs the supplied example, even when
+you have edited `practice.spec.ts`.
+
+Keep a small record of the deliberate failure and its repair:
+
+| Run of your BG-05 starter | Expected evidence | Meaning |
+| --- | --- | --- |
+| Still has `.skip` | `1 skipped` | Its body has not executed |
+| Skip removed, sentinel left | Failure with the BG-05 unfinished message | The runner reached unfinished work |
+| Real heading assertion | `1 passed` | This heading check executed successfully |
+| Temporarily wrong heading | `1 failed`, locator assertion points at your changed expectation | Your check can reject the deliberately wrong claim |
+| Original heading restored | `1 passed` | You returned the case to its intended behavior |
+
+Exact formatting and durations vary. Read the filename, selected project and
+first relevant error as well as the count. When another error appears, use the
+failure table below; do not report it as the planned wrong-heading result. You
+can save this record in **Your field notes**; that saves notes, not the edited
+test file. Returning the test to green is part of the experiment.
+
 ## Your six-lesson route
 
 | Lesson | Focus | Small practical step |
@@ -208,6 +342,13 @@ The portal **Start from zero** route opens these lessons and uses the same
 notes, quizzes and completion system as the main curriculum. Existing progress
 is retained. Because six lessons were added, an existing learner's percentage
 can be lower while their completed lesson IDs remain unchanged.
+
+Each lesson has two written challenges. Some direct you to the BG exercises,
+so the twelve challenges and eight runnable drills are connected views of the
+same learning work, not twenty unrelated assignments. **Reveal the worked
+solution** in a challenge explains the expected approach in words. **Where to
+compare your solution** in the practice map gives a local code-file path.
+Neither button runs your test or automatically marks it complete.
 
 ## Eight micro-exercises: criteria and comparisons
 
@@ -303,6 +444,30 @@ The full local portal stores progress outside the checkout; a hosted/static
 portal stores it in that browser origin. Use [Local data](LOCAL-DATA.md) for
 backup/export/import and [Account handoff](ACCOUNT-HANDOFF.md) before changing
 accounts or computers.
+
+### Returning tomorrow
+
+1. Reopen the **same extracted project folder** in your editor. Open the starter
+   you edited and confirm your saved change is there. Do not begin by downloading
+   another ZIP or generating another project.
+2. Open a terminal and check its working folder with `node -p "process.cwd()"`.
+   It should identify that same folder containing `package.json`.
+3. If you only want to run an exercise, run its focused test command. The runner
+   starts its own test service. You do not normally repeat `npm ci` or the browser
+   installation every session; a new machine, changed dependencies or a missing
+   browser may need setup again.
+4. If you want the local portal or manual shop, start `npm run local`, then open
+   the address it prints. Use a second terminal for tests. Reopening the browser
+   URL alone does not start a server after a restart.
+5. Return to the same portal address and browser profile for your study record.
+   Hosted and local addresses have separate records until you explicitly
+   export/import. Use **My progress** or **Continue learning** to resume, and
+   confirm the save indicator before stopping again.
+
+Before ending a session, save code in the editor, restore any deliberately wrong
+expectation, and write the next exercise ID plus its run command in your notes.
+Wait for notes to save, then stop your manual server with Control+C. A checkmark
+in the portal is a self-assessment; it is not evidence that files were saved.
 
 ## Two or three weeks is a reasonable start
 

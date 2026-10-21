@@ -242,3 +242,37 @@ of complete beginners has been conducted. A next useful evaluation is to watch
 a new learner attempt setup and one starter without coaching, then adjust the
 wording around their actual obstacles. This is future usability research, not
 a reason to remove or weaken the advanced material.
+
+
+## Beginner follow-up review — October 21, 2026
+
+Three independent agent reviews examined the beginner path from a zero-coding
+perspective: explanations, runnable exercises, and setup/navigation. They found
+real gaps between the required actions and the instructions: unexplained editor
+steps, early TypeScript syntax, ambiguous snippet placement, unfamiliar search
+and POST methods, and the difference between a supplied answer and learner work.
+
+The six lessons now include smaller syntax explanations, traced calls and loops,
+prediction pauses with reference answers, and explicit code-placement guidance.
+Terminal commands, JSON data and TypeScript examples have distinct labels. The
+setup workbook adds extraction/editor/Network steps, the exact first edit,
+expected skipped/failed/passed evidence and a next-session routine. The eight
+original drills gain staged hints and annotated solutions, including a real
+missing-await experiment with separate runtime and type-checking evidence.
+
+The beginner practice map now explains one file/one test/one command. Advanced
+instructions remain in an optional disclosure. Starter and supplied-answer
+commands are clearly distinguished, and written challenges are explained as
+connected to the BG drills rather than an extra twenty coding assignments.
+Cross-review caught and repaired a duplicate-variable risk and a snippet that
+assumed a navigation line the starter did not yet contain.
+
+No lesson or assignment was removed. The original six beginner lesson IDs,
+exercises, acceptance keys, quizzes and code examples remain; their sections
+were enriched. Both beginner spec files retain identical executable code, with
+all eight starter skips and sentinels intact. The original advanced curriculum
+is unchanged. Inventory remains 67 lessons and 82 runnable assignment IDs.
+
+These are expert/agent walkthroughs, executable checks and layout review, not
+observed novice-user research. A future learner trial can reveal issues these
+reviews miss. Passing a supplied example still does not grade a learner's work.

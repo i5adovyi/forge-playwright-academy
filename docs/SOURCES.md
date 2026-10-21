@@ -128,3 +128,20 @@ Setup and runner guidance was checked against [Node downloads](https://nodejs.or
 [API testing](https://playwright.dev/docs/api-testing). The first-test examples
 use this repository's actual local fixture and installed dependency.
 External pages can change; the per-resource verified date identifies this review.
+
+
+## Beginner follow-up review — October 21, 2026
+
+The follow-up reviewed the installed Playwright 1.64.1 behavior against official
+[TypeScript](https://playwright.dev/docs/test-typescript),
+[assertions](https://playwright.dev/docs/test-assertions) and
+[API testing](https://playwright.dev/docs/api-testing) guidance, plus
+[MDN async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
+These support the distinction between execution and type checking, awaited page
+assertions, request data and promised values. Beginner examples remain original.
+
+The setup guide links official Apple/Microsoft archive extraction, VS Code
+folder/editor/terminal instructions and Edge/Firefox Network tooling at the
+step where each is used. Menu wording and screenshots can change; these links
+support the written instructions, not a claim of executed installation on every
+operating system. No external paid material is copied into the project.

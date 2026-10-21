@@ -19,12 +19,17 @@ export const beginnerLessons = [
     ],
     "sections": [
       {
+        "heading": "What are we trying to automate?",
+        "body": "A test starts with an expected behavior, performs an action and checks the result. For example: open the practice shop and check that its main heading is visible. Playwright is the tool that controls a browser or sends a request; the test runner chooses which test to execute and reports its result. UI means user interface: the page a person sees. An API is an interface programs use to exchange data. You will try both, one small step at a time."
+      },
+      {
         "heading": "Four places, four jobs",
         "body": "The editor changes saved source files. A terminal runs commands in a working directory: the folder it currently points at. The browser displays a URL. The test runner reads spec files and executes their checks. A terminal command such as npm ci belongs in the terminal, not the browser address bar, a .ts file or the browser developer console. Open the extracted academy folder in an editor; package.json, server.mjs and README.md should be visible together. This is the project root."
       },
       {
         "heading": "Install once, verify each prerequisite",
-        "body": "Use the BEGINNER-START guide for macOS, Windows PowerShell and Linux steps. Install Node 24 (this repo requires at least 22.13), reopen your terminal, then check node --version and npm --version. Node runs JavaScript outside the browser; npm installs the project packages. npm ci reads the supplied lockfile. Playwright also needs its matching browser binary. Do not create another project with npm init playwright inside this one.",
+        "body": "Use the BEGINNER-START guide for macOS, Windows PowerShell and Linux steps. Install Node 24 (this repo requires at least 22.13), reopen your terminal, then check node --version and npm --version. Node runs JavaScript outside the browser; npm installs the project packages. npm ci reads the supplied lockfile. Playwright also needs its matching browser binary. Do not create another project with npm init playwright inside this one. In your first setup log, write not installed yet if Node or npm is missing; fill in the versions after installation. Run the following terminal commands one at a time.",
+        "language": "Terminal",
         "code": "node --version\nnpm --version\nnode -p \"process.cwd()\"\n# Confirm package.json is in this folder before continuing.\nnpm ci\nnpx playwright install chromium\nnpm run test:beginner -- --grep BG-05"
       },
       {
@@ -111,9 +116,28 @@ export const beginnerLessons = [
     ],
     "sections": [
       {
+        "heading": "Where these examples belong",
+        "body": "JavaScript supplies the language behavior used here. TypeScript adds written type information, such as : number, to help check your code. The .ts extension means this file uses TypeScript. Edit beginner/practice.spec.ts and run one starter with npm run test:beginner:practice -- --grep BG-01, substituting its ID when needed. Do not paste a test or a typed function into the terminal or browser Console. Playwright transforms the .ts file to run it; npm run typecheck separately checks types. A test can run even when that separate check finds a type mistake."
+      },
+      {
+        "heading": "Find the place for your first statements",
+        "body": "This is a map of the starter's shape, not another test to paste into the file. The import is already at the top; it makes test and expect available. test receives a title and a function containing this case's instructions. () => { begins that function; the matching }); ends it. Put the exercise statements inside the existing matching test, between those braces. Keep each BG case separate and keep its supplied variables. The actual starter has more guidance than this shortened map.",
+        "code": "import { test, expect } from '../tests/support/fixtures';\n\ntest.skip('BG-01 · Values, types and an independent total', () => {\n  // Your BG-01 statements belong inside these braces.\n  expect(false, 'BG-01: implement the value and total checks').toBe(true);\n});"
+      },
+      {
         "heading": "Values and names",
         "body": "A string is text in quotes, such as \"2\". A number such as 2 supports arithmetic. A boolean is true or false. const gives a value a name; let permits later reassignment. The equals sign in const quantity = 2 assigns a value. Three equals signs compare values and types. Semicolons end statements; // begins a comment. Predict BG-01 before running it: quoted digits and numbers are different.",
         "code": "const quantity = 2;\nconst priceCents = 12900;\nconst totalCents = priceCents * quantity; // 25800\nconst label = \"Studio Headphones\";\nconst available = true;\n// \"2\" + 1 is \"21\"; 2 + 1 is 3.\n// typeof quantity is \"number\"."
+      },
+      {
+        "heading": "Read the symbols before writing more",
+        "body": "An expression produces a value; 2 + 1 produces 3. * multiplies. typeof asks for a value's type and returns text such as 'number'. Both single and double straight quotes can delimit JavaScript strings; use matching quotes, not curly quotation marks. Names are case-sensitive: quantity and Quantity are different names. In price: 12900 the colon separates an object's field name from its value; in quantity: number it introduces a TypeScript type. The surrounding code tells you which use you are reading.",
+        "language": "Text",
+        "code": "=     assign a value to a name\n===   compare values without changing them\n>=    greater than or equal to\n<=    less than or equal to\n&&    both conditions must be true\n!     reverse a boolean: true becomes false\n()    function inputs or a function call\n[]    an array, or an index into one\n{}    an object, or a block of instructions"
+      },
+      {
+        "heading": "Pause and predict: values",
+        "body": "Before reading the answers, write what 2 + 1, '2' + 1, typeof 2 and typeof '2' produce. Then explain why a quantity read as text is different from a numeric quantity. Reference answers: 3; '21'; 'number'; 'string'. The quoted '2' is text, so adding 1 there joins text. For BG-01, calculate 12900 × 2 on paper first: 25800. A literal expectation is an answer written directly in the check, rather than another call to the calculation being tested."
       },
       {
         "heading": "Containers you can inspect",
@@ -121,13 +145,31 @@ export const beginnerLessons = [
         "code": "const product = { name: \"Studio Headphones\", price: 12900 };\nconst names = [product.name, \"Mechanical Keyboard\"];\n// product.price -> 12900\n// names[0] -> \"Studio Headphones\"\n// names.length -> 2"
       },
       {
+        "heading": "Pause and predict: an array is ordered",
+        "body": "Using the array above, predict names[1], names.length and names[2]. Reference answers: 'Mechanical Keyboard', 2 and undefined. undefined means there is no value at that position; the two existing positions are 0 and 1. Predict what happens if the two names swap places: the length stays 2, but an exact ordered-array check must fail. That is why BG-02 checks the actual names as well as reading one field."
+      },
+      {
         "heading": "Functions, choices and repetition",
         "body": "A function groups instructions you can call with arguments. Its parameters name those inputs, and return gives the result back to its caller. In TypeScript, : number describes an expected input type; it is not a runtime conversion. if chooses a branch. && means both conditions must hold. A for...of loop takes one item from an array at a time. Use a plain function before learning the shorter arrow form. The exclamation mark ! means not, so !Number.isInteger(quantity) is true when the value is not an integer. Parentheses after a function name call it; the values inside are its arguments.",
         "code": "function lineTotal(price: number, quantity: number): number {\n  return price * quantity;\n}\nfunction allowedQuantity(quantity: number): boolean {\n  if (!Number.isInteger(quantity)) return false;\n  return quantity >= 1 && quantity <= 99;\n}\n// lineTotal(12900, 2) returns 25800.\n// allowedQuantity(0) returns false.\n// Schema validity does not guarantee that stock is available."
       },
       {
+        "heading": "Trace one function call by hand",
+        "body": "Defining lineTotal does not run its instructions. Calling lineTotal(12900, 2) assigns those inputs to price and quantity for this call. return computes 12900 * 2, gives 25800 to the caller and ends the function. The : number after the closing parenthesis describes the returned value's type. A type label does not turn the string '2' into a number. An integer is a whole number; 1.5 is not one. Here schema means the allowed shape and values of input, such as an integer quantity from 1 through 99.",
+        "language": "Text",
+        "code": "allowedQuantity(0):\n  Number.isInteger(0) is true, so !true is false.\n  The early return is skipped.\n  0 >= 1 is false, so the final result is false.\n\nallowedQuantity(1.5):\n  Number.isInteger(1.5) is false, so !false is true.\n  return false runs immediately; the bounds line is not reached."
+      },
+      {
+        "heading": "Pause and predict: boundaries",
+        "body": "Trace allowedQuantity(1), allowedQuantity(99) and allowedQuantity(100) before running BG-03. Reference answers: true, true, false. Both endpoints belong to the allowed range; 100 is outside it. Keep these answers written independently of the function. If you temporarily change the lower bound from 1 to 0, the zero case should fail its false expectation. Restore the rule after observing that failure."
+      },
+      {
         "heading": "An assertion is a check with a consequence",
         "body": "expect(actual).toBe(expected) fails when primitive values differ. toEqual compares the contents of objects or arrays. Choose expected values from the stated rule before running the code. Expecting a result to equal itself proves nothing. BG-01 through BG-03 do not open a browser; they let you practice the language in the same runner. Follow them with 01-03 for deeper TypeScript and boundary design."
+      },
+      {
+        "heading": "Read one assertion and one placeholder",
+        "body": "In expect(totalCents).toBe(25800), the value inside expect is what your code produced, and 25800 is your independently chosen answer. Primitive values here are simple numbers, strings or booleans. For an array, use toEqual with the whole expected array. The starter's expect(false, '...').toBe(true) is a sentinel: a deliberately failing placeholder. Its message tells you which assignment is unfinished. Replace it with the required checks; changing false to true or leaving an empty test can produce a green run without checking the exercise."
       }
     ],
     "exercises": [
@@ -219,11 +261,16 @@ export const beginnerLessons = [
       {
         "heading": "JSON is text that represents data",
         "body": "JSON uses double-quoted property names and strings, numeric values without quotes, arrays and objects. It cannot contain comments or functions. response.json() parses JSON text into JavaScript values; it does not validate their meaning. Here products is an array, products[0].name reads its first name, and total is a number.",
+        "language": "JSON",
         "code": "{ \"products\": [{ \"id\": \"p1\", \"name\": \"Studio Headphones\" }], \"total\": 1 }"
       },
       {
+        "heading": "Follow the path through the data",
+        "body": "The JSON above is a shortened response example to read, not a terminal command. After parsing it into a variable named body, body.products selects the array, [0] selects its first object, and .name reads that object's name. Predict body.total and body.products[0].id: the answers are 1 and 'p1'. The product ID is a stable label for this item; it is different from its position 0 in this particular result. A contract is the agreed behavior and data shape the test compares against."
+      },
+      {
         "heading": "Observe before automating",
-        "body": "In the local shop, open browser developer tools, choose Network, then search for head. Find the products request and inspect its URL, status and response. Use the filter to avoid unrelated fonts or files. Developer tools observe a manual browser; the terminal runs Playwright. Describe the same behavior as input → request → response → displayed result before trying BG-07."
+        "body": "In the local shop, open browser developer tools, choose Network, then search for head. Find the products request and inspect its URL, status and response. Use the filter to avoid unrelated fonts or files. Developer tools observe a manual browser; the terminal runs Playwright. Describe the same behavior as input → request → response → displayed result before trying BG-07. Open Network before the search so it records the request; BEGINNER-START gives the menu steps. The search is sent when the text changes, so this shop needs no Search button click."
       }
     ],
     "exercises": [
@@ -310,12 +357,33 @@ export const beginnerLessons = [
         "body": "A promise represents a result that may not be available yet. async permits await inside a function. await pauses this function until the awaited operation resolves or rejects. It is not a fixed sleep. In BG-04, Promise.resolve supplies a small promised value; the loop awaits each value before recording it. In a browser test, await page.goto establishes navigation before the next check. Most Playwright actions and locator assertions need await."
       },
       {
+        "heading": "Trace a loop before using a browser",
+        "body": "This shows the body of BG-04's existing async test. The starter already declares observed: keep that one declaration and add the missing loop below it. for...of repeats the body for each value: first 1, then 2. observed.push(doubled) appends the resolved number. After the first turn observed is [2]; after the second it is [2,4]. Promise.resolve creates an already-fulfilled promise here. An async function itself returns a promise; Playwright waits for the test's returned promise. This language drill needs no browser.",
+        "code": "const observed: number[] = [];\nfor (const value of [1, 2]) {\n  const doubled = await Promise.resolve(value * 2);\n  observed.push(doubled);\n}\nexpect(observed).toEqual([2, 4]);"
+      },
+      {
+        "heading": "Predict what missing await changes",
+        "body": "If you remove only await before Promise.resolve, doubled holds a Promise<number>, not the number. Pushing it into number[] gives a type error, and a run would compare promise objects against [2,4] rather than matching numbers. Do not change the expected array or add a sleep to hide this difference; restore await. This drill teaches how to read a promised value and an ordered loop. Because its promises are already fulfilled, it does not simulate a delayed server or prove that a browser race is fixed."
+      },
+      {
         "heading": "A locator describes; an assertion checks",
         "body": "page.getByRole returns a locator describing the desired control. It does not itself check visibility. toBeVisible checks the outcome and retries while waiting for the condition within its timeout. exact: true requires the full accessible name. A click finishing successfully does not prove the server saved anything. Keep actions and result assertions visibly separate."
       },
       {
+        "heading": "From a manual search to a browser action",
+        "body": "In BG-06, getByRole('searchbox', { name: 'Search products' }) describes the same labelled input you used manually. Store that locator in search, then await search.fill('head') to replace its text. fill is an action; it does not check which product appears. The article role describes each product card in this shop. These lines belong inside BG-06's existing async callback, after you add await page.goto('/lab/') yourself; the rest of the exercise still needs its outcome checks.",
+        "code": "const search = page.getByRole('searchbox', { name: 'Search products' });\nawait search.fill('head');\n// Next, check the results. Filling the input is not that check."
+      },
+      {
+        "heading": "Choose a check for each visible outcome",
+        "body": "await expect(page.getByRole('article')).toHaveCount(0) checks that no product cards match. toBeVisible checks a visible result; toBeHidden checks that the empty-state heading is not visible (an absent element also satisfies it). These locator assertions retry as the page updates, so await them. BG-06 needs both the count and the exact product name after recovery: one wrong card would still satisfy a count of one. In contrast, expect(body.products).toHaveLength(1) later checks an already-read array; it does not wait for a page or send another request.",
+        "language": "Text",
+        "code": "Input: quantum toaster\n  No products found heading: visible\n  Product cards: 0\n\nNext input in the same test: head\n  Product cards: 1\n  Exact product name: Studio Headphones\n  No products found heading: hidden"
+      },
+      {
         "heading": "Edit one starter and run one named test",
         "body": "Open beginner/practice.spec.ts. Remove .skip from BG-05 only; replace its failing sentinel with the heading check. Save the file. Run npm run test:beginner:practice -- --grep BG-05. Compare the solution only after attempting it. In BG-06, an impossible search produces No products found and zero articles; searching head afterward produces exactly one article named Studio Headphones.",
+        "language": "Terminal",
         "code": "npm run test:beginner -- --grep BG-05\nnpm run test:beginner:practice -- --grep BG-05\n# A visible browser is optional:\nnpm run test:beginner:practice -- --grep BG-05 --headed"
       },
       {
@@ -402,7 +470,7 @@ export const beginnerLessons = [
       },
       {
         "heading": "Read one request in three steps",
-        "body": "First await the request. Then inspect its status. Then await response.json() and compare the fields with the documented catalog. params constructs the query string. The request returning does not make the JSON body available as a parsed object automatically.",
+        "body": "First await the request. Then inspect its status. Then await response.json() and compare the fields with the documented catalog. params constructs the query string. The request returning does not make the JSON body available as a parsed object automatically. This is code for inside BG-07's existing async ({ request }) callback in beginner/practice.spec.ts. Keep the supplied import and wrapper; do not paste the snippet at the top of the file or create another test with the same title.",
         "code": "const response = await request.get('/api/products', {\n  params: { search: 'head' }\n});\nexpect(response.status()).toBe(200);\nconst body = await response.json();\nexpect(body.total).toBe(1);\nexpect(body.products).toHaveLength(1);\nexpect(body.products[0].id).toBe('p1');\nexpect(body.products[0].name).toBe('Studio Headphones');"
       },
       {
@@ -410,8 +478,25 @@ export const beginnerLessons = [
         "body": "Quantity zero is forbidden by this lab. POST /api/cart with { productId: \"p1\", quantity: 0 } should return 400 and error.code INVALID_QUANTITY. A test that expects that rejection should pass. A negative test checks a valid rule about invalid input; it is not meant to be a red test run."
       },
       {
+        "heading": "Send data in a POST body",
+        "body": "A method such as get or post expresses the request's action. For this cart endpoint, post asks the service to set a product quantity. The first argument is the path; the second is an options object. data contains the object Playwright sends as JSON in the request body. This differs from params, which put the catalog search in the URL. Read this as BG-08's middle step, after reading its initial cart. Keep productId as the string 'p1' and quantity as the number 0.",
+        "code": "const rejected = await request.post('/api/cart', {\n  data: { productId: 'p1', quantity: 0 }\n});\nexpect(rejected.status()).toBe(400);\nconst rejectionBody = await rejected.json();\nexpect(rejectionBody.error.code).toBe('INVALID_QUANTITY');"
+      },
+      {
+        "heading": "Read a nested error without guessing",
+        "body": "The lab's rejection body below is JSON to inspect. After parsing, rejectionBody.error selects the inner object and .code reads its code field. message is a separate, human-readable field. The HTTP status 400 is response metadata; it is not inside this JSON. Playwright's request returns this HTTP response for you to inspect, so an expected 400 is not automatically a failed test. A network connection error is a different outcome.",
+        "language": "JSON",
+        "code": "{\n  \"error\": {\n    \"code\": \"INVALID_QUANTITY\",\n    \"message\": \"Quantity must be an integer from 1 to 99.\"\n  }\n}"
+      },
+      {
         "heading": "Read after a rejected write",
         "body": "BG-08 first checks that the fresh cart is empty. Send zero, check the exact rejection, then GET /api/cart again in the same test. Compare the full cart with the initial body. A response saying no is weak evidence if the app secretly added an item. This is your first unchanged-state check. Later API and workplace lessons extend this idea to much more difficult cases."
+      },
+      {
+        "heading": "Three observations, one cart",
+        "body": "Name the first parsed cart before and keep it unchanged in your test. Read again after the rejected write to obtain a second response, then compare its parsed body with before using toEqual. That compares two separately observed states; comparing before with itself would prove nothing. Keep all three requests in this one callback with the supplied request. Moving the final read to a second test would inspect a different fresh cart and could hide the unwanted write.",
+        "language": "Text",
+        "code": "1. GET cart -> status 200; before.items is []\n2. POST quantity 0 -> status 400; code INVALID_QUANTITY\n3. GET cart again -> status 200; full body equals before\n\nPredict: the server rejects zero but adds an item anyway.\nReference answer: step 2 passes, but step 3 must fail."
       }
     ],
     "exercises": [
@@ -491,6 +576,16 @@ export const beginnerLessons = [
       {
         "heading": "Expected versus actual",
         "body": "Expected is the rule you chose before the run; received is what the test observed. Do not change an expectation merely to match a failure. Ask whether the requirement, setup, application or test is wrong. If BG-05 fails because you deliberately changed its heading expectation, restore that one edit. If an untouched reference fails, record the environment and error instead of marking the exercise complete."
+      },
+      {
+        "heading": "Read a small failure from top to bottom",
+        "body": "This is an illustrative excerpt, not output from your computer; line numbers and formatting vary. Imagine changing BG-01's quantity to 3 while keeping the required expected total 25800. The filename identifies the edited test. Expected is the number the check requires; Received is the value the code calculated. The source line points to the check that disagreed. In this deliberate experiment, restore quantity 2 and rerun the same selected starter. Do not change 25800 to make the red output disappear.",
+        "language": "Terminal output",
+        "code": "[beginner-practice] BG-01 · Values, types and an independent total\nbeginner/practice.spec.ts:<line>:<column>\n\nError: expect(received).toBe(expected)\nExpected: 25800\nReceived: 38700\n\n> expect(totalCents).toBe(25800);\n\n1 failed"
+      },
+      {
+        "heading": "Passing, failing and not running are different",
+        "body": "For one focused starter, 1 skipped means its instructions were not executed. A sentinel failure means the deliberately unfinished placeholder ran. A wrong-heading assertion failure means the expected heading was not observed before the check's timeout. No tests found means the command selected no case. Only after the intended checks execute and pass should you record a successful control. Read the script name too: test:beginner runs supplied examples; test:beginner:practice runs your starter."
       },
       {
         "heading": "Save, commit and push are different",

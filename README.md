@@ -48,6 +48,13 @@ The guide explains every command, what success looks like and how to recover
 from common setup errors. No paid tools or GitHub account are required for a
 downloaded copy. Existing learners can continue directly at lesson 01-01.
 
+The beginner guide also walks through extracting the ZIP, opening the editor,
+making the exact first edit and returning to the same project tomorrow.
+[Beginner exercise hints](beginner/README.md) break each drill into smaller
+steps, explain assertions and show safe mistakes to diagnose and restore.
+Lessons distinguish terminal commands, TypeScript snippets and JSON data;
+the portal labels the starter command separately from the supplied answer.
+
 ## Start a new development or AI session
 
 This repository carries the project context; previous chat history is optional.

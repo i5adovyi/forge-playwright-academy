@@ -1,5 +1,41 @@
 # Verification record
 
+
+## Beginner follow-up review — October 21, 2026
+
+Three independent reviews and a cross-review informed additive teaching changes;
+see [Review](REVIEW.md). Inventory remains 67 lessons / 82 runnable assignments.
+
+- Content validation, TypeScript and JavaScript syntax checks passed.
+- Portal integration: **29 passed**, including beginner-only guidance, optional
+  retained advanced instructions, distinct starter/reference commands and
+  Terminal/JSON code labels. Main suite: **197 passed, 64 intentionally skipped**
+  (261 discovered). Skips include all eight unfinished beginner starters.
+- Beginner reference controls: **8 passed**; untouched starters: **8 skipped**.
+  Disposable BG-05 copies verified the unfinished sentinel and wrong-heading
+  failures, with completed and restored controls passing. A missing BG-04 await
+  failed the independent array assertion and separately produced exactly TS2345
+  for Promise<number> versus number. Restored runtime and typecheck passed.
+  Reports contain no unrelated runner errors. Generated evidence is
+  `quality-results/beginner-review/second-5t7FyS/summary.json` (not in Git).
+- All original beginner exercises, acceptance arrays, quizzes and section code
+  were compared with the preceding commit and retained. Both spec files have
+  unchanged non-comment executable code. The setup guide retains every original
+  line, with additional explanations.
+- Static hosting: **2 passed**. Ten representative routes at 390 and 1440 px:
+  **20 renders**, with no observed runtime errors or horizontal overflow.
+  The beginner page, manual and new practice guidance were inspected visually.
+- Both download ZIPs validate. All **220 distributable source files** match the
+  checkout. The prepared account-neutral copy was updated after checking for
+  independent edits; its build passed and its original identity exclusions remain.
+
+The controlled failures demonstrate assertion/language mechanics, not production
+mutation coverage or automatic learner grading. Browser tests used isolated
+browser-only services; no personal SQLite record was read or changed. Setup was
+not repeated manually on Windows/Linux, and no novice learner study was conducted.
+Historical checks below retain their original scope and date. GitHub's current
+commit run is the source for its actual CI result, not the configured workflow.
+
 ## Beginner runway — October 21, 2026
 
 The academy now has **67 lessons, 134 written challenges, 67 quizzes, 82 executable

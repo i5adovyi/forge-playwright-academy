@@ -71,6 +71,12 @@ These short explanations are study aids. Use the linked official documentation i
 | Request / response | A message to a service / its answer | GET products, receive status and body |
 | Spec / runner | File of tests / program executing selected tests | worked.spec.ts; Playwright Test |
 | Skipped | Not executed | A starter still using test.skip |
+| TODO / sentinel | A comment describing unfinished work / a deliberately failing check guarding it | Replace the selected assignment's sentinel with meaningful assertions |
+| Callback | A function passed to another function to run when needed | The function after the title in test('name', async () => { ... }) |
+| Actual / expected | What was observed / the independently chosen requirement | A received product name compared with Studio Headphones |
+| Snippet | Part of a file shown to explain an idea | Insert an API example inside its supplied test body, not at the end of the file |
+| Project root / extracted folder | The course folder after unpacking the ZIP | package.json, README.md and server.mjs are together |
+| Browser origin | The protocol, host and port identifying a website's storage boundary | Hosted progress and http://127.0.0.1:4173 progress are separate |
 | Git commit / push | Record a source snapshot / copy commits to a remote | Independent of portal study progress |
 
 Use [Start from zero](BEGINNER-START.md) to practice these terms one at a time.
