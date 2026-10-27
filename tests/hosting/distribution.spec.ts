@@ -10,6 +10,10 @@ test('built static portal has lessons and downloads without advertising an unava
   await expect(page.locator('.lesson-row')).toHaveCount(67);
   await page.goto('/#/manual/RUN-ANYWHERE');
   await expect(page.locator('.prose')).toContainText('npm run local');
+  await page.getByRole('combobox', { name: 'Color theme' }).selectOption('dark');
+  await page.reload();
+  await expect(page.getByRole('combobox', { name: 'Color theme' })).toHaveValue('dark');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(21, 27, 23)');
   const zip = await request.get('/downloads/forge-academy.zip');
   expect(zip.status()).toBe(200);
   expect(zip.headers()['content-type']).toBe('application/zip');

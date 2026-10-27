@@ -23,7 +23,7 @@
     "test:debug": "playwright test --project=ui --debug",
     "test:interactive": "playwright test --ui",
     "test:report": "playwright show-report",
-    "check": "node --check server.mjs && node --check lab/app.js && node --check portal/app.js && node --check skills/app.js && node --check state/app.js && node --check state/project-auth/run.mjs && node --check quality/accessibility/app.js && node --check quality/visual/app.js && playwright test --list && playwright test --config=playwright.visual.config.ts --list && node --check scripts/preview.mjs && node --check workplace/preflight/server.mjs && node --check workplace/recovery/server.mjs && node --check workplace/jobs/server.mjs",
+    "check": "node --check server.mjs && node --check lab/app.js && node --check portal/app.js && node --check portal/theme.js && node --check skills/app.js && node --check state/app.js && node --check state/project-auth/run.mjs && node --check quality/accessibility/app.js && node --check quality/visual/app.js && playwright test --list && playwright test --config=playwright.visual.config.ts --list && node --check scripts/preview.mjs && node --check workplace/preflight/server.mjs && node --check workplace/recovery/server.mjs && node --check workplace/jobs/server.mjs",
     "browsers": "playwright install chromium",
     "browsers:all": "playwright install",
     "test:skills": "playwright test --project=skills",

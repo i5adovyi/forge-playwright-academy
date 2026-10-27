@@ -4,6 +4,12 @@ A complete, hands-on test automation workshop: a learning portal, a real shop an
 
 Built for deliberate practice in **TypeScript + Playwright**. Everything needed for the original learning content lives in this repository. You do not need an AI subscription to use the academy. External courses, books, and optional AI tools have their own availability and terms.
 
+Choose **System**, **Light** or **Dark** in the portal header. System follows your
+device's appearance. An explicit choice survives reloads and updates other open
+tabs on the same site. Appearance is saved in this browser, separately from your
+learning record; it is not included in progress exports or synchronized between
+the hosted portal and localhost. Printed lessons use the light palette.
+
 ## Project idea and learning goals
 
 Forge began as a personal academy for learning test automation and preparing for
@@ -97,7 +103,7 @@ understandable; inspect existing modules before introducing new infrastructure.
 | Lessons and quizzes | `portal/content/curriculum.js`, plus its workplace/systems lesson modules | Versioned source |
 | Starter/solution mapping | `portal/content/practice.js` and the mapped files | Versioned source; executable proof is separate from completion marks |
 | Articles and external references | `portal/content/library.js`, `docs/` | Original writing plus links to legitimate resources |
-| Portal presentation | `portal/app.js`, `portal/styles.css`, `portal/index.html` | Local server or built static site |
+| Portal presentation | `portal/app.js`, `portal/styles.css`, `portal/index.html`, `portal/theme.js`, `portal/theme.css` | Local server or built static site; browser-local appearance preference |
 | Personal study record | `portal/progress-store.js`, `local-data/` | Local SQLite; static sites use browser storage |
 | Training business data | `server.mjs` and standalone workshop services | Temporary, isolated fixture state |
 | Portable distribution | `scripts/build.mjs`, `scripts/source-manifest.mjs`, `scripts/new-account-copy.mjs` | Static `dist/`, source/manual ZIPs, and account-neutral copies |

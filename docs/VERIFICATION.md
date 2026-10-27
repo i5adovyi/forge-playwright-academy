@@ -1,5 +1,26 @@
 # Verification record
 
+## Portal appearance — October 27, 2026
+
+- Portal integration: **33 passed**, including System/Light/Dark selection,
+  device preference changes, saved explicit choices, cross-tab updates,
+  keyboard selection at 320 px, preserved lesson notes, unavailable browser
+  storage and light print output.
+- Static hosting: **2 passed**, including dark-mode persistence and the actual
+  rendered dark background after reloading the built distribution.
+- Content validation, TypeScript and the new theme script's syntax check passed.
+  The curriculum inventory remains 67 lessons and 82 runnable assignment IDs.
+- Seven representative routes at 390 and 1440 px: **14 renders**, with no
+  observed page errors or document-level horizontal overflow. Desktop axe
+  color-contrast checks reported no violations on those seven rendered pages.
+  Docs-track, lesson and search-dialog screenshots were inspected at both widths.
+
+Theme tests use isolated browser storage and the browser-only test service;
+the personal SQLite record is untouched. Appearance is intentionally excluded
+from progress exports. Contrast scans cover sampled initial states, not full
+accessibility conformance or every interactive state. Historical evidence below
+retains its original scope; the GitHub run for the pushed commit reports CI.
+
 
 ## Beginner follow-up review — October 21, 2026
 

@@ -4,7 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f5f3ed"><meta name="description" content="Forge: a complete hands-on Playwright academy. Learn UI and API automation, build resilient tests, and work with AI agents through 67 lessons and a real practice lab.">
 <title>Forge — Playwright Academy</title>
-<link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./styles.css">
+<script src="./theme.js"></script>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./theme.css">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -30,7 +31,7 @@
 </nav>
 <div class="sidebar-bottom"><div class="side-progress"><span>YOUR JOURNEY</span><strong id="side-percent">0%</strong></div><div class="track"><i id="side-progress-bar"></i></div><p id="side-completed">Every expert started here.</p><a href="#/start" class="side-start">The setup guide <span>↗</span></a><div class="profile"><span class="avatar">YOU</span><div>Independent builder<small>Personal learning workspace</small></div></div></div>
 </aside>
-<div class="shell"><header class="topbar"><div class="top-left"><button class="mobile-menu icon-button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">☰</button><span class="breadcrumb">The academy <span>/</span> <strong id="breadcrumb">Overview</strong></span></div><div class="top-actions"><button class="search-trigger" aria-label="Search academy">⌕ <span>Search anything</span><kbd>⌘ K</kbd></button><span class="edition">VOL. 01 <b>2026</b></span></div></header><main id="main" tabindex="-1"></main><footer><a href="#/">forge<span>°</span></a><span>Build the skill. Prove it in code.</span><a href="#/start">Start here ↗</a></footer></div>
+<div class="shell"><header class="topbar"><div class="top-left"><button class="mobile-menu icon-button" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">☰</button><span class="breadcrumb">The academy <span>/</span> <strong id="breadcrumb">Overview</strong></span></div><div class="top-actions"><button class="search-trigger" aria-label="Search academy">⌕ <span>Search anything</span><kbd>⌘ K</kbd></button><label class="theme-picker"><span class="sr-only">Color theme</span><select id="color-theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><span id="theme-status" class="sr-only" aria-live="polite" aria-atomic="true"></span><span class="edition">VOL. 01 <b>2026</b></span></div></header><main id="main" tabindex="-1"></main><footer><a href="#/">forge<span>°</span></a><span>Build the skill. Prove it in code.</span><a href="#/start">Start here ↗</a></footer></div>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">Find your next breakthrough.</h2><button class="icon-button" data-close-search aria-label="Close search">×</button></div><label class="sr-only" for="global-search">Search lessons and resources</label><input id="global-search" type="search" placeholder="Try “locators”, “API”, or “AI agents”…" autocomplete="off"><div id="search-results"></div></dialog>
 <div role="status" id="toast" class="toast" aria-live="polite"></div>
 <script type="module" src="./app.js"></script>

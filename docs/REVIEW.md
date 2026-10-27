@@ -1,5 +1,21 @@
 # Academy review · October 20, 2026
 
+## Portal appearance follow-up — October 27, 2026
+
+Added a header control for System, Light and Dark. Dark colors cover the shared
+portal, lesson reading, code blocks, exercises, quizzes, manuals, search and
+progress screens. The default follows the device; an explicit preference is
+applied before the stylesheets load, persists in this browser and updates other
+open tabs. Storage failure leaves the control usable for the current visit.
+Printed lessons retain the light palette. Notes and completion data remain
+independent of appearance. The lab applications retain their existing designs.
+
+The README and shared maintenance guide explain the new source files and
+browser-local preference. See the dated [verification record](VERIFICATION.md)
+for executed checks and their limits. This change adds no curriculum or drills.
+
+## Original review
+
 A second review examined the lessons, runnable exercises, portal, shop/API, configuration, downloads, and CI together. Three independent reviews covered curriculum correctness, practice-system behavior, and learning-portal usability. The fixes below are implemented, with regression tests where the behavior can be executed.
 
 ## Highest-value findings and fixes

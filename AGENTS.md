@@ -50,6 +50,7 @@ confirmation. Use subagents for independent reviews when requested.
 | Area | Files and responsibility |
 | --- | --- |
 | Portal | Plain HTML/CSS and browser ES modules in `portal/`; hash routes in `portal/app.js` |
+| Appearance | `portal/theme.js` applies System/Light/Dark before paint; `portal/theme.css` holds screen-only overrides. Browser-local preference is separate from progress and exports. |
 | Curriculum | `portal/content/curriculum.js` imports workplace and real-world lesson modules |
 | Exercise mapping | `portal/content/practice.js` maps stable drill IDs to lessons, files and commands |
 | Library | `portal/content/library.js` holds resource links and original articles |
