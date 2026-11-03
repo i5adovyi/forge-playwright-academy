@@ -38,7 +38,7 @@ test('systems track maps real starters and preserves focused navigation and shar
 test('run anywhere explains local commands, source, hosting and progress portability', async ({ page }) => {
   await page.goto('/#/start');
   await expect(page.locator('main')).toContainText('You are using the full local workshop.');
-  await expect(page.getByRole('link', { name: 'GitHub source' })).toHaveAttribute('href', 'https://github.com/i5adovyi/forge-playwright-academy');
+  await expect(page.locator('.docs-callout').getByRole('link', { name: 'GitHub source' })).toHaveAttribute('href', 'https://github.com/i5adovyi/forge-playwright-academy');
   await page.getByRole('link', { name: 'Run anywhere guide' }).click();
   await expect(page.locator('.prose')).toContainText('npm run local');
   await expect(page.locator('.prose')).toContainText('npm run preview');
