@@ -293,17 +293,24 @@ test('unavailable startup keeps edits disabled and retry loads the original data
   await expect(page.getByLabel('Your field notes')).toBeVisible(); await saved(page);
 });
 
-test('static mode never calls the progress API and preserves its independent browser record', async ({ page, academy }) => {
+test('static mode under a project path uses its own homepage and browser record without a progress API', async ({ page, academy }) => {
   let calls = 0;
   page.on('request', request => { if (request.url().endsWith('/api/learning/progress')) calls++; });
-  await page.route('**/runtime.js', route => route.fulfill({ contentType: 'application/javascript', body: "export const runtimeMode = 'static';" }));
-  await page.goto(`${academy.url}/#/lesson/01-01`);
+  const projectURL = `${academy.url}/forge-playwright-academy/`;
+  await page.route(projectURL + '**', async route => {
+    const path = route.request().url().slice(projectURL.length);
+    if (path === 'runtime.js') {
+      return route.fulfill({ contentType: 'application/javascript', body: "export const runtimeMode = 'static';" });
+    }
+    return route.fulfill({ response: await route.fetch({ url: `${academy.url}/${path}` }) });
+  });
+  await page.goto(`${projectURL}#/lesson/01-01`);
   await expect(page.locator('#persistence-bar')).toContainText('Saved in this browser');
   await page.getByLabel('Your field notes').fill('This belongs to the hosted browser record.');
   await page.reload();
   await expect(page.getByLabel('Your field notes')).toHaveValue('This belongs to the hosted browser record.');
-  await page.goto(`${academy.url}/#/start`);
-  await expect(page.getByRole('link', { name: 'OpenAI-hosted academy' })).toHaveAttribute('href', `${academy.url}/`);
+  await page.goto(`${projectURL}#/start`);
+  await expect(page.getByRole('link', { name: 'Hosted academy' })).toHaveAttribute('href', projectURL);
   expect(calls).toBe(0);
   await expect(stat(path.join(academy.dataDir, 'progress.sqlite'))).rejects.toThrow();
 });

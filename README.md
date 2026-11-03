@@ -2,6 +2,8 @@
 
 A complete, hands-on test automation workshop: a learning portal, a real shop and API, a progressive curriculum, practical exercises, worked solutions, and a portfolio capstone.
 
+**[Open Forge Playwright Academy](https://i5adovyi.github.io/forge-playwright-academy/)** to read the lessons, take quizzes and save your progress in this browser. No sign-in is required. To run the live shop, API and Playwright tests, follow the [local setup](#start-in-five-minutes).
+
 Built for deliberate practice in **TypeScript + Playwright**. Everything needed for the original learning content lives in this repository. You do not need an AI subscription to use the academy. External courses, books, and optional AI tools have their own availability and terms.
 
 ## Project idea and learning goals
@@ -133,13 +135,11 @@ npm run test:interactive # Playwright UI mode
 
 The main test runner starts its own browser-only server on port 4175; visual tests use 4176. They refuse to reuse your personal workshop server, so automated tests cannot alter your SQLite learning record. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
 
-## OpenAI Sites, localhost, and private GitHub
+## Where to use Forge
 
-Use the [OpenAI-hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/)
-for learning content, `npm run local` for the complete workshop at
-**http://127.0.0.1:4173**, and the [private GitHub repository](https://github.com/i5adovyi/forge-playwright-academy)
-for source and history. After `npm run build`, `npm run preview` serves the exact
-static portal at **http://127.0.0.1:4174**. A GitHub push does not deploy OpenAI Sites.
+The [public learning portal](https://i5adovyi.github.io/forge-playwright-academy/) includes lessons, quizzes, manuals, and the project download. Use `npm run local` for the full workshop at **http://127.0.0.1:4173**. To preview the static portal locally, run `npm run build` and then `npm run preview`; it opens at **http://127.0.0.1:4174**.
+
+Maintainers can publish an update from `main` with **Actions → Publish Forge to GitHub Pages → Run workflow**. The [private OpenAI-hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/) has separate access and deployment settings.
 
 [Run anywhere](docs/RUN-ANYWHERE.md) explains both modes and publishing. Follow
 [Account handoff](docs/ACCOUNT-HANDOFF.md) to open this folder in Codex after signing

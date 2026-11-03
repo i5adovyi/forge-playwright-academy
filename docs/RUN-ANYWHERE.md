@@ -1,14 +1,15 @@
-# Run anywhere: OpenAI Sites, localhost, and GitHub
+# Run Forge online or locally
 
 The academy has one source project and two runtime modes. Your learning content
 does not require an AI subscription when run locally.
 
 | Location | What works | How to open |
 | --- | --- | --- |
+| GitHub Pages | Lessons, quizzes, manuals, progress saved in this browser, and source downloads | [Open the public academy](https://i5adovyi.github.io/forge-playwright-academy/) |
 | OpenAI Sites | Lessons, quizzes, articles, manuals, progress, complete source downloads | [Open the original account’s hosted academy](https://forge-playwright-academy.igor-sadovyi87.chatgpt.site/) |
 | Localhost, full workshop | The same portal plus live shop, HTTP API, storage, UI, accessibility and visual fixtures | `npm run local`, then http://127.0.0.1:4173 |
 | Localhost, static preview | The exact `dist/` portal prepared for hosting, with downloads | `npm run build`, then `npm run preview`, then http://127.0.0.1:4174 |
-| Private GitHub | Versioned source, starters, solutions, manuals and CI evidence | [Open the private repository](https://github.com/i5adovyi/forge-playwright-academy) |
+| GitHub repository | Versioned source, starters, solutions, manuals and CI evidence | [Open the public repository](https://github.com/i5adovyi/forge-playwright-academy) |
 
 The hosted and preview portals display the local setup/download path for live
 labs. They do not pretend to execute backend exercises. The dedicated workplace
@@ -16,8 +17,7 @@ runners start their own isolated services; use their commands in the workbooks.
 
 ## Start locally from GitHub
 
-Install Node.js **22.13+** (Node 24 recommended) and Git. Authenticate to the GitHub account that has
-access to the private repository, then run:
+Install Node.js **22.13+** (Node 24 recommended) and Git, then run:
 
 ```sh
 git clone https://github.com/i5adovyi/forge-playwright-academy.git
@@ -101,7 +101,7 @@ prepare a separate copy, sign into that account, and use its available Sites
 workflow to create a private site once. GitHub source or an exported ZIP does not
 transfer site ownership. You can also host `dist/` on a static host you control.
 
-## Push your work to private GitHub
+## Push your work to GitHub
 
 From a clone, review and test your changes, then commit only the intended files:
 
